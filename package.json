@@ -1,0 +1,29 @@
+{
+  "name": "inventory",
+  "version": "0.1.0",
+  "description": "Keep an inventory",
+  "main": "index.js",
+  "scripts": {
+    "build": "elm make src/Main.elm --output src/elm.js || true",
+    "start": "electron index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/creativo-pty/inventory.git"
+  },
+  "keywords": [
+    "inventory",
+    "elm",
+    "electron"
+  ],
+  "author": "Christopher Duncan <cj.duncan.a@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/creativo-pty/inventory/issues"
+  },
+  "homepage": "https://github.com/creativo-pty/inventory#readme",
+  "dependencies": {
+    "electron": "^1.6.6"
+  }
+}
