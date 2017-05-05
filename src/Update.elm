@@ -19,8 +19,5 @@ update msg model =
         DialogMsg msg_ ->
             Dialog.update msg_ model
 
-        GetBrands ->
-            Brands.get model
-
         BrandsRecieved brands ->
             Brands.update brands model

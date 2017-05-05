@@ -4,12 +4,24 @@ import Html exposing (Html)
 import Material.List
 import Model exposing (Msg(Mdl))
 import Models.Brand exposing (Brand)
+import RemoteData exposing (RemoteData(..))
+import Routing.Error exposing (Error)
 
 
-view : Maybe (List Brand) -> Html Msg
-view maybeBrands =
-    Html.div []
-        [ listBrands <| Maybe.withDefault [] maybeBrands ]
+view : RemoteData Error (List Brand) -> Html Msg
+view possibleBrands =
+    case possibleBrands of
+        NotAsked ->
+            Html.text "Brands not asked yet"
+
+        Loading ->
+            Html.text "Brands being loaded"
+
+        Failure _ ->
+            Html.text "An error has occurred"
+
+        Success brands ->
+            listBrands brands
 
 
 listBrands : List Brand -> Html Msg

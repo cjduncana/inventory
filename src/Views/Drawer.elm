@@ -4,6 +4,7 @@ import Html exposing (Html)
 import Material.Layout as Layout
 import Material.Options as Options
 import Model exposing (Msg(Mdl, NavigateTo))
+import RemoteData
 import Routing.Routes exposing (Route(..))
 
 
@@ -39,7 +40,7 @@ linkItems =
       , route = Home
       }
     , { text = "Brands"
-      , route = Brands Nothing
+      , route = Brands RemoteData.NotAsked
       }
     , { text = "Markets"
       , route = Home

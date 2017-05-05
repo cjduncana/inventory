@@ -4,6 +4,8 @@ import Material
 import Models.Brand exposing (Brand)
 import Models.Dialog as Dialog exposing (DialogView(Default))
 import Models.Header as Header exposing (Header)
+import RemoteData exposing (RemoteData)
+import Routing.Error exposing (Error)
 import Routing.Routes exposing (Route(Home))
 
 
@@ -32,17 +34,16 @@ init =
 
 
 type alias StoredData =
-    { brands : Maybe (List Brand) }
+    { brands : RemoteData Error (List Brand) }
 
 
 initStoredData : StoredData
 initStoredData =
-    StoredData Nothing
+    StoredData RemoteData.NotAsked
 
 
 type Msg
     = Mdl (Material.Msg Msg)
     | NavigateTo Route
     | DialogMsg Dialog.Msg
-    | GetBrands
     | BrandsRecieved (List Brand)

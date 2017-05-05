@@ -1,8 +1,10 @@
 module Routing.Routes exposing (Route(..))
 
 import Models.Brand exposing (Brand)
+import RemoteData exposing (RemoteData)
+import Routing.Error exposing (Error)
 
 
 type Route
     = Home
-    | Brands (Maybe (List Brand))
+    | Brands (RemoteData Error (List Brand))
