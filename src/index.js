@@ -12,11 +12,19 @@ app.on('ready', createWindow);
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1024,
-    height: 768
+    height: 768,
+    show: false
   });
 
   // display the index.html file
-  mainWindow.loadURL(`file://${ __dirname }/src/index.html`);
+  mainWindow.loadURL(`file://${ __dirname }/index.html`);
+
+  // Open the DevTools.
+  // mainWindow.webContents.openDevTools();
+
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
+  });
 
   mainWindow.on('closed', () => {
     mainWindow = null;

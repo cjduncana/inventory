@@ -23,7 +23,7 @@
         "no-catch-shadow": 0,
         "no-lonely-if": 2,
         "brace-style": [2, "1tbs", {"allowSingleLine": true}],
-        "no-unused-vars": [1, { vars: "all", varsIgnorePattern: "^internals|lab$", "args": "none" }],
+        "no-unused-vars": [1, { "vars": "all", "varsIgnorePatter": "^internals|lab$", "args": "none" }],
         "one-var": [2, "never"],
         "linebreak-style": [2, "unix"],
         "handle-callback-err": [2, "^(e|err|error)$"],

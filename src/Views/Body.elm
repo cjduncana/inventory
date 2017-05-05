@@ -1,22 +1,24 @@
 module Views.Body exposing (view)
 
-import Html exposing (Html, div, text)
-import Material.Options as Options
+import Html exposing (Html)
 import Model exposing (Model, Msg)
+import Routing.Routes exposing (Route(..))
+import Views.Brand as BrandView
+import Views.Dialog as DialogView
 
 
-view : List (Html Msg)
-view =
-    [ stylesheet ]
+view : Model -> List (Html Msg)
+view model =
+    [ bodyView model
+    , DialogView.view model
+    ]
 
 
-stylesheet : Html a
-stylesheet =
-    Options.stylesheet """
-    .mdl-layout__drawer-button {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 8px 12px;
-    }
-  """
+bodyView : Model -> Html Msg
+bodyView model =
+    case model.route of
+        Home ->
+            Html.div [] [ Html.text "This is the home page." ]
+
+        Brands maybeBrands ->
+            BrandView.view maybeBrands

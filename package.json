@@ -2,11 +2,14 @@
   "name": "inventory",
   "version": "0.1.0",
   "description": "Keep an inventory",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "build": "elm make src/Main.elm --output src/elm.js || true",
-    "start": "electron index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build:watch": "nodemon --exec npm run build -e elm",
+    "start": "electron-forge start",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "repository": {
     "type": "git",
@@ -24,6 +27,47 @@
   },
   "homepage": "https://github.com/creativo-pty/inventory#readme",
   "dependencies": {
-    "electron": "^1.6.6"
+    "bluebird": "^3.5.0",
+    "electron-compile": "^6.4.1",
+    "sequelize": "^3.30.4",
+    "sqlite3": "^3.1.8"
+  },
+  "devDependencies": {
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-preset-env": "^1.4.0",
+    "babel-preset-react": "^6.24.1",
+    "devtron": "^1.4.0",
+    "electron-prebuilt-compile": "1.6.6"
+  },
+  "config": {
+    "forge": {
+      "make_targets": {
+        "win32": [
+          "squirrel"
+        ],
+        "darwin": [
+          "zip"
+        ],
+        "linux": [
+          "deb",
+          "rpm"
+        ]
+      },
+      "electronPackagerConfig": {
+        "name": "Inventory"
+      },
+      "electronWinstallerConfig": {
+        "name": ""
+      },
+      "electronInstallerDebian": {},
+      "electronInstallerRedhat": {},
+      "github_repository": {
+        "owner": "creativo-pty",
+        "name": "inventory.git"
+      },
+      "windowsStoreConfig": {
+        "packageName": ""
+      }
+    }
   }
 }
