@@ -5,6 +5,7 @@ import Models.Brand as Brand exposing (Brand)
 import RemoteData exposing (RemoteData(Loading, Success))
 import Routing.Routes exposing (Route(Brands))
 import Utilities as Util
+import Uuid exposing (Uuid)
 
 
 get : Model -> ( Model, Cmd Msg )
@@ -30,7 +31,7 @@ get model =
         model_ =
             { model | route = route, storedData = storedData_ }
     in
-        ( model_, Brand.getBrands () )
+        ( model_, Brand.getBrands )
 
 
 update : List Brand -> Model -> ( Model, Cmd Msg )
@@ -53,6 +54,6 @@ update brands model =
                 ( model_, Cmd.none )
 
 
-delete : String -> Model -> ( Model, Cmd Msg )
+delete : Uuid -> Model -> ( Model, Cmd Msg )
 delete brandId model =
     ( model, Brand.deleteBrand brandId )

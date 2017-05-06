@@ -1,25 +1,43 @@
 port module Models.Brand exposing (..)
 
+import Uuid exposing (Uuid)
+
 
 type alias Brand =
+    { id : Uuid
+    , name : String
+    }
+
+
+type alias BrandJson =
     { id : String
     , name : String
     }
 
 
-port createBrand : String -> Cmd msg
+createBrand : String -> Cmd msg
+createBrand =
+    createBrandPort
 
 
-port editBrand : Brand -> Cmd msg
+editBrand : Brand -> Cmd msg
+editBrand =
+    editBrandPort << toJson
 
 
-port getBrands : () -> Cmd msg
+getBrands : Cmd msg
+getBrands =
+    getBrandsPort ()
 
 
-port deleteBrand : String -> Cmd msg
+deleteBrand : Uuid -> Cmd msg
+deleteBrand =
+    deleteBrandPort << Uuid.toString
 
 
-port brandsRecieved : (List Brand -> msg) -> Sub msg
+brandsRecieved : (List Brand -> msg) -> Sub msg
+brandsRecieved f =
+    brandsRecievedPort <| f << fromJsonList
 
 
 doCommand : String -> Cmd msg -> Cmd msg
@@ -28,3 +46,34 @@ doCommand name cmd =
         Cmd.none
     else
         cmd
+
+
+fromJson : BrandJson -> Maybe Brand
+fromJson json =
+    Maybe.map (flip Brand json.name) <|
+        Uuid.fromString json.id
+
+
+fromJsonList : List BrandJson -> List Brand
+fromJsonList =
+    List.filterMap fromJson
+
+
+toJson : Brand -> BrandJson
+toJson brand =
+    BrandJson (Uuid.toString brand.id) brand.name
+
+
+port createBrandPort : String -> Cmd msg
+
+
+port editBrandPort : BrandJson -> Cmd msg
+
+
+port getBrandsPort : () -> Cmd msg
+
+
+port deleteBrandPort : String -> Cmd msg
+
+
+port brandsRecievedPort : (List BrandJson -> msg) -> Sub msg

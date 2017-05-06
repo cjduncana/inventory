@@ -1,11 +1,14 @@
-# elm-package generated files
+# Elm-package generated files
 elm-stuff/
-# elm-repl generated files
+
+# Elm-repl generated files
 repl-temp-*
 
+# Node generated files
+node_modules/
+npm-debug.log
+
+TODO
+out/
 elm.js
 mydb.sqlite3
-node_modules/
-TODO
-
-out/

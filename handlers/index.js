@@ -9,12 +9,12 @@ module.exports = (ports) => {
   .then((models) => {
     const Brands = require('./brands')(ports, models);
 
-    ports.getBrands.subscribe(Brands.getBrands);
+    ports.getBrandsPort.subscribe(Brands.getBrands);
 
-    ports.createBrand.subscribe(Brands.createBrand);
+    ports.createBrandPort.subscribe(Brands.createBrand);
 
-    ports.editBrand.subscribe(Brands.editBrand);
+    ports.editBrandPort.subscribe(Brands.editBrand);
 
-    ports.deleteBrand.subscribe(Brands.deleteBrand);
+    ports.deleteBrandPort.subscribe(Brands.deleteBrand);
   });
 };

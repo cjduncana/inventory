@@ -29,9 +29,6 @@ function createWindow() {
   // Display the splash screen
   splashScreen.loadURL(`file://${ __dirname }/splash-screen.html`);
 
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
-
   splashScreen.once('ready-to-show', () => {
     splashScreen.show();
   });

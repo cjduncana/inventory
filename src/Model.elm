@@ -7,6 +7,7 @@ import Models.Header as Header exposing (Header)
 import RemoteData exposing (RemoteData)
 import Routing.Error exposing (Error)
 import Routing.Routes exposing (Route(Home))
+import Uuid exposing (Uuid)
 
 
 type alias Model =
@@ -47,4 +48,4 @@ type Msg
     | NavigateTo Route
     | DialogMsg Dialog.Msg
     | BrandsRecieved (List Brand)
-    | DeleteBrand String
+    | DeleteBrand Uuid

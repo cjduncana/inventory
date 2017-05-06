@@ -27,6 +27,6 @@ module.exports = (ports, models) => {
   function getBrands() {
     models.Brand.getBrands()
     .map(formatters.brand)
-    .then(ports.brandsRecieved.send);
+    .then(ports.brandsRecievedPort.send);
   }
 };
