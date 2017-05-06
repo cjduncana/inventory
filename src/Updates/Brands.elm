@@ -1,7 +1,7 @@
 module Updates.Brands exposing (get, update, delete)
 
-import Model exposing (Model, Msg)
-import Models.Brand as Brand exposing (Brand)
+import Model exposing (Model, Msg, Action(..))
+import Models.Brand as Brand exposing (Brand, Action(..))
 import RemoteData exposing (RemoteData(Loading, Success))
 import Routing.Routes exposing (Route(Brands))
 import Utilities as Util
@@ -29,7 +29,11 @@ get model =
             { storedData | brands = Loading }
 
         model_ =
-            { model | route = route, storedData = storedData_ }
+            { model
+                | route = route
+                , storedData = storedData_
+                , lastAction = BrandAction Get
+            }
     in
         ( model_, Brand.getBrands )
 
@@ -44,7 +48,10 @@ update brands model =
             { storedData | brands = Success brands }
 
         model_ =
-            { model | storedData = storedData_ }
+            { model
+                | storedData = storedData_
+                , lastAction = None
+            }
     in
         case model.route of
             Brands _ ->
@@ -56,4 +63,8 @@ update brands model =
 
 delete : Uuid -> Model -> ( Model, Cmd Msg )
 delete brandId model =
-    ( model, Brand.deleteBrand brandId )
+    let
+        model_ =
+            { model | lastAction = BrandAction Delete }
+    in
+        ( model_, Brand.deleteBrand brandId )

@@ -1,7 +1,7 @@
 module Updates.Dialog exposing (update)
 
-import Model exposing (Model)
-import Models.Brand as Brand exposing (Brand)
+import Model exposing (Model, Action(..))
+import Models.Brand as Brand exposing (Brand, Action(..))
 import Models.Dialog as Dialog exposing (DialogView(..), Msg(..))
 
 
@@ -21,7 +21,10 @@ update msg model =
         BrandAdd name ->
             let
                 model_ =
-                    { model | dialogView = AddBrand "" }
+                    { model
+                        | dialogView = AddBrand ""
+                        , lastAction = BrandAction Create
+                    }
 
                 command_ =
                     Brand.doCommand name <|
@@ -39,7 +42,10 @@ update msg model =
         BrandEdit brand ->
             let
                 model_ =
-                    { model | dialogView = AddBrand "" }
+                    { model
+                        | dialogView = AddBrand ""
+                        , lastAction = BrandAction Edit
+                    }
 
                 command_ =
                     Brand.doCommand brand.name <|

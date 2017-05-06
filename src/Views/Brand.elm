@@ -9,14 +9,13 @@ import Material.Grid as Grid exposing (Cell)
 import Material.Icon as Icon
 import Material.Options as Options
 import Model exposing (Model, Msg(Mdl))
-import Models.Brand exposing (Brand)
+import Models.Brand exposing (Brand, RemoteBrands)
 import Models.Dialog
-import Models.Error exposing (Error)
 import RemoteData exposing (RemoteData(..))
 import Views.Utilities as ViewUtil
 
 
-view : Model -> RemoteData Error (List Brand) -> Html Msg
+view : Model -> RemoteBrands -> Html Msg
 view model possibleBrands =
     case possibleBrands of
         NotAsked ->

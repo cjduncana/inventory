@@ -1,5 +1,7 @@
 port module Models.Brand exposing (..)
 
+import Models.Error exposing (Error)
+import RemoteData exposing (RemoteData)
 import Uuid exposing (Uuid)
 
 
@@ -9,10 +11,21 @@ type alias Brand =
     }
 
 
+type alias RemoteBrands =
+    RemoteData Error (List Brand)
+
+
 type alias BrandJson =
     { id : String
     , name : String
     }
+
+
+type Action
+    = Get
+    | Create
+    | Edit
+    | Delete
 
 
 createBrand : String -> Cmd msg

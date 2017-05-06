@@ -1,7 +1,7 @@
 module Model exposing (..)
 
 import Material
-import Models.Brand exposing (Brand)
+import Models.Brand as Brand exposing (Brand, RemoteBrands)
 import Models.Dialog as Dialog exposing (DialogView(Default))
 import Models.Error exposing (Error)
 import Models.Header as Header exposing (Header)
@@ -17,6 +17,7 @@ type alias Model =
     , header : Header
     , dialogView : DialogView
     , error : Maybe Error
+    , lastAction : Action
     }
 
 
@@ -28,6 +29,7 @@ initialModel =
     , header = Header.init
     , dialogView = Default
     , error = Nothing
+    , lastAction = None
     }
 
 
@@ -37,7 +39,7 @@ init =
 
 
 type alias StoredData =
-    { brands : RemoteData Error (List Brand) }
+    { brands : RemoteBrands }
 
 
 initStoredData : StoredData
@@ -52,3 +54,8 @@ type Msg
     | DialogMsg Dialog.Msg
     | BrandsRecieved (List Brand)
     | DeleteBrand Uuid
+
+
+type Action
+    = None
+    | BrandAction Brand.Action
