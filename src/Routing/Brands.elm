@@ -2,7 +2,7 @@ module Routing.Brands exposing (goto)
 
 import Model exposing (Model, Msg)
 import Models.Dialog exposing (DialogView(AddBrand))
-import Models.Header exposing (Header, Fab(Add))
+import Models.Header as Header
 import Routing.Routes exposing (Route(Brands))
 import Updates.Brands as Brands
 import Utilities as Util
@@ -14,7 +14,7 @@ goto model =
         model_ =
             { model
                 | route = Brands model.storedData.brands
-                , header = Header "Brands List" Add
+                , header = Header.brandsList
                 , dialogView = AddBrand ""
             }
     in

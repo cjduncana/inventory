@@ -7,7 +7,9 @@ import Material.Icon as Icon
 import Material.Options as Options
 import Material.Layout as Layout
 import Model exposing (Model, Msg(Mdl))
+import Models.Dialog
 import Models.Header exposing (Fab(..))
+import Routing.Routes exposing (Route(..))
 import Views.Utilities as ViewUtil
 
 
@@ -37,5 +39,12 @@ fab model =
         , Options.css "position" "absolute"
         , Options.css "right" "24px"
         , Options.css "top" "28px"
+        , case model.route of
+            Brands _ ->
+                Options.onClick <|
+                    Model.DialogMsg Models.Dialog.BrandAddDialog
+
+            _ ->
+                Options.nop
         ]
         [ Icon.i "add" ]

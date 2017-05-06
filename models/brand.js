@@ -24,6 +24,13 @@ module.exports = function(db) {
 
       createBrand: function(name) {
         return this.create({ name });
+      },
+
+      editBrand: function(brand) {
+        return this.update(brand, {
+          where: { id: brand.id },
+          fields: ['name']
+        });
       }
     },
 

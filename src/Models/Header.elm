@@ -1,4 +1,4 @@
-module Models.Header exposing (Fab(..), Header, init)
+module Models.Header exposing (..)
 
 
 type alias Header =
@@ -10,6 +10,11 @@ type alias Header =
 init : Header
 init =
     Header "Inventory" Absent
+
+
+brandsList : Header
+brandsList =
+    Header "Brands List" Add
 
 
 type Fab

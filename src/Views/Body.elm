@@ -21,4 +21,4 @@ bodyView model =
             Html.div [] [ Html.text "This is the home page." ]
 
         Brands brands ->
-            BrandView.view brands
+            BrandView.view model brands
