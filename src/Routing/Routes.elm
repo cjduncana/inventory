@@ -1,8 +1,8 @@
 module Routing.Routes exposing (Route(..))
 
 import Models.Brand exposing (Brand)
+import Models.Error exposing (Error)
 import RemoteData exposing (RemoteData)
-import Routing.Error exposing (Error)
 
 
 type Route

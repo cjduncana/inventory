@@ -5,6 +5,7 @@ import Model exposing (Model, Msg(..))
 import Routing.Navigation as Navigation
 import Updates.Brands as Brands
 import Updates.Dialog as Dialog
+import Updates.Error as Error
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -15,6 +16,9 @@ update msg model =
 
         NavigateTo route ->
             Navigation.gotoRoute route model
+
+        ErrorRecieved error ->
+            Error.update error model
 
         DialogMsg msg_ ->
             Dialog.update msg_ model

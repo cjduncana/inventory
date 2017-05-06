@@ -11,8 +11,8 @@ import Material.Options as Options
 import Model exposing (Model, Msg(Mdl))
 import Models.Brand exposing (Brand)
 import Models.Dialog
+import Models.Error exposing (Error)
 import RemoteData exposing (RemoteData(..))
-import Routing.Error exposing (Error)
 import Views.Utilities as ViewUtil
 
 
