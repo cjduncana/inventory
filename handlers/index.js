@@ -14,5 +14,7 @@ module.exports = (ports) => {
     ports.createBrand.subscribe(Brands.createBrand);
 
     ports.editBrand.subscribe(Brands.editBrand);
+
+    ports.deleteBrand.subscribe(Brands.deleteBrand);
   });
 };

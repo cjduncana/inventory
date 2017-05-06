@@ -1,4 +1,4 @@
-module Updates.Brands exposing (get, update)
+module Updates.Brands exposing (get, update, delete)
 
 import Model exposing (Model, Msg)
 import Models.Brand as Brand exposing (Brand)
@@ -51,3 +51,8 @@ update brands model =
 
             _ ->
                 ( model_, Cmd.none )
+
+
+delete : String -> Model -> ( Model, Cmd Msg )
+delete brandId model =
+    ( model, Brand.deleteBrand brandId )

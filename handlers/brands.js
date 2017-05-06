@@ -16,6 +16,11 @@ module.exports = (ports, models) => {
     editBrand: (brand) => {
       models.Brand.editBrand(brand)
       .then(() => getBrands());
+    },
+
+    deleteBrand: (brandId) => {
+      models.Brand.deleteBrand(brandId)
+      .then(() => getBrands());
     }
   };
 

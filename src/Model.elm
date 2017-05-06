@@ -47,3 +47,4 @@ type Msg
     | NavigateTo Route
     | DialogMsg Dialog.Msg
     | BrandsRecieved (List Brand)
+    | DeleteBrand String

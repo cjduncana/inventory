@@ -16,6 +16,9 @@ port editBrand : Brand -> Cmd msg
 port getBrands : () -> Cmd msg
 
 
+port deleteBrand : String -> Cmd msg
+
+
 port brandsRecieved : (List Brand -> msg) -> Sub msg
 
 

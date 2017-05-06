@@ -21,3 +21,6 @@ update msg model =
 
         BrandsRecieved brands ->
             Brands.update brands model
+
+        DeleteBrand brandId ->
+            Brands.delete brandId model

@@ -2,6 +2,7 @@ module Views.Brand exposing (view)
 
 import Html exposing (Html)
 import Material.Button as Button
+import Material.Color as Color
 import Material.Dialog as Dialog
 import Material.Elevation as Elevation
 import Material.Grid as Grid exposing (Cell)
@@ -67,4 +68,14 @@ brandCard model index brand =
                     Models.Dialog.BrandEditDialog brand
             ]
             [ Icon.i "edit" ]
+        , Button.render Mdl
+            [ 1, index ]
+            model.mdl
+            [ Button.icon
+            , Button.ripple
+            , Color.text Color.accent
+            , Options.onClick <|
+                Model.DeleteBrand brand.id
+            ]
+            [ Icon.i "delete" ]
         ]

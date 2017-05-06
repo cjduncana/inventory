@@ -31,6 +31,10 @@ module.exports = function(db) {
           where: { id: brand.id },
           fields: ['name']
         });
+      },
+
+      deleteBrand: function(id) {
+        return this.destroy({ where: { id } });
       }
     },
 
