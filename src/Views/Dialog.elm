@@ -7,40 +7,61 @@ import Material.Dialog as Dialog
 import Material.Options as Options
 import Material.Textfield as Textfield
 import Model exposing (Model, Msg(DialogMsg, Mdl))
-import Models.Brand exposing (Brand)
 import Models.Dialog exposing (DialogView(..), Msg(..))
+import Models.List exposing (ListObject)
 import Views.Utilities as ViewUtil
 
 
 view : Model -> Html Model.Msg
 view model =
     let
-        button_ =
-            button model
-
         dialogView_ =
             dialogView model
 
-        textfield_ =
-            textfield model
+        addDialogView_ =
+            addDialogView model
+
+        editDialogView_ =
+            editDialogView model
     in
         case model.dialogView of
             Default ->
                 dialogView_ Nothing <| DialogContents "" [] []
 
             AddBrand name ->
-                dialogView_ (Just <| BrandAdd name) <|
-                    DialogContents
-                        "Add Brand"
-                        [ textfield_ BrandNameUpdate name ]
-                        [ button_ "Save" ]
+                addDialogView_ <|
+                    AddEditDialogContents "Brand" name <|
+                        BrandAdd name
 
-            EditBrand brand name ->
-                dialogView_ (Just <| BrandEdit <| Brand brand.id name) <|
-                    DialogContents
-                        ("Edit " ++ brand.name)
-                        [ textfield_ BrandNameUpdate name ]
-                        [ button_ "Edit" ]
+            AddMarket name ->
+                addDialogView_ <|
+                    AddEditDialogContents "Market" name <|
+                        MarketAdd name
+
+            EditView object name ->
+                editDialogView_ <|
+                    AddEditDialogContents object.name name <|
+                        ObjectEdit <|
+                            ListObject object.id name
+
+
+addDialogView : Model -> AddEditDialogContents -> Html Model.Msg
+addDialogView =
+    addEditDialogView <| AddEditText "Add" "Save"
+
+
+editDialogView : Model -> AddEditDialogContents -> Html Model.Msg
+editDialogView =
+    addEditDialogView <| AddEditText "Edit" "Edit"
+
+
+addEditDialogView : AddEditText -> Model -> AddEditDialogContents -> Html Model.Msg
+addEditDialogView { viewType, buttonText } model { title, name, onSubitMsg } =
+    dialogView model (Just onSubitMsg) <|
+        DialogContents
+            (viewType ++ " " ++ title)
+            [ textfield model NameUpdate name ]
+            [ button model viewType ]
 
 
 dialogView : Model -> Maybe Models.Dialog.Msg -> DialogContents -> Html Model.Msg
@@ -101,6 +122,19 @@ button model buttonText =
         , Dialog.closeOn "click"
         ]
         [ Html.text buttonText ]
+
+
+type alias AddEditText =
+    { viewType : String
+    , buttonText : String
+    }
+
+
+type alias AddEditDialogContents =
+    { title : String
+    , name : String
+    , onSubitMsg : Models.Dialog.Msg
+    }
 
 
 type alias DialogContents =

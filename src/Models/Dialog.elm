@@ -1,20 +1,23 @@
 module Models.Dialog exposing (..)
 
-import Models.Brand exposing (Brand)
+import Models.List exposing (ListObject)
 
 
 type Msg
-    = BrandNameUpdate String
+    = NameUpdate String
     | BrandAdd String
     | BrandAddDialog
-    | BrandEdit Brand
-    | BrandEditDialog Brand
+    | MarketAdd String
+    | MarketAddDialog
+    | ObjectEdit ListObject
+    | EditDialog ListObject
 
 
 type DialogView
     = Default
     | AddBrand String
-    | EditBrand Brand String
+    | AddMarket String
+    | EditView ListObject String
 
 
 mapName : (String -> String) -> DialogView -> DialogView
@@ -26,5 +29,8 @@ mapName f dialogView =
         AddBrand name ->
             AddBrand <| f name
 
-        EditBrand brand name ->
-            EditBrand brand <| f name
+        AddMarket name ->
+            AddMarket <| f name
+
+        EditView object name ->
+            EditView object <| f name

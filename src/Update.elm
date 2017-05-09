@@ -6,6 +6,8 @@ import Routing.Navigation as Navigation
 import Updates.Brands as Brands
 import Updates.Dialog as Dialog
 import Updates.Error as Error
+import Updates.List as List
+import Updates.Markets as Markets
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -26,5 +28,8 @@ update msg model =
         BrandsRecieved brands ->
             Brands.update brands model
 
-        DeleteBrand brandId ->
-            Brands.delete brandId model
+        MarketsRecieved markets ->
+            Markets.update markets model
+
+        DeleteObject listType uuid ->
+            List.delete listType uuid model

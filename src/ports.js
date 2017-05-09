@@ -1,7 +1,7 @@
 'use strict';
 
 const Elm = require('./elm.js');
-const Handlers = require('../handlers');
+const Handlers = require('../lib/handlers');
 
 // Get a reference to the DIV where we will show our UI
 const container = document.getElementById('container');

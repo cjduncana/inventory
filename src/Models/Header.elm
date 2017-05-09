@@ -14,7 +14,17 @@ init =
 
 brandsList : Header
 brandsList =
-    Header "Brands List" Add
+    list "Brands"
+
+
+marketsList : Header
+marketsList =
+    list "Markets"
+
+
+list : String -> Header
+list section =
+    Header section Add
 
 
 type Fab

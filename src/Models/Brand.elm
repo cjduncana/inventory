@@ -21,13 +21,6 @@ type alias BrandJson =
     }
 
 
-type Action
-    = Get
-    | Create
-    | Edit
-    | Delete
-
-
 createBrand : String -> Cmd msg
 createBrand =
     createBrandPort

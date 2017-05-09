@@ -1,8 +1,9 @@
 module Updates.Error exposing (..)
 
-import Model exposing (Model, Msg, Action(..))
-import Models.Brand exposing (Action(..))
+import Model exposing (Action(..), ActionType(..), Model, Msg)
+import Models.Brand as Brand
 import Models.Error exposing (Error(..))
+import Models.Market as Market
 import RemoteData
 import Routing.Routes as Routes
 
@@ -19,13 +20,34 @@ update error model =
 
             BrandAction action ->
                 case action of
-                    Get ->
+                    List ->
                         let
                             brandError _ =
                                 RemoteData.Failure error
 
                             route =
                                 Routes.mapBrands brandError model.route
+
+                            model__ =
+                                { model_
+                                    | route = route
+                                    , lastAction = None
+                                }
+                        in
+                            ( model__, Cmd.none )
+
+                    _ ->
+                        ( model_, Cmd.none )
+
+            MarketAction action ->
+                case action of
+                    List ->
+                        let
+                            marketError _ =
+                                RemoteData.Failure error
+
+                            route =
+                                Routes.mapMarkets marketError model.route
 
                             model__ =
                                 { model_

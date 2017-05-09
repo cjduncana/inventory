@@ -1,9 +1,9 @@
-module Updates.Brands exposing (get, update)
+module Updates.Markets exposing (get, update)
 
 import Model exposing (Action(..), ActionType(..), Model, Msg)
-import Models.Brand as Brand exposing (Brand)
+import Models.Market as Market exposing (Market)
 import RemoteData exposing (RemoteData(Loading, Success))
-import Routing.Routes exposing (Route(Brands))
+import Routing.Routes exposing (Route(Markets))
 import Utilities as Util
 
 
@@ -12,9 +12,9 @@ get model =
     let
         route =
             case model.route of
-                Brands brands ->
-                    if Util.isNotSuccess brands then
-                        Brands Loading
+                Markets markets ->
+                    if Util.isNotSuccess markets then
+                        Markets Loading
                     else
                         model.route
 
@@ -25,26 +25,26 @@ get model =
             model.storedData
 
         storedData_ =
-            { storedData | brands = Loading }
+            { storedData | markets = Loading }
 
         model_ =
             { model
                 | route = route
                 , storedData = storedData_
-                , lastAction = BrandAction List
+                , lastAction = MarketAction List
             }
     in
-        ( model_, Brand.getBrands )
+        ( model_, Market.getMarkets )
 
 
-update : List Brand -> Model -> ( Model, Cmd Msg )
-update brands model =
+update : List Market -> Model -> ( Model, Cmd Msg )
+update markets model =
     let
         storedData =
             model.storedData
 
         storedData_ =
-            { storedData | brands = Success brands }
+            { storedData | markets = Success markets }
 
         model_ =
             { model
@@ -53,8 +53,8 @@ update brands model =
             }
     in
         case model.route of
-            Brands _ ->
-                ( { model_ | route = Brands <| Success brands }, Cmd.none )
+            Markets _ ->
+                ( { model_ | route = Markets <| Success markets }, Cmd.none )
 
             _ ->
                 ( model_, Cmd.none )

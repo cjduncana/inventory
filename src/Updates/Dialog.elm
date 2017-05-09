@@ -1,14 +1,16 @@
 module Updates.Dialog exposing (update)
 
-import Model exposing (Model, Action(..))
-import Models.Brand as Brand exposing (Brand, Action(..))
+import Model exposing (Action(..), ActionType(..), Model)
+import Models.Brand as Brand
 import Models.Dialog as Dialog exposing (DialogView(..), Msg(..))
+import Models.Market as Market
+import Routing.Routes as Routes
 
 
 update : Msg -> Model -> ( Model, Cmd Model.Msg )
 update msg model =
     case msg of
-        BrandNameUpdate name ->
+        NameUpdate name ->
             let
                 dialogView_ =
                     Dialog.mapName (always name) model.dialogView
@@ -39,23 +41,64 @@ update msg model =
             in
                 ( model_, Cmd.none )
 
-        BrandEdit brand ->
+        MarketAdd name ->
             let
                 model_ =
                     { model
-                        | dialogView = AddBrand ""
-                        , lastAction = BrandAction Edit
+                        | dialogView = AddMarket ""
+                        , lastAction = MarketAction Create
                     }
 
                 command_ =
-                    Brand.doCommand brand.name <|
-                        Brand.editBrand brand
+                    Market.doCommand name <|
+                        Market.createMarket name
             in
                 ( model_, command_ )
 
-        BrandEditDialog brand ->
+        MarketAddDialog ->
             let
                 model_ =
-                    { model | dialogView = EditBrand brand brand.name }
+                    { model | dialogView = AddMarket "" }
             in
                 ( model_, Cmd.none )
+
+        EditDialog object ->
+            let
+                model_ =
+                    { model | dialogView = EditView object object.name }
+            in
+                ( model_, Cmd.none )
+
+        ObjectEdit object ->
+            let
+                model_ =
+                    case model.route of
+                        Routes.Brands _ ->
+                            { model
+                                | dialogView = AddBrand ""
+                                , lastAction = BrandAction Edit
+                            }
+
+                        Routes.Markets _ ->
+                            { model
+                                | dialogView = AddMarket ""
+                                , lastAction = MarketAction Edit
+                            }
+
+                        _ ->
+                            model
+
+                command_ =
+                    case model.route of
+                        Routes.Brands _ ->
+                            Brand.doCommand object.name <|
+                                Brand.editBrand object
+
+                        Routes.Markets _ ->
+                            Market.doCommand object.name <|
+                                Market.editMarket object
+
+                        _ ->
+                            Cmd.none
+            in
+                ( model_, command_ )

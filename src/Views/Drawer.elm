@@ -43,6 +43,6 @@ linkItems =
       , route = Brands RemoteData.NotAsked
       }
     , { text = "Markets"
-      , route = Home
+      , route = Markets RemoteData.NotAsked
       }
     ]
