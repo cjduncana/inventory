@@ -31,5 +31,5 @@ update msg model =
         MarketsReceived markets ->
             Markets.update markets model
 
-        DeleteObject listType uuid ->
-            List.delete listType uuid model
+        DeleteObject listType ->
+            List.delete listType model

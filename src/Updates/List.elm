@@ -2,24 +2,23 @@ module Updates.List exposing (delete)
 
 import Model exposing (Action(..), ActionType(..), Model, Msg)
 import Models.Brand as Brand
-import Models.List exposing (ListType(Brands, Markets))
+import Models.List exposing (ListObject, ListType(..))
 import Models.Market as Market
-import Uuid exposing (Uuid)
 
 
-delete : ListType -> Uuid -> Model -> ( Model, Cmd Msg )
-delete listType uuid model =
+delete : ListType ListObject -> Model -> ( Model, Cmd Msg )
+delete listType model =
     case listType of
-        Brands _ ->
+        Brand brand ->
             let
                 model_ =
                     { model | lastAction = BrandAction Delete }
             in
-                ( model_, Brand.deleteBrand uuid )
+                ( model_, Brand.deleteBrand brand.id )
 
-        Markets _ ->
+        Market market ->
             let
                 model_ =
                     { model | lastAction = MarketAction Delete }
             in
-                ( model_, Market.deleteMarket uuid )
+                ( model_, Market.deleteMarket market.id )

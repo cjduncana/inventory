@@ -22,7 +22,7 @@ bodyView model =
             Html.div [] [ Html.text "This is the home page." ]
 
         Routes.Brands brands ->
-            ListView.view model <| List.Brands brands
+            ListView.view model <| List.Brand brands
 
         Routes.Markets markets ->
-            ListView.view model <| List.Markets markets
+            ListView.view model <| List.Market markets

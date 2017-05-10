@@ -15,7 +15,7 @@ import RemoteData exposing (RemoteData(..))
 import Views.Utilities as ViewUtil
 
 
-view : Model -> ListType -> Html Msg
+view : Model -> ListType RemoteObjects -> Html Msg
 view model listType =
     let
         f title possibleObjects =
@@ -30,64 +30,71 @@ view model listType =
                     Html.text "An error has occurred"
 
                 Success objects ->
-                    grid model listType title objects
+                    grid model <| Models.List.map (always objects) listType
     in
-        applyToListType f listType
+        Models.List.apply f listType
 
 
-grid : Model -> ListType -> String -> List ListObject -> Html Msg
-grid model listType title object =
-    if List.isEmpty object then
-        Html.text <| "No " ++ title ++ "s yet"
-    else
-        Grid.grid [] <|
-            List.indexedMap (cell model listType) object
+grid : Model -> ListType (List ListObject) -> Html Msg
+grid model listType =
+    let
+        f title objects =
+            if List.isEmpty objects then
+                Html.text <| "No " ++ title ++ "s yet"
+            else
+                Grid.grid [] <|
+                    List.indexedMap (cell model listType) objects
+    in
+        Models.List.apply f listType
 
 
-cell : Model -> ListType -> Int -> ListObject -> Cell Msg
+cell : Model -> ListType (List ListObject) -> Int -> ListObject -> Cell Msg
 cell model listType index object =
-    Grid.cell [] [ card model listType index object ]
+    let
+        object_ =
+            Models.List.map (always object) listType
+    in
+        Grid.cell [] [ card model object_ index ]
 
 
-card : Model -> ListType -> Int -> ListObject -> Html Msg
-card model listType index object =
-    Options.div
-        [ Elevation.e2
-        , Options.css "padding" "1em"
-        , Options.css "display" "flex"
-        , Options.css "align-items" "center"
-        ]
-        [ Options.div (ViewUtil.noWrap 1.5) [ Html.text object.name ]
-        , Options.div [ Options.css "flex-grow" "1" ] []
-        , Button.render Mdl
-            [ 0, index ]
-            model.mdl
-            [ Button.icon
-            , Button.ripple
-            , Dialog.openOn "click"
-            , Options.onClick <|
-                Model.DialogMsg <|
-                    Models.Dialog.EditDialog object
+card : Model -> ListType ListObject -> Int -> Html Msg
+card model listType index =
+    let
+        object =
+            case listType of
+                Brand brand ->
+                    brand
+
+                Market market ->
+                    market
+    in
+        Options.div
+            [ Elevation.e2
+            , Options.css "padding" "1em"
+            , Options.css "display" "flex"
+            , Options.css "align-items" "center"
             ]
-            [ Icon.i "edit" ]
-        , Button.render Mdl
-            [ 1, index ]
-            model.mdl
-            [ Button.icon
-            , Button.ripple
-            , Color.text Color.accent
-            , Options.onClick <|
-                Model.DeleteObject listType object.id
+            [ Options.div (ViewUtil.noWrap 1.5) [ Html.text object.name ]
+            , Options.div [ Options.css "flex-grow" "1" ] []
+            , Button.render Mdl
+                [ 0, index ]
+                model.mdl
+                [ Button.icon
+                , Button.ripple
+                , Dialog.openOn "click"
+                , Options.onClick <|
+                    Model.DialogMsg <|
+                        Models.Dialog.EditDialog object
+                ]
+                [ Icon.i "edit" ]
+            , Button.render Mdl
+                [ 1, index ]
+                model.mdl
+                [ Button.icon
+                , Button.ripple
+                , Color.text Color.accent
+                , Options.onClick <|
+                    Model.DeleteObject listType
+                ]
+                [ Icon.i "delete" ]
             ]
-            [ Icon.i "delete" ]
-        ]
-
-
-applyToListType : (String -> RemoteObjects -> a) -> ListType -> a
-applyToListType f listType =
-    case listType of
-        Brands possibleBrands ->
-            f "Brand" possibleBrands
-
-        Markets possibleMarkets ->
-            f "Market" possibleMarkets

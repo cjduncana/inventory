@@ -5,11 +5,10 @@ import Models.Brand exposing (Brand, RemoteBrands)
 import Models.Dialog as Dialog exposing (DialogView(Default))
 import Models.Error exposing (Error)
 import Models.Header as Header exposing (Header)
-import Models.List exposing (ListType)
+import Models.List exposing (ListObject, ListType)
 import Models.Market exposing (Market, RemoteMarkets)
 import RemoteData exposing (RemoteData(NotAsked))
 import Routing.Routes exposing (Route(Home))
-import Uuid exposing (Uuid)
 
 
 type alias Model =
@@ -58,7 +57,7 @@ type Msg
     | DialogMsg Dialog.Msg
     | BrandsReceived (List Brand)
     | MarketsReceived (List Market)
-    | DeleteObject ListType Uuid
+    | DeleteObject (ListType ListObject)
 
 
 type ActionType
