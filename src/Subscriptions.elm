@@ -11,7 +11,7 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ Material.subscriptions Mdl model
-        , Brand.brandsRecieved BrandsRecieved
-        , Market.marketsRecieved MarketsRecieved
-        , Error.errorRecieved ErrorRecieved
+        , Brand.brandsReceived BrandsReceived
+        , Market.marketsReceived MarketsReceived
+        , Error.errorReceived ErrorReceived
         ]

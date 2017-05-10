@@ -19,16 +19,16 @@ update msg model =
         NavigateTo route ->
             Navigation.gotoRoute route model
 
-        ErrorRecieved error ->
+        ErrorReceived error ->
             Error.update error model
 
         DialogMsg msg_ ->
             Dialog.update msg_ model
 
-        BrandsRecieved brands ->
+        BrandsReceived brands ->
             Brands.update brands model
 
-        MarketsRecieved markets ->
+        MarketsReceived markets ->
             Markets.update markets model
 
         DeleteObject listType uuid ->

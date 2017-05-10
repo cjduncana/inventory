@@ -46,7 +46,7 @@ module.exports = (ports, models) => {
   function getMarkets() {
     models.Market.getMarkets()
     .map(formatters.market)
-    .then(ports.marketsRecievedPort.send)
+    .then(ports.marketsReceivedPort.send)
     .catch((err) => {
       sendError({ details: err.message });
     });
@@ -60,6 +60,6 @@ module.exports = (ports, models) => {
   }
 
   function sendError(error) {
-    ports.errorRecievedPort.send(error);
+    ports.errorReceivedPort.send(error);
   }
 };

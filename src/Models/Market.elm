@@ -41,9 +41,9 @@ deleteMarket =
     deleteMarketPort << Uuid.toString
 
 
-marketsRecieved : (List Market -> msg) -> Sub msg
-marketsRecieved f =
-    marketsRecievedPort <| f << fromJsonList
+marketsReceived : (List Market -> msg) -> Sub msg
+marketsReceived f =
+    marketsReceivedPort <| f << fromJsonList
 
 
 doCommand : String -> Cmd msg -> Cmd msg
@@ -82,4 +82,4 @@ port getMarketsPort : () -> Cmd msg
 port deleteMarketPort : String -> Cmd msg
 
 
-port marketsRecievedPort : (List MarketJson -> msg) -> Sub msg
+port marketsReceivedPort : (List MarketJson -> msg) -> Sub msg

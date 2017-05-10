@@ -46,7 +46,7 @@ module.exports = (ports, models) => {
   function getBrands() {
     models.Brand.getBrands()
     .map(formatters.brand)
-    .then(ports.brandsRecievedPort.send)
+    .then(ports.brandsReceivedPort.send)
     .catch((err) => {
       sendError({ details: err.message });
     });
@@ -60,6 +60,6 @@ module.exports = (ports, models) => {
   }
 
   function sendError(error) {
-    ports.errorRecievedPort.send(error);
+    ports.errorReceivedPort.send(error);
   }
 };

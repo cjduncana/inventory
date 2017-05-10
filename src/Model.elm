@@ -54,10 +54,10 @@ initStoredData =
 type Msg
     = Mdl (Material.Msg Msg)
     | NavigateTo Route
-    | ErrorRecieved Error
+    | ErrorReceived Error
     | DialogMsg Dialog.Msg
-    | BrandsRecieved (List Brand)
-    | MarketsRecieved (List Market)
+    | BrandsReceived (List Brand)
+    | MarketsReceived (List Market)
     | DeleteObject ListType Uuid
 
 

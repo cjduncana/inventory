@@ -41,9 +41,9 @@ deleteBrand =
     deleteBrandPort << Uuid.toString
 
 
-brandsRecieved : (List Brand -> msg) -> Sub msg
-brandsRecieved f =
-    brandsRecievedPort <| f << fromJsonList
+brandsReceived : (List Brand -> msg) -> Sub msg
+brandsReceived f =
+    brandsReceivedPort <| f << fromJsonList
 
 
 doCommand : String -> Cmd msg -> Cmd msg
@@ -82,4 +82,4 @@ port getBrandsPort : () -> Cmd msg
 port deleteBrandPort : String -> Cmd msg
 
 
-port brandsRecievedPort : (List BrandJson -> msg) -> Sub msg
+port brandsReceivedPort : (List BrandJson -> msg) -> Sub msg

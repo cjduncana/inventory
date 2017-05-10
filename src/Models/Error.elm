@@ -1,4 +1,4 @@
-port module Models.Error exposing (Error(..), errorRecieved)
+port module Models.Error exposing (Error(..), errorReceived)
 
 import Json.Decode as Decode exposing (Decoder, Value)
 import Json.Decode.Pipeline as Decode
@@ -9,12 +9,12 @@ type Error
     | DuplicateError String
 
 
-errorRecieved : (Error -> msg) -> Sub msg
-errorRecieved =
-    errorRecievedPort << fromValue
+errorReceived : (Error -> msg) -> Sub msg
+errorReceived =
+    errorReceivedPort << fromValue
 
 
-port errorRecievedPort : (Value -> msg) -> Sub msg
+port errorReceivedPort : (Value -> msg) -> Sub msg
 
 
 fromValue : (Error -> msg) -> Value -> msg
