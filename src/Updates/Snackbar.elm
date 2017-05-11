@@ -1,11 +1,53 @@
 module Updates.Snackbar exposing (update)
 
-import Material.Snackbar as Snackbar
-import Model exposing (Model, Msg, SnackbarPayload)
+import Material.Snackbar as Snackbar exposing (Msg(..))
+import Model exposing (Model)
+import Models.Brand as Brand
+import Models.Market as Market
+import Models.Snackbar exposing (Payload(..))
 
 
-update : Snackbar.Msg SnackbarPayload -> Model -> ( Model, Cmd Msg )
+update : Models.Snackbar.Msg -> Model -> ( Model, Cmd Model.Msg )
 update msg model =
+    case msg of
+        End payload ->
+            destroy payload model
+
+        Click payload ->
+            restore payload model
+
+        _ ->
+            snackbar msg model
+
+
+destroy : Payload -> Model -> ( Model, Cmd Model.Msg )
+destroy payload model =
+    case payload of
+        DeletedBrand brand ->
+            ( model, Brand.destroyBrand brand.id )
+
+        DeletedMarket market ->
+            ( model, Market.destroyMarket market.id )
+
+        _ ->
+            ( model, Cmd.none )
+
+
+restore : Payload -> Model -> ( Model, Cmd Model.Msg )
+restore payload model =
+    case payload of
+        DeletedBrand brand ->
+            ( model, Brand.restoreBrand brand.id )
+
+        DeletedMarket market ->
+            ( model, Market.restoreMarket market.id )
+
+        _ ->
+            ( model, Cmd.none )
+
+
+snackbar : Models.Snackbar.Msg -> Model -> ( Model, Cmd Model.Msg )
+snackbar msg model =
     let
         ( snackbarModel, snackbarCommand ) =
             Snackbar.update msg model.snackbar

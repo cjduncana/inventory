@@ -39,6 +39,16 @@ deleteMarket =
     deleteMarketPort << Uuid.toString
 
 
+destroyMarket : Uuid -> Cmd msg
+destroyMarket =
+    destroyMarketPort << Uuid.toString
+
+
+restoreMarket : Uuid -> Cmd msg
+restoreMarket =
+    restoreMarketPort << Uuid.toString
+
+
 marketsReceived : (Markets -> msg) -> Sub msg
 marketsReceived f =
     marketsReceivedPort <| f << fromJsonList
@@ -78,6 +88,12 @@ port getMarketsPort : () -> Cmd msg
 
 
 port deleteMarketPort : String -> Cmd msg
+
+
+port destroyMarketPort : String -> Cmd msg
+
+
+port restoreMarketPort : String -> Cmd msg
 
 
 port marketsReceivedPort : (List MarketJson -> msg) -> Sub msg

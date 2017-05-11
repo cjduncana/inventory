@@ -35,9 +35,24 @@ module.exports = function(db) {
 
       deleteMarket: function(id) {
         return this.destroy({ where: { id } });
+      },
+
+      destroyMarket: function(id) {
+        return this.destroy({
+          where: {
+            id,
+            deletedAt: { $ne: null }
+          },
+          force: true
+        });
+      },
+
+      restoreMarket: function(id) {
+        return this.restore({ where: { id } });
       }
     },
 
+    paranoid: true,
     tableName: 'markets'
   });
 

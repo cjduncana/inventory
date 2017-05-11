@@ -39,6 +39,16 @@ deleteBrand =
     deleteBrandPort << Uuid.toString
 
 
+destroyBrand : Uuid -> Cmd msg
+destroyBrand =
+    destroyBrandPort << Uuid.toString
+
+
+restoreBrand : Uuid -> Cmd msg
+restoreBrand =
+    restoreBrandPort << Uuid.toString
+
+
 brandsReceived : (Brands -> msg) -> Sub msg
 brandsReceived f =
     brandsReceivedPort <| f << fromJsonList
@@ -78,6 +88,12 @@ port getBrandsPort : () -> Cmd msg
 
 
 port deleteBrandPort : String -> Cmd msg
+
+
+port destroyBrandPort : String -> Cmd msg
+
+
+port restoreBrandPort : String -> Cmd msg
 
 
 port brandsReceivedPort : (List BrandJson -> msg) -> Sub msg

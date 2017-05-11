@@ -11,6 +11,10 @@ module.exports = (ports, models) => {
 
   ports.deleteMarketPort.subscribe(deleteMarket);
 
+  ports.destroyMarketPort.subscribe(destroyMarket);
+
+  ports.restoreMarketPort.subscribe(restoreMarket);
+
   function createMarket(name) {
     models.Market.createMarket(name)
     .then(() => getMarkets())
@@ -37,6 +41,21 @@ module.exports = (ports, models) => {
 
   function deleteMarket(marketId) {
     models.Market.deleteMarket(marketId)
+    .then(() => getMarkets())
+    .catch((err) => {
+      sendError({ details: err.message });
+    });
+  }
+
+  function destroyMarket(marketId) {
+    models.Market.destroyMarket(marketId)
+    .catch((err) => {
+      sendError({ details: err.message });
+    });
+  }
+
+  function restoreMarket(marketId) {
+    models.Market.restoreMarket(marketId)
     .then(() => getMarkets())
     .catch((err) => {
       sendError({ details: err.message });

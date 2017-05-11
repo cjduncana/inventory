@@ -11,6 +11,10 @@ module.exports = (ports, models) => {
 
   ports.deleteBrandPort.subscribe(deleteBrand);
 
+  ports.destroyBrandPort.subscribe(destroyBrand);
+
+  ports.restoreBrandPort.subscribe(restoreBrand);
+
   function createBrand(name) {
     models.Brand.createBrand(name)
     .then(() => getBrands())
@@ -37,6 +41,21 @@ module.exports = (ports, models) => {
 
   function deleteBrand(brandId) {
     models.Brand.deleteBrand(brandId)
+    .then(() => getBrands())
+    .catch((err) => {
+      sendError({ details: err.message });
+    });
+  }
+
+  function destroyBrand(brandId) {
+    models.Brand.destroyBrand(brandId)
+    .catch((err) => {
+      sendError({ details: err.message });
+    });
+  }
+
+  function restoreBrand(brandId) {
+    models.Brand.restoreBrand(brandId)
     .then(() => getBrands())
     .catch((err) => {
       sendError({ details: err.message });

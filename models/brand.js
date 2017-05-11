@@ -35,9 +35,24 @@ module.exports = function(db) {
 
       deleteBrand: function(id) {
         return this.destroy({ where: { id } });
+      },
+
+      destroyBrand: function(id) {
+        return this.destroy({
+          where: {
+            id,
+            deletedAt: { $ne: null }
+          },
+          force: true
+        });
+      },
+
+      restoreBrand: function(id) {
+        return this.restore({ where: { id } });
       }
     },
 
+    paranoid: true,
     tableName: 'brands'
   });
 
