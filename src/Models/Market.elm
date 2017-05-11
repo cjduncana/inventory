@@ -1,5 +1,18 @@
-port module Models.Market exposing (..)
+port module Models.Market
+    exposing
+        ( Market
+        , Markets
+        , createMarket
+        , editMarket
+        , getMarkets
+        , deleteMarket
+        , destroyMarket
+        , restoreMarket
+        , marketsReceived
+        )
 
+import Json.Encode exposing (Value)
+import Models.List as List
 import Uuid exposing (Uuid)
 
 
@@ -13,12 +26,6 @@ type alias Markets =
     List Market
 
 
-type alias MarketJson =
-    { id : String
-    , name : String
-    }
-
-
 createMarket : String -> Cmd msg
 createMarket =
     createMarketPort
@@ -26,7 +33,7 @@ createMarket =
 
 editMarket : Market -> Cmd msg
 editMarket =
-    editMarketPort << toJson
+    editMarketPort << List.toValue
 
 
 getMarkets : Cmd msg
@@ -50,38 +57,14 @@ restoreMarket =
 
 
 marketsReceived : (Markets -> msg) -> Sub msg
-marketsReceived f =
-    marketsReceivedPort <| f << fromJsonList
-
-
-doCommand : String -> Cmd msg -> Cmd msg
-doCommand name cmd =
-    if String.isEmpty name then
-        Cmd.none
-    else
-        cmd
-
-
-fromJson : MarketJson -> Maybe Market
-fromJson json =
-    Maybe.map (flip Market json.name) <|
-        Uuid.fromString json.id
-
-
-fromJsonList : List MarketJson -> Markets
-fromJsonList =
-    List.filterMap fromJson
-
-
-toJson : Market -> MarketJson
-toJson market =
-    MarketJson (Uuid.toString market.id) market.name
+marketsReceived =
+    marketsReceivedPort << List.fromValues
 
 
 port createMarketPort : String -> Cmd msg
 
 
-port editMarketPort : MarketJson -> Cmd msg
+port editMarketPort : Value -> Cmd msg
 
 
 port getMarketsPort : () -> Cmd msg
@@ -96,4 +79,4 @@ port destroyMarketPort : String -> Cmd msg
 port restoreMarketPort : String -> Cmd msg
 
 
-port marketsReceivedPort : (List MarketJson -> msg) -> Sub msg
+port marketsReceivedPort : (Value -> msg) -> Sub msg

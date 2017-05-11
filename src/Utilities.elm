@@ -1,8 +1,9 @@
-module Utilities exposing (..)
-
-import RemoteData exposing (RemoteData)
+module Utilities exposing (doCommand)
 
 
-isNotSuccess : RemoteData e a -> Bool
-isNotSuccess =
-    not << RemoteData.isSuccess
+doCommand : String -> Cmd msg -> Cmd msg
+doCommand name cmd =
+    if String.isEmpty name then
+        Cmd.none
+    else
+        cmd

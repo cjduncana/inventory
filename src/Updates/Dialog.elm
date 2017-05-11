@@ -5,6 +5,7 @@ import Models.Brand as Brand
 import Models.Dialog as Dialog exposing (DialogView(..), Msg(..))
 import Models.Market as Market
 import Routing.Routes as Routes
+import Utilities as Util
 
 
 update : Msg -> Model -> ( Model, Cmd Model.Msg )
@@ -26,7 +27,7 @@ update msg model =
                     { model | dialogView = AddBrand "" }
 
                 command_ =
-                    Brand.doCommand name <|
+                    Util.doCommand name <|
                         Brand.createBrand name
             in
                 ( model_, command_ )
@@ -44,7 +45,7 @@ update msg model =
                     { model | dialogView = AddMarket "" }
 
                 command_ =
-                    Market.doCommand name <|
+                    Util.doCommand name <|
                         Market.createMarket name
             in
                 ( model_, command_ )
@@ -79,11 +80,11 @@ update msg model =
                 command_ =
                     case model.route of
                         Routes.Brands _ ->
-                            Brand.doCommand object.name <|
+                            Util.doCommand object.name <|
                                 Brand.editBrand object
 
                         Routes.Markets _ ->
-                            Market.doCommand object.name <|
+                            Util.doCommand object.name <|
                                 Market.editMarket object
 
                         _ ->

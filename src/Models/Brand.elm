@@ -1,5 +1,18 @@
-port module Models.Brand exposing (..)
+port module Models.Brand
+    exposing
+        ( Brand
+        , Brands
+        , createBrand
+        , editBrand
+        , getBrands
+        , deleteBrand
+        , destroyBrand
+        , restoreBrand
+        , brandsReceived
+        )
 
+import Json.Encode exposing (Value)
+import Models.List as List
 import Uuid exposing (Uuid)
 
 
@@ -13,12 +26,6 @@ type alias Brands =
     List Brand
 
 
-type alias BrandJson =
-    { id : String
-    , name : String
-    }
-
-
 createBrand : String -> Cmd msg
 createBrand =
     createBrandPort
@@ -26,7 +33,7 @@ createBrand =
 
 editBrand : Brand -> Cmd msg
 editBrand =
-    editBrandPort << toJson
+    editBrandPort << List.toValue
 
 
 getBrands : Cmd msg
@@ -50,38 +57,14 @@ restoreBrand =
 
 
 brandsReceived : (Brands -> msg) -> Sub msg
-brandsReceived f =
-    brandsReceivedPort <| f << fromJsonList
-
-
-doCommand : String -> Cmd msg -> Cmd msg
-doCommand name cmd =
-    if String.isEmpty name then
-        Cmd.none
-    else
-        cmd
-
-
-fromJson : BrandJson -> Maybe Brand
-fromJson json =
-    Maybe.map (flip Brand json.name) <|
-        Uuid.fromString json.id
-
-
-fromJsonList : List BrandJson -> Brands
-fromJsonList =
-    List.filterMap fromJson
-
-
-toJson : Brand -> BrandJson
-toJson brand =
-    BrandJson (Uuid.toString brand.id) brand.name
+brandsReceived =
+    brandsReceivedPort << List.fromValues
 
 
 port createBrandPort : String -> Cmd msg
 
 
-port editBrandPort : BrandJson -> Cmd msg
+port editBrandPort : Value -> Cmd msg
 
 
 port getBrandsPort : () -> Cmd msg
@@ -96,4 +79,4 @@ port destroyBrandPort : String -> Cmd msg
 port restoreBrandPort : String -> Cmd msg
 
 
-port brandsReceivedPort : (List BrandJson -> msg) -> Sub msg
+port brandsReceivedPort : (Value -> msg) -> Sub msg
