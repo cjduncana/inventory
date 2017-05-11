@@ -1,6 +1,6 @@
 module Updates.Brands exposing (get, update)
 
-import Model exposing (Action(..), ActionType(..), Model, Msg)
+import Model exposing (Model, Msg)
 import Models.Brand as Brand exposing (Brand)
 import RemoteData exposing (RemoteData(Loading, Success))
 import Routing.Routes exposing (Route(Brands))
@@ -31,7 +31,6 @@ get model =
             { model
                 | route = route
                 , storedData = storedData_
-                , lastAction = BrandAction List
             }
     in
         ( model_, Brand.getBrands )
@@ -47,10 +46,7 @@ update brands model =
             { storedData | brands = Success brands }
 
         model_ =
-            { model
-                | storedData = storedData_
-                , lastAction = None
-            }
+            { model | storedData = storedData_ }
     in
         case model.route of
             Brands _ ->

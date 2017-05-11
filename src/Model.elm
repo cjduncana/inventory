@@ -1,6 +1,7 @@
 module Model exposing (..)
 
 import Material
+import Material.Snackbar as Snackbar
 import Models.Brand exposing (Brand, RemoteBrands)
 import Models.Dialog as Dialog exposing (DialogView(Default))
 import Models.Error exposing (Error)
@@ -17,8 +18,7 @@ type alias Model =
     , storedData : StoredData
     , header : Header
     , dialogView : DialogView
-    , error : Maybe Error
-    , lastAction : ActionType
+    , snackbar : Snackbar.Model SnackbarPayload
     }
 
 
@@ -29,8 +29,7 @@ initialModel =
     , storedData = initStoredData
     , header = Header.init
     , dialogView = Default
-    , error = Nothing
-    , lastAction = None
+    , snackbar = Snackbar.model
     }
 
 
@@ -52,6 +51,7 @@ initStoredData =
 
 type Msg
     = Mdl (Material.Msg Msg)
+    | SnackbarMsg (Snackbar.Msg SnackbarPayload)
     | NavigateTo Route
     | ErrorReceived Error
     | DialogMsg Dialog.Msg
@@ -60,14 +60,5 @@ type Msg
     | DeleteObject (ListType ListObject)
 
 
-type ActionType
-    = None
-    | BrandAction Action
-    | MarketAction Action
-
-
-type Action
-    = List
-    | Create
-    | Edit
-    | Delete
+type SnackbarPayload
+    = Empty

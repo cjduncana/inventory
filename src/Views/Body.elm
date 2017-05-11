@@ -1,7 +1,8 @@
 module Views.Body exposing (view)
 
 import Html exposing (Html)
-import Model exposing (Model, Msg)
+import Material.Snackbar as Snackbar
+import Model exposing (Model, Msg, SnackbarPayload)
 import Models.List as List
 import Routing.Routes as Routes
 import Views.Dialog as DialogView
@@ -12,6 +13,7 @@ view : Model -> List (Html Msg)
 view model =
     [ bodyView model
     , DialogView.view model
+    , snackbar model.snackbar
     ]
 
 
@@ -26,3 +28,9 @@ bodyView model =
 
         Routes.Markets markets ->
             ListView.view model <| List.Market markets
+
+
+snackbar : Snackbar.Model SnackbarPayload -> Html Msg
+snackbar snackbarModel =
+    Snackbar.view snackbarModel
+        |> Html.map Model.SnackbarMsg

@@ -54,8 +54,8 @@ module.exports = (ports, models) => {
 
   function existingMarketError(name) {
     sendError({
-      details: name + ' is already an existing Market',
-      name
+      errorType: 'duplicate_error',
+      details: name + ' is already an existing Market'
     });
   }
 

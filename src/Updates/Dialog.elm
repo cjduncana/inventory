@@ -1,6 +1,6 @@
 module Updates.Dialog exposing (update)
 
-import Model exposing (Action(..), ActionType(..), Model)
+import Model exposing (Model)
 import Models.Brand as Brand
 import Models.Dialog as Dialog exposing (DialogView(..), Msg(..))
 import Models.Market as Market
@@ -23,10 +23,7 @@ update msg model =
         BrandAdd name ->
             let
                 model_ =
-                    { model
-                        | dialogView = AddBrand ""
-                        , lastAction = BrandAction Create
-                    }
+                    { model | dialogView = AddBrand "" }
 
                 command_ =
                     Brand.doCommand name <|
@@ -44,10 +41,7 @@ update msg model =
         MarketAdd name ->
             let
                 model_ =
-                    { model
-                        | dialogView = AddMarket ""
-                        , lastAction = MarketAction Create
-                    }
+                    { model | dialogView = AddMarket "" }
 
                 command_ =
                     Market.doCommand name <|
@@ -74,16 +68,10 @@ update msg model =
                 model_ =
                     case model.route of
                         Routes.Brands _ ->
-                            { model
-                                | dialogView = AddBrand ""
-                                , lastAction = BrandAction Edit
-                            }
+                            { model | dialogView = AddBrand "" }
 
                         Routes.Markets _ ->
-                            { model
-                                | dialogView = AddMarket ""
-                                , lastAction = MarketAction Edit
-                            }
+                            { model | dialogView = AddMarket "" }
 
                         _ ->
                             model

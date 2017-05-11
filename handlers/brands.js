@@ -54,8 +54,8 @@ module.exports = (ports, models) => {
 
   function existingBrandError(name) {
     sendError({
-      details: name + ' is already an existing Brand',
-      name
+      errorType: 'duplicate_error',
+      details: name + ' is already an existing Brand'
     });
   }
 

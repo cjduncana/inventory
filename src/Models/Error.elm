@@ -27,14 +27,16 @@ fromValue f value =
 errorDecoder : Decoder Error
 errorDecoder =
     let
-        toDecoder details name =
+        toDecoder errorType details =
             Decode.succeed <|
-                if String.isEmpty name then
-                    UnknownError details
-                else
-                    DuplicateError name
+                case errorType of
+                    "duplicate_error" ->
+                        DuplicateError details
+
+                    _ ->
+                        UnknownError details
     in
         Decode.decode toDecoder
+            |> Decode.optional "errorType" Decode.string ""
             |> Decode.required "details" Decode.string
-            |> Decode.optional "name" Decode.string ""
             |> Decode.resolve

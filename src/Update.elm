@@ -8,6 +8,7 @@ import Updates.Dialog as Dialog
 import Updates.Error as Error
 import Updates.List as List
 import Updates.Markets as Markets
+import Updates.Snackbar as Snackbar
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -15,6 +16,9 @@ update msg model =
     case msg of
         Mdl msg_ ->
             Material.update Mdl msg_ model
+
+        SnackbarMsg msg_ ->
+            Snackbar.update msg_ model
 
         NavigateTo route ->
             Navigation.gotoRoute route model

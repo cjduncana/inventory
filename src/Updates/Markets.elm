@@ -1,6 +1,6 @@
 module Updates.Markets exposing (get, update)
 
-import Model exposing (Action(..), ActionType(..), Model, Msg)
+import Model exposing (Model, Msg)
 import Models.Market as Market exposing (Market)
 import RemoteData exposing (RemoteData(Loading, Success))
 import Routing.Routes exposing (Route(Markets))
@@ -31,7 +31,6 @@ get model =
             { model
                 | route = route
                 , storedData = storedData_
-                , lastAction = MarketAction List
             }
     in
         ( model_, Market.getMarkets )
@@ -47,10 +46,7 @@ update markets model =
             { storedData | markets = Success markets }
 
         model_ =
-            { model
-                | storedData = storedData_
-                , lastAction = None
-            }
+            { model | storedData = storedData_ }
     in
         case model.route of
             Markets _ ->

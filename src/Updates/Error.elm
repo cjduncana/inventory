@@ -1,61 +1,33 @@
 module Updates.Error exposing (..)
 
-import Model exposing (Action(..), ActionType(..), Model, Msg)
-import Models.Brand as Brand
+import Material.Snackbar as Snackbar
+import Model exposing (Model, Msg)
 import Models.Error exposing (Error(..))
-import Models.Market as Market
-import RemoteData
-import Routing.Routes as Routes
 
 
 update : Error -> Model -> ( Model, Cmd Msg )
 update error model =
+    case error of
+        UnknownError error_ ->
+            addSnackbar error_ model
+
+        DuplicateError name ->
+            addSnackbar name model
+
+
+addSnackbar : String -> Model -> ( Model, Cmd Msg )
+addSnackbar message model =
     let
+        toast =
+            Snackbar.toast Model.Empty message
+
+        ( snackbarModel, snackbarCommand ) =
+            Snackbar.add toast model.snackbar
+
         model_ =
-            { model | error = Just error }
+            { model | snackbar = snackbarModel }
+
+        command_ =
+            Cmd.map Model.SnackbarMsg snackbarCommand
     in
-        case model.lastAction of
-            None ->
-                ( model_, Cmd.none )
-
-            BrandAction action ->
-                case action of
-                    List ->
-                        let
-                            brandError _ =
-                                RemoteData.Failure error
-
-                            route =
-                                Routes.mapBrands brandError model.route
-
-                            model__ =
-                                { model_
-                                    | route = route
-                                    , lastAction = None
-                                }
-                        in
-                            ( model__, Cmd.none )
-
-                    _ ->
-                        ( model_, Cmd.none )
-
-            MarketAction action ->
-                case action of
-                    List ->
-                        let
-                            marketError _ =
-                                RemoteData.Failure error
-
-                            route =
-                                Routes.mapMarkets marketError model.route
-
-                            model__ =
-                                { model_
-                                    | route = route
-                                    , lastAction = None
-                                }
-                        in
-                            ( model__, Cmd.none )
-
-                    _ ->
-                        ( model_, Cmd.none )
+        ( model_, command_ )
