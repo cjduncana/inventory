@@ -1,7 +1,5 @@
 port module Models.Brand exposing (..)
 
-import Models.Error exposing (Error)
-import RemoteData exposing (RemoteData)
 import Uuid exposing (Uuid)
 
 
@@ -11,8 +9,8 @@ type alias Brand =
     }
 
 
-type alias RemoteBrands =
-    RemoteData Error (List Brand)
+type alias Brands =
+    List Brand
 
 
 type alias BrandJson =
@@ -41,7 +39,7 @@ deleteBrand =
     deleteBrandPort << Uuid.toString
 
 
-brandsReceived : (List Brand -> msg) -> Sub msg
+brandsReceived : (Brands -> msg) -> Sub msg
 brandsReceived f =
     brandsReceivedPort <| f << fromJsonList
 
@@ -60,7 +58,7 @@ fromJson json =
         Uuid.fromString json.id
 
 
-fromJsonList : List BrandJson -> List Brand
+fromJsonList : List BrandJson -> Brands
 fromJsonList =
     List.filterMap fromJson
 

@@ -3,18 +3,17 @@ module Views.Drawer exposing (view)
 import Html exposing (Html)
 import Material.Layout as Layout
 import Material.Options as Options
-import Model exposing (Msg(Mdl, NavigateTo))
-import RemoteData
+import Model exposing (Model, Msg(Mdl, NavigateTo))
 import Routing.Routes exposing (Route(..))
 
 
-view : List (Html Msg)
-view =
+view : Model -> List (Html Msg)
+view model =
     [ Layout.title [] [ Html.text "Inventory" ]
     , Layout.navigation
         [ Options.onClick <| Layout.toggleDrawer Mdl ]
       <|
-        List.map viewLinkItem linkItems
+        List.map viewLinkItem (linkItems model)
     ]
 
 
@@ -31,8 +30,8 @@ type alias LinkItem =
     }
 
 
-linkItems : List LinkItem
-linkItems =
+linkItems : Model -> List LinkItem
+linkItems model =
     [ { text = "Reports"
       , route = Home
       }
@@ -40,9 +39,9 @@ linkItems =
       , route = Home
       }
     , { text = "Brands"
-      , route = Brands RemoteData.NotAsked
+      , route = Brands model.storedData.brands
       }
     , { text = "Markets"
-      , route = Markets RemoteData.NotAsked
+      , route = Markets model.storedData.markets
       }
     ]

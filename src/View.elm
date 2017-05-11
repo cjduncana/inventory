@@ -23,7 +23,7 @@ mdlView model =
         model.mdl
         [ Layout.fixedHeader ]
         { header = HeaderView.view model
-        , drawer = DrawerView.view
+        , drawer = DrawerView.view model
         , tabs = ( [], [] )
         , main = BodyView.view model
         }

@@ -1,30 +1,10 @@
-module Routing.Routes exposing (..)
+module Routing.Routes exposing (Route(..))
 
-import Models.Brand exposing (RemoteBrands)
-import Models.Market exposing (RemoteMarkets)
+import Models.Brand as Brand
+import Models.Market as Market
 
 
 type Route
     = Home
-    | Brands RemoteBrands
-    | Markets RemoteMarkets
-
-
-mapBrands : (RemoteBrands -> RemoteBrands) -> Route -> Route
-mapBrands f route =
-    case route of
-        Brands brands ->
-            Brands <| f brands
-
-        _ ->
-            route
-
-
-mapMarkets : (RemoteMarkets -> RemoteMarkets) -> Route -> Route
-mapMarkets f route =
-    case route of
-        Markets brands ->
-            Markets <| f brands
-
-        _ ->
-            route
+    | Brands Brand.Brands
+    | Markets Market.Markets

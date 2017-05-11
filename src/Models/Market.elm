@@ -1,7 +1,5 @@
 port module Models.Market exposing (..)
 
-import Models.Error exposing (Error)
-import RemoteData exposing (RemoteData)
 import Uuid exposing (Uuid)
 
 
@@ -11,8 +9,8 @@ type alias Market =
     }
 
 
-type alias RemoteMarkets =
-    RemoteData Error (List Market)
+type alias Markets =
+    List Market
 
 
 type alias MarketJson =
@@ -41,7 +39,7 @@ deleteMarket =
     deleteMarketPort << Uuid.toString
 
 
-marketsReceived : (List Market -> msg) -> Sub msg
+marketsReceived : (Markets -> msg) -> Sub msg
 marketsReceived f =
     marketsReceivedPort <| f << fromJsonList
 
@@ -60,7 +58,7 @@ fromJson json =
         Uuid.fromString json.id
 
 
-fromJsonList : List MarketJson -> List Market
+fromJsonList : List MarketJson -> Markets
 fromJsonList =
     List.filterMap fromJson
 

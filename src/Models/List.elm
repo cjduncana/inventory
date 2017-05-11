@@ -1,7 +1,5 @@
 port module Models.List exposing (..)
 
-import Models.Error exposing (Error)
-import RemoteData exposing (RemoteData)
 import Uuid exposing (Uuid)
 
 
@@ -11,8 +9,8 @@ type alias ListObject =
     }
 
 
-type alias RemoteObjects =
-    RemoteData Error (List ListObject)
+type alias ListObjects =
+    List ListObject
 
 
 type ListType a
@@ -38,3 +36,13 @@ apply f listType =
 
         Market a ->
             f "Market" a
+
+
+unpack : ListType a -> a
+unpack listType =
+    case listType of
+        Brand a ->
+            a
+
+        Market a ->
+            a

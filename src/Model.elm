@@ -2,13 +2,12 @@ module Model exposing (..)
 
 import Material
 import Material.Snackbar as Snackbar
-import Models.Brand exposing (Brand, RemoteBrands)
+import Models.Brand exposing (Brands)
 import Models.Dialog as Dialog exposing (DialogView(Default))
 import Models.Error exposing (Error)
 import Models.Header as Header exposing (Header)
 import Models.List exposing (ListObject, ListType)
-import Models.Market exposing (Market, RemoteMarkets)
-import RemoteData exposing (RemoteData(NotAsked))
+import Models.Market exposing (Markets)
 import Routing.Routes exposing (Route(Home))
 
 
@@ -39,14 +38,14 @@ init =
 
 
 type alias StoredData =
-    { brands : RemoteBrands
-    , markets : RemoteMarkets
+    { brands : Brands
+    , markets : Markets
     }
 
 
 initStoredData : StoredData
 initStoredData =
-    StoredData NotAsked NotAsked
+    StoredData [] []
 
 
 type Msg
@@ -55,8 +54,8 @@ type Msg
     | NavigateTo Route
     | ErrorReceived Error
     | DialogMsg Dialog.Msg
-    | BrandsReceived (List Brand)
-    | MarketsReceived (List Market)
+    | BrandsReceived Brands
+    | MarketsReceived Markets
     | DeleteObject (ListType ListObject)
 
 
