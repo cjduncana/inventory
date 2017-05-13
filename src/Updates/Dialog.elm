@@ -29,8 +29,8 @@ import Utilities as Util
 
 update : Msg -> Model -> ( Model, Cmd Model.Msg )
 update msg model =
-    case msg of
-        NameUpdate name ->
+    case ( msg, model.route ) of
+        ( NameUpdate name, _ ) ->
             let
                 dialogView_ =
                     Dialog.mapName (always name) model.dialogView
@@ -40,7 +40,7 @@ update msg model =
             in
                 ( model_, Cmd.none )
 
-        BrandAdd name ->
+        ( BrandAdd name, _ ) ->
             let
                 model_ =
                     { model | dialogView = AddBrand "" }
@@ -51,14 +51,14 @@ update msg model =
             in
                 ( model_, command_ )
 
-        BrandAddDialog ->
+        ( BrandAddDialog, _ ) ->
             let
                 model_ =
                     { model | dialogView = AddBrand "" }
             in
                 ( model_, Cmd.none )
 
-        GoodAdd name ->
+        ( GoodAdd name, _ ) ->
             let
                 model_ =
                     { model | dialogView = AddGood "" "" Nothing [] }
@@ -69,7 +69,7 @@ update msg model =
             in
                 ( model_, command_ )
 
-        MarketAdd name ->
+        ( MarketAdd name, _ ) ->
             let
                 model_ =
                     { model | dialogView = AddMarket "" }
@@ -80,57 +80,58 @@ update msg model =
             in
                 ( model_, command_ )
 
-        MarketAddDialog ->
+        ( MarketAddDialog, _ ) ->
             let
                 model_ =
                     { model | dialogView = AddMarket "" }
             in
                 ( model_, Cmd.none )
 
-        EditDialog object ->
+        ( EditDialog object, _ ) ->
             let
                 model_ =
                     { model | dialogView = EditView object object.name }
             in
                 ( model_, Cmd.none )
 
-        ObjectEdit object ->
+        ( ObjectEdit object, Routes.Brands _ ) ->
             let
                 model_ =
-                    case model.route of
-                        Routes.Brands _ ->
-                            { model | dialogView = AddBrand "" }
-
-                        Routes.Markets _ ->
-                            { model | dialogView = AddMarket "" }
-
-                        Routes.Goods _ ->
-                            { model | dialogView = AddGood "" "" Nothing [] }
-
-                        _ ->
-                            model
+                    { model | dialogView = AddBrand "" }
 
                 command_ =
-                    case model.route of
-                        Routes.Brands _ ->
-                            Util.doCommand object.name <|
-                                Brand.editBrand object
-
-                        Routes.Markets _ ->
-                            Util.doCommand object.name <|
-                                Market.editMarket object
-
-                        Routes.Goods _ ->
-                            Util.doCommand object.name <|
-                                Good.editGood
-                                    { id = object.id
-                                    , name = object.name
-                                    , image = Good.NoImage
-                                    , brand = Nothing
-                                    , markets = []
-                                    }
-
-                        _ ->
-                            Cmd.none
+                    Util.doCommand object.name <|
+                        Brand.editBrand object
             in
                 ( model_, command_ )
+
+        ( ObjectEdit object, Routes.Goods _ ) ->
+            let
+                model_ =
+                    { model | dialogView = AddGood "" "" Nothing [] }
+
+                command_ =
+                    Util.doCommand object.name <|
+                        Good.editGood
+                            { id = object.id
+                            , name = object.name
+                            , image = Good.NoImage
+                            , brand = Nothing
+                            , markets = []
+                            }
+            in
+                ( model_, command_ )
+
+        ( ObjectEdit object, Routes.Markets _ ) ->
+            let
+                model_ =
+                    { model | dialogView = AddMarket "" }
+
+                command_ =
+                    Util.doCommand object.name <|
+                        Market.editMarket object
+            in
+                ( model_, command_ )
+
+        ( ObjectEdit _, _ ) ->
+            ( model, Cmd.none )
