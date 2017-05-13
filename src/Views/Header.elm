@@ -8,8 +8,8 @@ import Material.Options as Options
 import Material.Layout as Layout
 import Model exposing (Model, Msg(Mdl))
 import Models.Dialog
-import Models.Header exposing (Fab(..))
-import Routing.Routes exposing (Route(..))
+import Models.Header exposing (Fab(Absent, Add))
+import Routing.Routes exposing (Route(Brands))
 import Views.Utilities as ViewUtil
 
 

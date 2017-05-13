@@ -1,9 +1,26 @@
-module Model exposing (..)
+module Model
+    exposing
+        ( Model
+        , Msg
+            ( BrandsReceived
+            , DeleteGood
+            , DeleteObject
+            , DialogMsg
+            , ErrorReceived
+            , GoodsReceived
+            , MarketsReceived
+            , Mdl
+            , NavigateTo
+            , SnackbarMsg
+            )
+        , init
+        )
 
 import Material
 import Models.Brand exposing (Brands)
 import Models.Dialog as Dialog exposing (DialogView(Default))
 import Models.Error exposing (Error)
+import Models.Good exposing (Good, Goods)
 import Models.Header as Header exposing (Header)
 import Models.List exposing (ListObject, ListType)
 import Models.Snackbar as Snackbar
@@ -39,13 +56,14 @@ init =
 
 type alias StoredData =
     { brands : Brands
+    , goods : Goods
     , markets : Markets
     }
 
 
 initStoredData : StoredData
 initStoredData =
-    StoredData [] []
+    StoredData [] [] []
 
 
 type Msg
@@ -55,5 +73,7 @@ type Msg
     | ErrorReceived Error
     | DialogMsg Dialog.Msg
     | BrandsReceived Brands
+    | GoodsReceived Goods
     | MarketsReceived Markets
+    | DeleteGood Good
     | DeleteObject (ListType ListObject)

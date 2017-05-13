@@ -1,4 +1,8 @@
-port module Models.Error exposing (Error(..), errorReceived)
+port module Models.Error
+    exposing
+        ( Error(UnknownError, DuplicateError)
+        , errorReceived
+        )
 
 import Json.Decode as Decode exposing (Decoder, Value)
 import Json.Decode.Pipeline as Decode

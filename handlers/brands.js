@@ -1,7 +1,5 @@
 'use strict';
 
-const formatters = require('../lib/formatters');
-
 module.exports = (ports, models) => {
   ports.getBrandsPort.subscribe(getBrands);
 
@@ -64,7 +62,6 @@ module.exports = (ports, models) => {
 
   function getBrands() {
     models.Brand.getBrands()
-    .map(formatters.brand)
     .then(ports.brandsReceivedPort.send)
     .catch((err) => {
       sendError({ details: err.message });

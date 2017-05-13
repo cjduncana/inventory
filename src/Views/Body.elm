@@ -6,6 +6,7 @@ import Model exposing (Model, Msg)
 import Models.List as List
 import Models.Snackbar
 import Routing.Routes as Routes
+import Views.Cards as CardsView
 import Views.Dialog as DialogView
 import Views.List as ListView
 
@@ -26,6 +27,9 @@ bodyView model =
 
         Routes.Brands brands ->
             ListView.view model <| List.Brand brands
+
+        Routes.Goods goods ->
+            CardsView.view model goods
 
         Routes.Markets markets ->
             ListView.view model <| List.Market markets

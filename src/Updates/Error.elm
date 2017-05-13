@@ -1,8 +1,8 @@
-module Updates.Error exposing (..)
+module Updates.Error exposing (update)
 
 import Material.Snackbar as Snackbar
 import Model exposing (Model, Msg)
-import Models.Error exposing (Error(..))
+import Models.Error exposing (Error(DuplicateError, UnknownError))
 import Models.Snackbar exposing (Payload(NoPayload))
 
 

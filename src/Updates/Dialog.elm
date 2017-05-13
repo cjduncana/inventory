@@ -2,7 +2,26 @@ module Updates.Dialog exposing (update)
 
 import Model exposing (Model)
 import Models.Brand as Brand
-import Models.Dialog as Dialog exposing (DialogView(..), Msg(..))
+import Models.Dialog as Dialog
+    exposing
+        ( DialogView
+            ( AddBrand
+            , AddGood
+            , AddMarket
+            , EditView
+            )
+        , Msg
+            ( BrandAdd
+            , BrandAddDialog
+            , EditDialog
+            , GoodAdd
+            , MarketAdd
+            , MarketAddDialog
+            , NameUpdate
+            , ObjectEdit
+            )
+        )
+import Models.Good as Good
 import Models.Market as Market
 import Routing.Routes as Routes
 import Utilities as Util
@@ -39,6 +58,17 @@ update msg model =
             in
                 ( model_, Cmd.none )
 
+        GoodAdd name ->
+            let
+                model_ =
+                    { model | dialogView = AddGood "" "" Nothing [] }
+
+                command_ =
+                    Util.doCommand name <|
+                        Good.createGood name
+            in
+                ( model_, command_ )
+
         MarketAdd name ->
             let
                 model_ =
@@ -74,6 +104,9 @@ update msg model =
                         Routes.Markets _ ->
                             { model | dialogView = AddMarket "" }
 
+                        Routes.Goods _ ->
+                            { model | dialogView = AddGood "" "" Nothing [] }
+
                         _ ->
                             model
 
@@ -86,6 +119,16 @@ update msg model =
                         Routes.Markets _ ->
                             Util.doCommand object.name <|
                                 Market.editMarket object
+
+                        Routes.Goods _ ->
+                            Util.doCommand object.name <|
+                                Good.editGood
+                                    { id = object.id
+                                    , name = object.name
+                                    , image = Good.NoImage
+                                    , brand = Nothing
+                                    , markets = []
+                                    }
 
                         _ ->
                             Cmd.none

@@ -1,10 +1,18 @@
 module Updates.Snackbar exposing (update)
 
-import Material.Snackbar as Snackbar exposing (Msg(..))
+import Material.Snackbar as Snackbar exposing (Msg(Click, End))
 import Model exposing (Model)
 import Models.Brand as Brand
+import Models.Good as Good
 import Models.Market as Market
-import Models.Snackbar exposing (Payload(..))
+import Models.Snackbar
+    exposing
+        ( Payload
+            ( DeletedBrand
+            , DeletedGood
+            , DeletedMarket
+            )
+        )
 
 
 update : Models.Snackbar.Msg -> Model -> ( Model, Cmd Model.Msg )
@@ -26,6 +34,9 @@ destroy payload model =
         DeletedBrand brand ->
             ( model, Brand.destroyBrand brand.id )
 
+        DeletedGood good ->
+            ( model, Good.destroyGood good.id )
+
         DeletedMarket market ->
             ( model, Market.destroyMarket market.id )
 
@@ -38,6 +49,9 @@ restore payload model =
     case payload of
         DeletedBrand brand ->
             ( model, Brand.restoreBrand brand.id )
+
+        DeletedGood good ->
+            ( model, Good.restoreGood good.id )
 
         DeletedMarket market ->
             ( model, Market.restoreMarket market.id )

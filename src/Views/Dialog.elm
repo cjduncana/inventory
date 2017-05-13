@@ -7,7 +7,23 @@ import Material.Dialog as Dialog
 import Material.Options as Options
 import Material.Textfield as Textfield
 import Model exposing (Model, Msg(DialogMsg, Mdl))
-import Models.Dialog exposing (DialogView(..), Msg(..))
+import Models.Dialog
+    exposing
+        ( DialogView
+            ( AddBrand
+            , AddGood
+            , AddMarket
+            , Default
+            , EditView
+            )
+        , Msg
+            ( BrandAdd
+            , GoodAdd
+            , MarketAdd
+            , NameUpdate
+            , ObjectEdit
+            )
+        )
 import Models.List exposing (ListObject)
 import Views.Utilities as ViewUtil
 
@@ -33,6 +49,11 @@ view model =
                     AddEditDialogContents "Brand" name <|
                         BrandAdd name
 
+            AddGood name _ _ _ ->
+                addDialogView_ <|
+                    AddEditDialogContents "Good" name <|
+                        GoodAdd name
+
             AddMarket name ->
                 addDialogView_ <|
                     AddEditDialogContents "Market" name <|
@@ -56,7 +77,7 @@ editDialogView =
 
 
 addEditDialogView : AddEditText -> Model -> AddEditDialogContents -> Html Model.Msg
-addEditDialogView { viewType, buttonText } model { title, name, onSubitMsg } =
+addEditDialogView { viewType } model { title, name, onSubitMsg } =
     dialogView model (Just onSubitMsg) <|
         DialogContents
             (viewType ++ " " ++ title)

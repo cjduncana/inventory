@@ -1,4 +1,4 @@
-module Views.Utilities exposing (..)
+module Views.Utilities exposing (emptyDiv, noWrap)
 
 import Html exposing (Html)
 import Material.Options as Options
@@ -11,11 +11,6 @@ noWrap height =
     , Options.css "white-space" "nowrap"
     , Options.css "text-overflow" "ellipsis"
     ]
-
-
-defaultEmptyDiv : Maybe (Html msg) -> Html msg
-defaultEmptyDiv =
-    Maybe.withDefault emptyDiv
 
 
 emptyDiv : Html msg

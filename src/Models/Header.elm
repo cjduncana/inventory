@@ -1,4 +1,12 @@
-module Models.Header exposing (..)
+module Models.Header
+    exposing
+        ( Fab(Absent, Add)
+        , Header
+        , init
+        , brandsList
+        , goodsList
+        , marketsList
+        )
 
 
 type alias Header =
@@ -15,6 +23,11 @@ init =
 brandsList : Header
 brandsList =
     list "Brands"
+
+
+goodsList : Header
+goodsList =
+    list "Goods"
 
 
 marketsList : Header

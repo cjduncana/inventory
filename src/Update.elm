@@ -1,11 +1,27 @@
 module Update exposing (update)
 
 import Material
-import Model exposing (Model, Msg(..))
+import Model
+    exposing
+        ( Model
+        , Msg
+            ( BrandsReceived
+            , DeleteGood
+            , DeleteObject
+            , DialogMsg
+            , ErrorReceived
+            , GoodsReceived
+            , MarketsReceived
+            , Mdl
+            , NavigateTo
+            , SnackbarMsg
+            )
+        )
 import Routing.Navigation as Navigation
 import Updates.Brands as Brands
 import Updates.Dialog as Dialog
 import Updates.Error as Error
+import Updates.Goods as Goods
 import Updates.List as List
 import Updates.Markets as Markets
 import Updates.Snackbar as Snackbar
@@ -32,8 +48,14 @@ update msg model =
         BrandsReceived brands ->
             Brands.update brands model
 
+        GoodsReceived goods ->
+            Goods.update goods model
+
         MarketsReceived markets ->
             Markets.update markets model
+
+        DeleteGood good ->
+            Goods.delete good model
 
         DeleteObject listType ->
             List.delete listType model

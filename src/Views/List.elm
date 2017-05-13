@@ -33,11 +33,11 @@ cell model listType index object =
         object_ =
             Models.List.map (always object) listType
     in
-        Grid.cell [] [ card model object_ index ]
+        Grid.cell [] [ item model object_ index ]
 
 
-card : Model -> ListType ListObject -> Int -> Html Msg
-card model listType index =
+item : Model -> ListType ListObject -> Int -> Html Msg
+item model listType index =
     let
         object =
             Models.List.unpack listType

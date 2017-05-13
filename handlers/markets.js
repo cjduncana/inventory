@@ -1,7 +1,5 @@
 'use strict';
 
-const formatters = require('../lib/formatters');
-
 module.exports = (ports, models) => {
   ports.getMarketsPort.subscribe(getMarkets);
 
@@ -64,7 +62,6 @@ module.exports = (ports, models) => {
 
   function getMarkets() {
     models.Market.getMarkets()
-    .map(formatters.market)
     .then(ports.marketsReceivedPort.send)
     .catch((err) => {
       sendError({ details: err.message });

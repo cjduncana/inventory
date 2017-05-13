@@ -1,8 +1,8 @@
-port module Models.List
+module Models.List
     exposing
         ( ListObject
         , ListObjects
-        , ListType(..)
+        , ListType(Brand, Market)
         , map
         , apply
         , unpack
@@ -68,31 +68,22 @@ unpack listType =
 
 fromValues : (ListObjects -> msg) -> Value -> msg
 fromValues f value =
-    Decode.decodeValue fromValueList value
+    Decode.decodeValue (Decode.list fromValue) value
         |> Result.withDefault []
         |> f
-
-
-fromValueList : Decoder ListObjects
-fromValueList =
-    Decode.list fromValue
 
 
 fromValue : Decoder ListObject
 fromValue =
     let
         toDecoder id name =
-            let
-                maybeUuid =
-                    Uuid.fromString id
-            in
-                case maybeUuid of
-                    Nothing ->
-                        Decode.fail "Not a valid Uuid."
+            case Uuid.fromString id of
+                Nothing ->
+                    Decode.fail "Not a valid Uuid."
 
-                    Just uuid ->
-                        Decode.succeed <|
-                            ListObject uuid name
+                Just uuid ->
+                    Decode.succeed <|
+                        ListObject uuid name
     in
         Decode.decode toDecoder
             |> Decode.required "id" Decode.string
@@ -101,8 +92,8 @@ fromValue =
 
 
 toValue : ListObject -> Value
-toValue market =
+toValue listObject =
     Encode.object
-        [ ( "id", Encode.string <| Uuid.toString market.id )
-        , ( "name", Encode.string market.name )
+        [ ( "id", Encode.string <| Uuid.toString listObject.id )
+        , ( "name", Encode.string listObject.name )
         ]
