@@ -8,6 +8,7 @@ import Model
             ( BrandsReceived
             , ErrorReceived
             , GoodsReceived
+            , ImageSaved
             , MarketsReceived
             , Mdl
             )
@@ -26,4 +27,5 @@ subscriptions model =
         , Good.goodsReceived GoodsReceived
         , Market.marketsReceived MarketsReceived
         , Error.errorReceived ErrorReceived
+        , Good.imageSaved ImageSaved
         ]

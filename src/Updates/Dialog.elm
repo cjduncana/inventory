@@ -8,6 +8,7 @@ import Models.Dialog as Dialog
             ( AddBrand
             , AddGood
             , AddMarket
+            , EditGood
             , EditView
             )
         , Msg
@@ -15,13 +16,16 @@ import Models.Dialog as Dialog
             , BrandAddDialog
             , EditDialog
             , GoodAdd
+            , GoodAddDialog
+            , GoodEdit
+            , GoodEditDialog
             , MarketAdd
             , MarketAddDialog
             , NameUpdate
             , ObjectEdit
             )
         )
-import Models.Good as Good
+import Models.Good as Good exposing (ImageURI(NoImage))
 import Models.Market as Market
 import Routing.Routes as Routes
 import Utilities as Util
@@ -58,16 +62,47 @@ update msg model =
             in
                 ( model_, Cmd.none )
 
-        ( GoodAdd name, _ ) ->
+        ( GoodAdd name uri, _ ) ->
             let
                 model_ =
-                    { model | dialogView = AddGood "" "" Nothing [] }
+                    { model | dialogView = AddGood "" NoImage Nothing [] }
 
                 command_ =
                     Util.doCommand name <|
-                        Good.createGood name
+                        Good.createGood name uri
             in
                 ( model_, command_ )
+
+        ( GoodAddDialog, _ ) ->
+            let
+                model_ =
+                    { model | dialogView = AddGood "" NoImage Nothing [] }
+            in
+                ( model_, Cmd.none )
+
+        ( GoodEdit good, _ ) ->
+            let
+                model_ =
+                    { model | dialogView = AddGood "" NoImage Nothing [] }
+
+                command_ =
+                    Util.doCommand good.name <|
+                        Good.editGood
+                            { id = good.id
+                            , name = good.name
+                            , image = good.image
+                            , brand = Nothing
+                            , markets = []
+                            }
+            in
+                ( model_, command_ )
+
+        ( GoodEditDialog good, _ ) ->
+            let
+                model_ =
+                    { model | dialogView = EditGood good good.name good.image }
+            in
+                ( model_, Cmd.none )
 
         ( MarketAdd name, _ ) ->
             let
@@ -102,23 +137,6 @@ update msg model =
                 command_ =
                     Util.doCommand object.name <|
                         Brand.editBrand object
-            in
-                ( model_, command_ )
-
-        ( ObjectEdit object, Routes.Goods _ ) ->
-            let
-                model_ =
-                    { model | dialogView = AddGood "" "" Nothing [] }
-
-                command_ =
-                    Util.doCommand object.name <|
-                        Good.editGood
-                            { id = object.id
-                            , name = object.name
-                            , image = Good.NoImage
-                            , brand = Nothing
-                            , markets = []
-                            }
             in
                 ( model_, command_ )
 

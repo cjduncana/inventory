@@ -2,14 +2,16 @@ port module Models.Good
     exposing
         ( Good
         , Goods
-        , ImageURI(NoImage)
+        , ImageURI(HasImage, NoImage)
+        , addFileDialog
         , createGood
+        , deleteGood
+        , destroyGood
         , editGood
         , getGoods
         , getImageURI
         , goodsReceived
-        , deleteGood
-        , destroyGood
+        , imageSaved
         , restoreGood
         )
 
@@ -35,6 +37,16 @@ type ImageURI
     | HasImage String
 
 
+getFilename : ImageURI -> Maybe String
+getFilename uri =
+    case uri of
+        NoImage ->
+            Nothing
+
+        HasImage filename ->
+            Just filename
+
+
 getImageURI : ImageURI -> String
 getImageURI uri =
     "../images/"
@@ -55,9 +67,10 @@ goodsReceived =
     goodsReceivedPort << fromValues
 
 
-createGood : String -> Cmd msg
-createGood =
-    createGoodPort
+createGood : String -> ImageURI -> Cmd msg
+createGood name uri =
+    toCreateValue name uri
+        |> createGoodPort
 
 
 editGood : Good -> Cmd msg
@@ -85,10 +98,15 @@ restoreGood =
     restoreGoodPort << Uuid.toString
 
 
+addFileDialog : Cmd msg
+addFileDialog =
+    addFileDialogPort ()
+
+
 port goodsReceivedPort : (Value -> msg) -> Sub msg
 
 
-port createGoodPort : String -> Cmd msg
+port createGoodPort : Value -> Cmd msg
 
 
 port editGoodPort : Value -> Cmd msg
@@ -106,6 +124,12 @@ port destroyGoodPort : String -> Cmd msg
 port restoreGoodPort : String -> Cmd msg
 
 
+port addFileDialogPort : () -> Cmd msg
+
+
+port imageSaved : (String -> msg) -> Sub msg
+
+
 fromValues : (Goods -> msg) -> Value -> msg
 fromValues f value =
     Decode.decodeValue (Decode.list fromValue) value
@@ -116,24 +140,49 @@ fromValues f value =
 fromValue : Decoder Good
 fromValue =
     let
-        toDecoder id name =
+        assignImage filename =
+            if String.isEmpty filename then
+                NoImage
+            else
+                HasImage filename
+
+        toDecoder id name filename =
             case Uuid.fromString id of
                 Nothing ->
                     Decode.fail "Not a valid Uuid."
 
                 Just uuid ->
                     Decode.succeed <|
-                        Good uuid name NoImage Nothing []
+                        Good uuid name (assignImage filename) Nothing []
     in
         Decode.decode toDecoder
             |> Decode.required "id" Decode.string
             |> Decode.required "name" Decode.string
+            |> Decode.optional "image" Decode.string ""
             |> Decode.resolve
+
+
+toCreateValue : String -> ImageURI -> Value
+toCreateValue name uri =
+    Encode.object <|
+        ( "name", Encode.string name )
+            :: imageKeyValuePair uri
 
 
 toValue : Good -> Value
 toValue good =
-    Encode.object
+    Encode.object <|
         [ ( "id", Encode.string <| Uuid.toString good.id )
         , ( "name", Encode.string good.name )
         ]
+            ++ imageKeyValuePair good.image
+
+
+imageKeyValuePair : ImageURI -> List ( String, Value )
+imageKeyValuePair uri =
+    let
+        addFilename filename =
+            [ ( "image", Encode.string filename ) ]
+    in
+        Maybe.map addFilename (getFilename uri)
+            |> Maybe.withDefault []

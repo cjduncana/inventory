@@ -30,8 +30,10 @@
   "dependencies": {
     "bluebird": "^3.5.0",
     "electron-compile": "^6.4.1",
+    "fs-extra": "^3.0.1",
     "sequelize": "^3.30.4",
-    "sqlite3": "^3.1.8"
+    "sqlite3": "^3.1.8",
+    "uuid": "^3.0.1"
   },
   "devDependencies": {
     "babel-plugin-transform-async-to-generator": "^6.24.1",

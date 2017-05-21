@@ -1,7 +1,14 @@
-module Views.Utilities exposing (emptyDiv, noWrap)
+module Views.Utilities exposing (emptyDiv, imageSrc, noWrap, square)
 
-import Html exposing (Html)
+import Html exposing (Attribute, Html)
+import Html.Attributes as Attributes
 import Material.Options as Options
+import Models.Good as Good exposing (ImageURI)
+
+
+imageSrc : ImageURI -> Attribute msg
+imageSrc =
+    Attributes.src << Good.getImageURI
 
 
 noWrap : Float -> List (Options.Property c m)
@@ -16,3 +23,10 @@ noWrap height =
 emptyDiv : Html msg
 emptyDiv =
     Html.div [] []
+
+
+square : Int -> List (Options.Property c m)
+square side =
+    [ Options.css "max-height" <| toString side ++ "px"
+    , Options.css "max-width" <| toString side ++ "px"
+    ]

@@ -9,7 +9,7 @@ import Material.Layout as Layout
 import Model exposing (Model, Msg(Mdl))
 import Models.Dialog
 import Models.Header exposing (Fab(Absent, Add))
-import Routing.Routes exposing (Route(Brands))
+import Routing.Routes exposing (Route(Brands, Goods, Markets))
 import Views.Utilities as ViewUtil
 
 
@@ -43,6 +43,14 @@ fab model =
             Brands _ ->
                 Options.onClick <|
                     Model.DialogMsg Models.Dialog.BrandAddDialog
+
+            Goods _ ->
+                Options.onClick <|
+                    Model.DialogMsg Models.Dialog.GoodAddDialog
+
+            Markets _ ->
+                Options.onClick <|
+                    Model.DialogMsg Models.Dialog.MarketAddDialog
 
             _ ->
                 Options.nop

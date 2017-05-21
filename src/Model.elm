@@ -2,12 +2,14 @@ module Model
     exposing
         ( Model
         , Msg
-            ( BrandsReceived
+            ( AddFileDialog
+            , BrandsReceived
             , DeleteGood
             , DeleteObject
             , DialogMsg
             , ErrorReceived
             , GoodsReceived
+            , ImageSaved
             , MarketsReceived
             , Mdl
             , NavigateTo
@@ -77,3 +79,5 @@ type Msg
     | MarketsReceived Markets
     | DeleteGood Good
     | DeleteObject (ListType ListObject)
+    | AddFileDialog
+    | ImageSaved String

@@ -6,7 +6,7 @@ import Material.Button as Button
 import Material.Dialog as Dialog
 import Material.Options as Options
 import Material.Textfield as Textfield
-import Model exposing (Model, Msg(DialogMsg, Mdl))
+import Model exposing (Model, Msg(AddFileDialog, DialogMsg, Mdl))
 import Models.Dialog
     exposing
         ( DialogView
@@ -14,16 +14,19 @@ import Models.Dialog
             , AddGood
             , AddMarket
             , Default
+            , EditGood
             , EditView
             )
         , Msg
             ( BrandAdd
             , GoodAdd
+            , GoodEdit
             , MarketAdd
             , NameUpdate
             , ObjectEdit
             )
         )
+import Models.Good exposing (Good, ImageURI)
 import Models.List exposing (ListObject)
 import Views.Utilities as ViewUtil
 
@@ -34,55 +37,78 @@ view model =
         dialogView_ =
             dialogView model
 
-        addDialogView_ =
-            addDialogView model
+        addDialogView =
+            addEditDialogView addText model
 
-        editDialogView_ =
-            editDialogView model
+        addGoodDialogView =
+            addEditGoodDialogView addText model
+
+        editDialogView =
+            addEditDialogView editText model
+
+        editGoodDialogView =
+            addEditGoodDialogView editText model
     in
         case model.dialogView of
             Default ->
                 dialogView_ Nothing <| DialogContents "" [] []
 
             AddBrand name ->
-                addDialogView_ <|
+                addDialogView <|
                     AddEditDialogContents "Brand" name <|
                         BrandAdd name
 
-            AddGood name _ _ _ ->
-                addDialogView_ <|
-                    AddEditDialogContents "Good" name <|
-                        GoodAdd name
+            AddGood name uri _ _ ->
+                addGoodDialogView <|
+                    AEGoodContents "Good" name uri <|
+                        GoodAdd name uri
+
+            EditGood good name uri ->
+                editGoodDialogView <|
+                    AEGoodContents good.name name uri <|
+                        GoodEdit <|
+                            Good good.id name uri Nothing []
 
             AddMarket name ->
-                addDialogView_ <|
+                addDialogView <|
                     AddEditDialogContents "Market" name <|
                         MarketAdd name
 
             EditView object name ->
-                editDialogView_ <|
+                editDialogView <|
                     AddEditDialogContents object.name name <|
                         ObjectEdit <|
                             ListObject object.id name
 
 
-addDialogView : Model -> AddEditDialogContents -> Html Model.Msg
-addDialogView =
-    addEditDialogView <| AddEditText "Add" "Save"
-
-
-editDialogView : Model -> AddEditDialogContents -> Html Model.Msg
-editDialogView =
-    addEditDialogView <| AddEditText "Edit" "Edit"
-
-
 addEditDialogView : AddEditText -> Model -> AddEditDialogContents -> Html Model.Msg
-addEditDialogView { viewType } model { title, name, onSubitMsg } =
+addEditDialogView { viewType, buttonText } model { title, name, onSubitMsg } =
     dialogView model (Just onSubitMsg) <|
         DialogContents
             (viewType ++ " " ++ title)
             [ textfield model NameUpdate name ]
-            [ button model viewType ]
+            [ button model buttonText ]
+
+
+addEditGoodDialogView : AddEditText -> Model -> AEGoodContents -> Html Model.Msg
+addEditGoodDialogView { viewType, buttonText } model content =
+    dialogView model (Just content.onSubitMsg) <|
+        DialogContents
+            (viewType ++ " " ++ content.title)
+            [ textfield model NameUpdate content.name
+            , Options.img (ViewUtil.square 200)
+                [ ViewUtil.imageSrc content.uri ]
+            , Button.render Mdl
+                [ 2 ]
+                model.mdl
+                [ Button.raised
+                , Button.ripple
+                , Button.type_ "button"
+                , Options.onClick AddFileDialog
+                ]
+                [ Html.text "Upload Image" ]
+            ]
+            [ button model buttonText ]
 
 
 dialogView : Model -> Maybe Models.Dialog.Msg -> DialogContents -> Html Model.Msg
@@ -111,7 +137,12 @@ dialogView model onSubitMsg { title, contents, actions } =
         Html.form attributes
             [ Dialog.view []
                 [ Dialog.title (ViewUtil.noWrap 1) [ Html.text title ]
-                , Dialog.content [] contents
+                , Dialog.content
+                    [ Options.css "display" "flex"
+                    , Options.css "flex-direction" "column"
+                    , Options.css "align-items" "center"
+                    ]
+                    contents
                 , Dialog.actions [] actions_
                 ]
             ]
@@ -151,9 +182,27 @@ type alias AddEditText =
     }
 
 
+addText : AddEditText
+addText =
+    AddEditText "Add" "Save"
+
+
+editText : AddEditText
+editText =
+    AddEditText "Edit" "Edit"
+
+
 type alias AddEditDialogContents =
     { title : String
     , name : String
+    , onSubitMsg : Models.Dialog.Msg
+    }
+
+
+type alias AEGoodContents =
+    { title : String
+    , name : String
+    , uri : ImageURI
     , onSubitMsg : Models.Dialog.Msg
     }
 

@@ -1,8 +1,9 @@
-module Updates.Goods exposing (get, update, delete)
+module Updates.Goods exposing (addFileDialog, delete, get, imageSaved, update)
 
 import Material.Snackbar as Snackbar
 import Model exposing (Model, Msg)
-import Models.Good as Good exposing (Good, Goods)
+import Models.Dialog exposing (DialogView(AddGood, EditGood))
+import Models.Good as Good exposing (Good, Goods, ImageURI(HasImage))
 import Models.Snackbar exposing (Payload(DeletedGood))
 import Routing.Routes exposing (Route(Goods))
 
@@ -57,3 +58,31 @@ addSnackbar model name payload command =
             Cmd.map Model.SnackbarMsg snackbarCommand
     in
         model_ ! [ command, command_ ]
+
+
+addFileDialog : Model -> ( Model, Cmd Msg )
+addFileDialog model =
+    ( model, Good.addFileDialog )
+
+
+imageSaved : Model -> String -> ( Model, Cmd Msg )
+imageSaved model filename =
+    let
+        uri_ =
+            HasImage filename
+
+        dialogView =
+            case model.dialogView of
+                AddGood name _ maybeBrand markets ->
+                    AddGood name uri_ maybeBrand markets
+
+                EditGood good name _ ->
+                    EditGood good name uri_
+
+                _ ->
+                    model.dialogView
+
+        model_ =
+            { model | dialogView = dialogView }
+    in
+        ( model_, Cmd.none )

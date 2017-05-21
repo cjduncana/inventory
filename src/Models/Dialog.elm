@@ -5,6 +5,7 @@ module Models.Dialog
             , AddGood
             , AddMarket
             , Default
+            , EditGood
             , EditView
             )
         , Msg
@@ -12,6 +13,9 @@ module Models.Dialog
             , BrandAddDialog
             , EditDialog
             , GoodAdd
+            , GoodAddDialog
+            , GoodEdit
+            , GoodEditDialog
             , MarketAdd
             , MarketAddDialog
             , NameUpdate
@@ -21,6 +25,7 @@ module Models.Dialog
         )
 
 import Models.Brand exposing (Brand)
+import Models.Good exposing (Good, ImageURI)
 import Models.List exposing (ListObject)
 import Models.Market exposing (Markets)
 
@@ -29,7 +34,10 @@ type Msg
     = NameUpdate String
     | BrandAdd String
     | BrandAddDialog
-    | GoodAdd String
+    | GoodAdd String ImageURI
+    | GoodAddDialog
+    | GoodEdit Good
+    | GoodEditDialog Good
     | MarketAdd String
     | MarketAddDialog
     | ObjectEdit ListObject
@@ -39,7 +47,8 @@ type Msg
 type DialogView
     = Default
     | AddBrand String
-    | AddGood String String (Maybe Brand) Markets
+    | AddGood String ImageURI (Maybe Brand) Markets
+    | EditGood Good String ImageURI
     | AddMarket String
     | EditView ListObject String
 
@@ -53,8 +62,11 @@ mapName f dialogView =
         AddBrand name ->
             AddBrand <| f name
 
-        AddGood name imageUrl maybeBrand markets ->
-            AddGood (f name) imageUrl maybeBrand markets
+        AddGood name uri maybeBrand markets ->
+            AddGood (f name) uri maybeBrand markets
+
+        EditGood good name uri ->
+            EditGood good (f name) uri
 
         AddMarket name ->
             AddMarket <| f name

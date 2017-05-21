@@ -5,12 +5,14 @@ import Model
     exposing
         ( Model
         , Msg
-            ( BrandsReceived
+            ( AddFileDialog
+            , BrandsReceived
             , DeleteGood
             , DeleteObject
             , DialogMsg
             , ErrorReceived
             , GoodsReceived
+            , ImageSaved
             , MarketsReceived
             , Mdl
             , NavigateTo
@@ -59,3 +61,9 @@ update msg model =
 
         DeleteObject listType ->
             List.delete listType model
+
+        AddFileDialog ->
+            Goods.addFileDialog model
+
+        ImageSaved filename ->
+            Goods.imageSaved model filename

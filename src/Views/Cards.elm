@@ -1,7 +1,6 @@
 module Views.Cards exposing (view)
 
 import Html exposing (Html)
-import Html.Attributes
 import Material.Button as Button
 import Material.Card as Card exposing (Block)
 import Material.Color as Color
@@ -12,8 +11,9 @@ import Material.Options as Options
 import Model exposing (Model, Msg(Mdl))
 import Models.Brand exposing (Brand)
 import Models.Dialog
-import Models.Good as Good exposing (Good, Goods)
+import Models.Good exposing (Good, Goods)
 import Models.Market exposing (Markets)
+import Views.Utilities as ViewUtil
 
 
 view : Model -> Goods -> Html Msg
@@ -82,9 +82,12 @@ text markets =
 
 media : Good -> Block Msg
 media good =
-    Card.media []
-        [ Options.img []
-            [ Html.Attributes.src <| Good.getImageURI good.image ]
+    Card.media
+        [ Color.background Color.white
+        , Options.center
+        ]
+        [ Options.img (ViewUtil.square 330)
+            [ ViewUtil.imageSrc good.image ]
         ]
 
 
@@ -99,7 +102,7 @@ actions model index good =
             , Dialog.openOn "click"
             , Options.onClick <|
                 Model.DialogMsg <|
-                    Models.Dialog.EditDialog { id = good.id, name = good.name }
+                    Models.Dialog.GoodEditDialog good
             ]
             [ Icon.i "edit" ]
         , Button.render Mdl

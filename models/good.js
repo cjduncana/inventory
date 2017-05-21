@@ -13,6 +13,10 @@ module.exports = function(db) {
       type: Sequelize.STRING,
       unique: true,
       allowNull: false
+    },
+    image: {
+      type: Sequelize.STRING,
+      allowNull: true
     }
   }, {
     classMethods: {
@@ -22,14 +26,21 @@ module.exports = function(db) {
         });
       },
 
-      createGood: function(name) {
-        return this.create({ name });
+      findGood: function(id) {
+        return this.findById(id, { paranoid: false });
+      },
+
+      createGood: function(good) {
+        return this.create({
+          name: good.name,
+          image: good.image || null
+        });
       },
 
       editGood: function(good) {
         return this.update(good, {
           where: { id: good.id },
-          fields: ['name']
+          fields: ['name', 'image']
         });
       },
 
