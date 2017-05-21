@@ -1,12 +1,7 @@
-module Updates.Brands exposing (get, update)
+module Updates.Brands exposing (update)
 
 import Model exposing (Model, Msg)
-import Models.Brand as Brand exposing (Brands)
-
-
-get : Model -> ( Model, Cmd Msg )
-get model =
-    ( model, Brand.getBrands )
+import Models.Brand exposing (Brands)
 
 
 update : Brands -> Model -> ( Model, Cmd Msg )

@@ -1,11 +1,12 @@
 module Routing.Goods exposing (goto)
 
 import Model exposing (Model, Msg)
+import Models.Brand as Brand
 import Models.Dialog exposing (DialogView(AddGood))
-import Models.Good exposing (ImageURI(NoImage))
+import Models.Good as Good exposing (ImageURI(NoImage))
 import Models.Header as Header
+import Models.Market as Market
 import Routing.Routes exposing (Route(Goods))
-import Updates.Goods as Goods
 
 
 goto : Model -> ( Model, Cmd Msg )
@@ -17,8 +18,11 @@ goto model =
                 , header = Header.goodsList
                 , dialogView = AddGood "" NoImage Nothing []
             }
+
+        commands =
+            [ Brand.getBrands model.storedData.brands
+            , Good.getGoods model.storedData.goods
+            , Market.getMarkets model.storedData.markets
+            ]
     in
-        if List.isEmpty model.storedData.goods then
-            Goods.get model_
-        else
-            ( model_, Cmd.none )
+        model_ ! commands

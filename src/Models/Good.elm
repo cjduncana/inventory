@@ -22,6 +22,7 @@ import Json.Decode.Pipeline as Decode
 import Json.Encode as Encode exposing (Value)
 import Models.Brand exposing (Brand)
 import Models.Market exposing (Markets)
+import Models.Utilities as ModelUtil
 import Uuid exposing (Uuid)
 
 
@@ -32,6 +33,10 @@ type alias Good =
     , brand : Maybe Brand
     , markets : Markets
     }
+
+
+type alias Goods =
+    List Good
 
 
 type ImageURI
@@ -60,10 +65,6 @@ getImageURI uri =
                 filename
 
 
-type alias Goods =
-    List Good
-
-
 goodsReceived : (Goods -> msg) -> Sub msg
 goodsReceived =
     goodsReceivedPort << fromValues
@@ -80,9 +81,9 @@ editGood =
     editGoodPort << toValue
 
 
-getGoods : Cmd msg
-getGoods =
-    getGoodsPort ()
+getGoods : Goods -> Cmd msg
+getGoods storedGoods =
+    ModelUtil.commandIfEmpty (getGoodsPort ()) storedGoods
 
 
 deleteGood : Uuid -> Cmd msg

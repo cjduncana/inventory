@@ -1,12 +1,7 @@
-module Updates.Markets exposing (get, update)
+module Updates.Markets exposing (update)
 
 import Model exposing (Model, Msg)
-import Models.Market as Market exposing (Markets)
-
-
-get : Model -> ( Model, Cmd Msg )
-get model =
-    ( model, Market.getMarkets )
+import Models.Market exposing (Markets)
 
 
 update : Markets -> Model -> ( Model, Cmd Msg )

@@ -1,10 +1,10 @@
 module Routing.Brands exposing (goto)
 
 import Model exposing (Model, Msg)
+import Models.Brand as Brand
 import Models.Dialog exposing (DialogView(AddBrand))
 import Models.Header as Header
 import Routing.Routes exposing (Route(Brands))
-import Updates.Brands as Brands
 
 
 goto : Model -> ( Model, Cmd Msg )
@@ -17,7 +17,4 @@ goto model =
                 , dialogView = AddBrand ""
             }
     in
-        if List.isEmpty model.storedData.brands then
-            Brands.get model_
-        else
-            ( model_, Cmd.none )
+        ( model_, Brand.getBrands model.storedData.brands )

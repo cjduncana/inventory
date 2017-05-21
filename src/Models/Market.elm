@@ -13,6 +13,7 @@ port module Models.Market
 
 import Json.Encode exposing (Value)
 import Models.List as List
+import Models.Utilities as ModelUtil
 import Uuid exposing (Uuid)
 
 
@@ -36,9 +37,9 @@ editMarket =
     editMarketPort << List.toValue
 
 
-getMarkets : Cmd msg
-getMarkets =
-    getMarketsPort ()
+getMarkets : Markets -> Cmd msg
+getMarkets storedMarkets =
+    ModelUtil.commandIfEmpty (getMarketsPort ()) storedMarkets
 
 
 deleteMarket : Uuid -> Cmd msg

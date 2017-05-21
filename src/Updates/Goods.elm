@@ -1,4 +1,4 @@
-module Updates.Goods exposing (addFileDialog, changeImage, delete, get, update)
+module Updates.Goods exposing (addFileDialog, changeImage, delete, update)
 
 import Material.Snackbar as Snackbar
 import Model exposing (Model, Msg)
@@ -6,11 +6,6 @@ import Models.Dialog exposing (DialogView(AddGood, EditGood))
 import Models.Good as Good exposing (Good, Goods, ImageURI(HasImage, NoImage))
 import Models.Snackbar exposing (Payload(DeletedGood))
 import Utilities as Util
-
-
-get : Model -> ( Model, Cmd Msg )
-get model =
-    ( model, Good.getGoods )
 
 
 update : Goods -> Model -> ( Model, Cmd Msg )

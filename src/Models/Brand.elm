@@ -13,6 +13,7 @@ port module Models.Brand
 
 import Json.Encode exposing (Value)
 import Models.List as List
+import Models.Utilities as ModelUtil
 import Uuid exposing (Uuid)
 
 
@@ -36,9 +37,9 @@ editBrand =
     editBrandPort << List.toValue
 
 
-getBrands : Cmd msg
-getBrands =
-    getBrandsPort ()
+getBrands : Brands -> Cmd msg
+getBrands storedBrands =
+    ModelUtil.commandIfEmpty (getBrandsPort ()) storedBrands
 
 
 deleteBrand : Uuid -> Cmd msg
