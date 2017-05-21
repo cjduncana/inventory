@@ -40,15 +40,15 @@ fab model =
         , Options.css "right" "24px"
         , Options.css "top" "28px"
         , case model.route of
-            Brands _ ->
+            Brands ->
                 Options.onClick <|
                     Model.DialogMsg Models.Dialog.BrandAddDialog
 
-            Goods _ ->
+            Goods ->
                 Options.onClick <|
                     Model.DialogMsg Models.Dialog.GoodAddDialog
 
-            Markets _ ->
+            Markets ->
                 Options.onClick <|
                     Model.DialogMsg Models.Dialog.MarketAddDialog
 

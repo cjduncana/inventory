@@ -12,7 +12,7 @@ goto model =
     let
         model_ =
             { model
-                | route = Markets model.storedData.markets
+                | route = Markets
                 , header = Header.marketsList
                 , dialogView = AddMarket ""
             }

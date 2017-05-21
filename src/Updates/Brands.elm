@@ -2,7 +2,6 @@ module Updates.Brands exposing (get, update)
 
 import Model exposing (Model, Msg)
 import Models.Brand as Brand exposing (Brands)
-import Routing.Routes exposing (Route(Brands))
 
 
 get : Model -> ( Model, Cmd Msg )
@@ -22,9 +21,4 @@ update brands model =
         model_ =
             { model | storedData = storedData_ }
     in
-        case model.route of
-            Brands _ ->
-                ( { model_ | route = Brands brands }, Cmd.none )
-
-            _ ->
-                ( model_, Cmd.none )
+        ( model_, Cmd.none )

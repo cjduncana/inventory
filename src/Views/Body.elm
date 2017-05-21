@@ -25,14 +25,14 @@ bodyView model =
         Routes.Home ->
             Html.div [] [ Html.text "This is the home page." ]
 
-        Routes.Brands brands ->
-            ListView.view model <| List.Brand brands
+        Routes.Brands ->
+            ListView.view model <| List.Brand model.storedData.brands
 
-        Routes.Goods goods ->
-            CardsView.view model goods
+        Routes.Goods ->
+            CardsView.view model model.storedData.goods
 
-        Routes.Markets markets ->
-            ListView.view model <| List.Market markets
+        Routes.Markets ->
+            ListView.view model <| List.Market model.storedData.markets
 
 
 snackbar : Models.Snackbar.Model -> Html Msg

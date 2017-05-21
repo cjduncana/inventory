@@ -14,11 +14,11 @@ gotoRoute route model =
         Home ->
             Home.goto model
 
-        Brands _ ->
+        Brands ->
             Brands.goto model
 
-        Goods _ ->
+        Goods ->
             Goods.goto model
 
-        Markets _ ->
+        Markets ->
             Markets.goto model

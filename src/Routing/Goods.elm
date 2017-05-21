@@ -13,7 +13,7 @@ goto model =
     let
         model_ =
             { model
-                | route = Goods model.storedData.goods
+                | route = Goods
                 , header = Header.goodsList
                 , dialogView = AddGood "" NoImage Nothing []
             }

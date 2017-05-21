@@ -129,7 +129,7 @@ update msg model =
             in
                 ( model_, Cmd.none )
 
-        ( ObjectEdit object, Routes.Brands _ ) ->
+        ( ObjectEdit object, Routes.Brands ) ->
             let
                 model_ =
                     { model | dialogView = AddBrand "" }
@@ -140,7 +140,7 @@ update msg model =
             in
                 ( model_, command_ )
 
-        ( ObjectEdit object, Routes.Markets _ ) ->
+        ( ObjectEdit object, Routes.Markets ) ->
             let
                 model_ =
                     { model | dialogView = AddMarket "" }

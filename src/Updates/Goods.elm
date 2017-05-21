@@ -5,7 +5,6 @@ import Model exposing (Model, Msg)
 import Models.Dialog exposing (DialogView(AddGood, EditGood))
 import Models.Good as Good exposing (Good, Goods, ImageURI(HasImage, NoImage))
 import Models.Snackbar exposing (Payload(DeletedGood))
-import Routing.Routes exposing (Route(Goods))
 import Utilities as Util
 
 
@@ -26,12 +25,7 @@ update goods model =
         model_ =
             { model | storedData = storedData_ }
     in
-        case model.route of
-            Goods _ ->
-                ( { model_ | route = Goods goods }, Cmd.none )
-
-            _ ->
-                ( model_, Cmd.none )
+        ( model_, Cmd.none )
 
 
 delete : Good -> Model -> ( Model, Cmd Msg )
