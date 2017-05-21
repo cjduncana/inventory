@@ -4,7 +4,7 @@
   "description": "Keep an inventory",
   "main": "src/index.js",
   "scripts": {
-    "analyse": "elm analyse -s",
+    "analyze": "elm analyse -s",
     "elm": "elm make src/Main.elm --output src/elm.js || true",
     "elm:watch": "nodemon --exec npm run elm -e elm",
     "make": "electron-forge make",

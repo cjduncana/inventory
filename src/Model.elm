@@ -13,6 +13,7 @@ module Model
             , MarketsReceived
             , Mdl
             , NavigateTo
+            , RemoveImage
             , SnackbarMsg
             )
         , init
@@ -81,3 +82,4 @@ type Msg
     | DeleteObject (ListType ListObject)
     | AddFileDialog
     | ImageSaved String
+    | RemoveImage

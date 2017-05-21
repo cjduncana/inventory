@@ -8,10 +8,12 @@ port module Models.Good
         , deleteGood
         , destroyGood
         , editGood
+        , getFilename
         , getGoods
         , getImageURI
         , goodsReceived
         , imageSaved
+        , removeImage
         , restoreGood
         )
 
@@ -130,6 +132,9 @@ port addFileDialogPort : () -> Cmd msg
 port imageSaved : (String -> msg) -> Sub msg
 
 
+port removeImage : String -> Cmd msg
+
+
 fromValues : (Goods -> msg) -> Value -> msg
 fromValues f value =
     Decode.decodeValue (Decode.list fromValue) value
@@ -181,8 +186,8 @@ toValue good =
 imageKeyValuePair : ImageURI -> List ( String, Value )
 imageKeyValuePair uri =
     let
-        addFilename filename =
-            [ ( "image", Encode.string filename ) ]
+        value =
+            Maybe.map Encode.string (getFilename uri)
+                |> Maybe.withDefault Encode.null
     in
-        Maybe.map addFilename (getFilename uri)
-            |> Maybe.withDefault []
+        [ ( "image", value ) ]

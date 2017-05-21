@@ -1,11 +1,12 @@
-module Updates.Goods exposing (addFileDialog, delete, get, imageSaved, update)
+module Updates.Goods exposing (addFileDialog, changeImage, delete, get, update)
 
 import Material.Snackbar as Snackbar
 import Model exposing (Model, Msg)
 import Models.Dialog exposing (DialogView(AddGood, EditGood))
-import Models.Good as Good exposing (Good, Goods, ImageURI(HasImage))
+import Models.Good as Good exposing (Good, Goods, ImageURI(HasImage, NoImage))
 import Models.Snackbar exposing (Payload(DeletedGood))
 import Routing.Routes exposing (Route(Goods))
+import Utilities as Util
 
 
 get : Model -> ( Model, Cmd Msg )
@@ -65,11 +66,12 @@ addFileDialog model =
     ( model, Good.addFileDialog )
 
 
-imageSaved : Model -> String -> ( Model, Cmd Msg )
-imageSaved model filename =
+changeImage : Model -> Maybe String -> ( Model, Cmd Msg )
+changeImage model filename =
     let
         uri_ =
-            HasImage filename
+            Maybe.map HasImage filename
+                |> Maybe.withDefault NoImage
 
         dialogView =
             case model.dialogView of
@@ -84,5 +86,13 @@ imageSaved model filename =
 
         model_ =
             { model | dialogView = dialogView }
+
+        command_ =
+            if Util.isEmpty filename then
+                Models.Dialog.getFilename model.dialogView
+                    |> Maybe.map Good.removeImage
+                    |> Maybe.withDefault Cmd.none
+            else
+                Cmd.none
     in
-        ( model_, Cmd.none )
+        ( model_, command_ )

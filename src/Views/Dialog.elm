@@ -6,7 +6,7 @@ import Material.Button as Button
 import Material.Dialog as Dialog
 import Material.Options as Options
 import Material.Textfield as Textfield
-import Model exposing (Model, Msg(AddFileDialog, DialogMsg, Mdl))
+import Model exposing (Model, Msg(AddFileDialog, DialogMsg, Mdl, RemoveImage))
 import Models.Dialog
     exposing
         ( DialogView
@@ -98,15 +98,26 @@ addEditGoodDialogView { viewType, buttonText } model content =
             [ textfield model NameUpdate content.name
             , Options.img (ViewUtil.square 200)
                 [ ViewUtil.imageSrc content.uri ]
-            , Button.render Mdl
-                [ 2 ]
-                model.mdl
-                [ Button.raised
-                , Button.ripple
-                , Button.type_ "button"
-                , Options.onClick AddFileDialog
+            , Options.div [ Options.center ]
+                [ Button.render Mdl
+                    [ 2 ]
+                    model.mdl
+                    [ Button.raised
+                    , Button.ripple
+                    , Button.type_ "button"
+                    , Options.onClick AddFileDialog
+                    ]
+                    [ Html.text "Upload" ]
+                , Button.render Mdl
+                    [ 3 ]
+                    model.mdl
+                    [ Button.raised
+                    , Button.ripple
+                    , Button.type_ "button"
+                    , Options.onClick RemoveImage
+                    ]
+                    [ Html.text "Remove" ]
                 ]
-                [ Html.text "Upload Image" ]
             ]
             [ button model buttonText ]
 

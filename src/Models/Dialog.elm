@@ -21,6 +21,7 @@ module Models.Dialog
             , NameUpdate
             , ObjectEdit
             )
+        , getFilename
         , mapName
         )
 
@@ -51,6 +52,19 @@ type DialogView
     | EditGood Good String ImageURI
     | AddMarket String
     | EditView ListObject String
+
+
+getFilename : DialogView -> Maybe String
+getFilename dialogView =
+    case dialogView of
+        AddGood _ uri _ _ ->
+            Models.Good.getFilename uri
+
+        EditGood _ _ uri ->
+            Models.Good.getFilename uri
+
+        _ ->
+            Nothing
 
 
 mapName : (String -> String) -> DialogView -> DialogView

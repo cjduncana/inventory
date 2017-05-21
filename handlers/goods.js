@@ -22,6 +22,8 @@ module.exports = (ports, models) => {
 
   ports.addFileDialogPort.subscribe(addFileDialog);
 
+  ports.removeImage.subscribe(removeImage);
+
   function createGood(good) {
     models.Good.createGood(good)
     .then(() => getGoods())
@@ -113,6 +115,11 @@ module.exports = (ports, models) => {
         .catch(catchError);
       }
     });
+  }
+
+  function removeImage(filename) {
+    return fs.remove(path.resolve('images', filename))
+    .catch(catchError);
   }
 
   function existingGoodError(name) {

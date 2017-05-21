@@ -17,6 +17,7 @@ import Model
             , Mdl
             , NavigateTo
             , SnackbarMsg
+            , RemoveImage
             )
         )
 import Routing.Navigation as Navigation
@@ -66,4 +67,7 @@ update msg model =
             Goods.addFileDialog model
 
         ImageSaved filename ->
-            Goods.imageSaved model filename
+            Goods.changeImage model <| Just filename
+
+        RemoveImage ->
+            Goods.changeImage model Nothing
