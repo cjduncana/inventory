@@ -67,8 +67,8 @@ changeImage model filename =
                 AddGood name _ maybeBrand markets ->
                     AddGood name uri_ maybeBrand markets
 
-                EditGood good name _ ->
-                    EditGood good name uri_
+                EditGood good name _ maybeBrand ->
+                    EditGood good name uri_ maybeBrand
 
                 _ ->
                     model.dialogView

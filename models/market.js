@@ -5,7 +5,7 @@ const Sequelize = require('sequelize');
 module.exports = function(db) {
   const Market = db.define('Market', {
     id: {
-      type: Sequelize.STRING,
+      type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
       primaryKey: true
     },
@@ -28,8 +28,7 @@ module.exports = function(db) {
 
       editMarket: function(market) {
         return this.update(market, {
-          where: { id: market.id },
-          fields: ['name']
+          where: { id: market.id }
         });
       },
 

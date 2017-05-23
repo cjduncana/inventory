@@ -1,14 +1,14 @@
 module Views.Utilities exposing (emptyDiv, imageSrc, noWrap, square)
 
 import Html exposing (Attribute, Html)
-import Html.Attributes as Attributes
+import Html.Attributes as Attr
 import Material.Options as Options
 import Models.Good as Good exposing (ImageURI)
 
 
 imageSrc : ImageURI -> Attribute msg
 imageSrc =
-    Attributes.src << Good.getImageURI
+    Attr.src << Good.getImageURI
 
 
 noWrap : Float -> List (Options.Property c m)

@@ -1,12 +1,25 @@
 module Views.Dialog exposing (view)
 
 import Html exposing (Html)
+import Html.Attributes as Attr
 import Html.Events as Events
+import Json.Decode as Decode
 import Material.Button as Button
 import Material.Dialog as Dialog
 import Material.Options as Options
 import Material.Textfield as Textfield
-import Model exposing (Model, Msg(AddFileDialog, DialogMsg, Mdl, RemoveImage))
+import Model
+    exposing
+        ( Model
+        , Msg
+            ( AddFileDialog
+            , BrandChange
+            , DialogMsg
+            , Mdl
+            , RemoveImage
+            )
+        )
+import Models.Brand exposing (Brand, Brands)
 import Models.Dialog
     exposing
         ( DialogView
@@ -29,6 +42,7 @@ import Models.Dialog
 import Models.Good exposing (Good, ImageURI)
 import Models.List exposing (ListObject)
 import Views.Utilities as ViewUtil
+import Uuid exposing (Uuid)
 
 
 view : Model -> Html Model.Msg
@@ -58,16 +72,16 @@ view model =
                     AddEditDialogContents "Brand" name <|
                         BrandAdd name
 
-            AddGood name uri _ _ ->
+            AddGood name uri maybeBrand _ ->
                 addGoodDialogView <|
-                    AEGoodContents "Good" name uri <|
-                        GoodAdd name uri
+                    AEGoodContents "Good" name uri maybeBrand <|
+                        GoodAdd name uri maybeBrand
 
-            EditGood good name uri ->
+            EditGood good name uri maybeBrand ->
                 editGoodDialogView <|
-                    AEGoodContents good.name name uri <|
+                    AEGoodContents good.name name uri maybeBrand <|
                         GoodEdit <|
-                            Good good.id name uri Nothing []
+                            Good good.id name uri maybeBrand []
 
             AddMarket name ->
                 addDialogView <|
@@ -105,6 +119,7 @@ addEditGoodDialogView { viewType, buttonText } model content =
                     [ Button.raised
                     , Button.ripple
                     , Button.type_ "button"
+                    , Options.css "margin" "10px 5px"
                     , Options.onClick AddFileDialog
                     ]
                     [ Html.text "Upload" ]
@@ -114,10 +129,12 @@ addEditGoodDialogView { viewType, buttonText } model content =
                     [ Button.raised
                     , Button.ripple
                     , Button.type_ "button"
+                    , Options.css "margin" "10px 5px"
                     , Options.onClick RemoveImage
                     ]
                     [ Html.text "Remove" ]
                 ]
+            , selectBrands model content.maybeBrand model.storedData.brands
             ]
             [ button model buttonText ]
 
@@ -187,6 +204,37 @@ button model buttonText =
         [ Html.text buttonText ]
 
 
+selectBrands : Model -> Maybe Brand -> Brands -> Html Model.Msg
+selectBrands model selectedBrand brands =
+    brandOptions selectedBrand brands
+        |> Html.select
+            [ Events.on "change" <|
+                Decode.map BrandChange <|
+                    Decode.at [ "target", "value" ] Decode.string
+            ]
+
+
+brandOptions : Maybe Brand -> Brands -> List (Html Model.Msg)
+brandOptions selectedBrand brands =
+    List.map Just brands
+        |> (::) Nothing
+        |> List.map (brandOption selectedBrand)
+
+
+brandOption : Maybe Brand -> Maybe Brand -> Html Model.Msg
+brandOption selectedBrand maybeBrand =
+    Html.option
+        [ Attr.selected (selectedBrand == maybeBrand)
+        , Maybe.map (.id >> Uuid.toString) maybeBrand
+            |> Maybe.withDefault ""
+            |> Attr.value
+        ]
+        [ Maybe.map .name maybeBrand
+            |> Maybe.withDefault "None"
+            |> Html.text
+        ]
+
+
 type alias AddEditText =
     { viewType : String
     , buttonText : String
@@ -214,6 +262,7 @@ type alias AEGoodContents =
     { title : String
     , name : String
     , uri : ImageURI
+    , maybeBrand : Maybe Brand
     , onSubitMsg : Models.Dialog.Msg
     }
 

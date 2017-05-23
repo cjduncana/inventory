@@ -3,6 +3,7 @@ module Model
         ( Model
         , Msg
             ( AddFileDialog
+            , BrandChange
             , BrandsReceived
             , DeleteGood
             , DeleteObject
@@ -83,3 +84,4 @@ type Msg
     | AddFileDialog
     | ImageSaved String
     | RemoveImage
+    | BrandChange String

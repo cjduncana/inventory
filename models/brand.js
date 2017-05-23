@@ -5,7 +5,7 @@ const Sequelize = require('sequelize');
 module.exports = function(db) {
   const Brand = db.define('Brand', {
     id: {
-      type: Sequelize.STRING,
+      type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
       primaryKey: true
     },
@@ -28,8 +28,7 @@ module.exports = function(db) {
 
       editBrand: function(brand) {
         return this.update(brand, {
-          where: { id: brand.id },
-          fields: ['name']
+          where: { id: brand.id }
         });
       },
 

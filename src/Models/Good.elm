@@ -21,6 +21,7 @@ import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline as Decode
 import Json.Encode as Encode exposing (Value)
 import Models.Brand exposing (Brand)
+import Models.List
 import Models.Market exposing (Markets)
 import Models.Utilities as ModelUtil
 import Uuid exposing (Uuid)
@@ -70,9 +71,9 @@ goodsReceived =
     goodsReceivedPort << fromValues
 
 
-createGood : String -> ImageURI -> Cmd msg
-createGood name uri =
-    toCreateValue name uri
+createGood : String -> ImageURI -> Maybe Brand -> Cmd msg
+createGood name uri maybeBrand =
+    toCreateValue name uri maybeBrand
         |> createGoodPort
 
 
@@ -146,33 +147,38 @@ fromValues f value =
 fromValue : Decoder Good
 fromValue =
     let
+        decodeMaybeBrand =
+            Decode.nullable Models.List.fromValue
+
         assignImage filename =
             if String.isEmpty filename then
                 NoImage
             else
                 HasImage filename
 
-        toDecoder id name filename =
+        toDecoder id name filename maybeBrand =
             case Uuid.fromString id of
                 Nothing ->
                     Decode.fail "Not a valid Uuid."
 
                 Just uuid ->
                     Decode.succeed <|
-                        Good uuid name (assignImage filename) Nothing []
+                        Good uuid name (assignImage filename) maybeBrand []
     in
         Decode.decode toDecoder
             |> Decode.required "id" Decode.string
             |> Decode.required "name" Decode.string
             |> Decode.optional "image" Decode.string ""
+            |> Decode.optional "brand" decodeMaybeBrand Nothing
             |> Decode.resolve
 
 
-toCreateValue : String -> ImageURI -> Value
-toCreateValue name uri =
+toCreateValue : String -> ImageURI -> Maybe Brand -> Value
+toCreateValue name uri maybeBrand =
     Encode.object <|
-        ( "name", Encode.string name )
-            :: imageKeyValuePair uri
+        [ ( "name", Encode.string name ) ]
+            ++ imageKeyValuePair uri
+            ++ brandIdKeyValuePair maybeBrand
 
 
 toValue : Good -> Value
@@ -182,13 +188,26 @@ toValue good =
         , ( "name", Encode.string good.name )
         ]
             ++ imageKeyValuePair good.image
+            ++ brandIdKeyValuePair good.brand
+
+
+brandIdKeyValuePair : Maybe Brand -> List ( String, Value )
+brandIdKeyValuePair =
+    maybeKeyValuePair "brandId" <|
+        Uuid.toString
+            << .id
 
 
 imageKeyValuePair : ImageURI -> List ( String, Value )
-imageKeyValuePair uri =
+imageKeyValuePair =
+    maybeKeyValuePair "image" identity << getFilename
+
+
+maybeKeyValuePair : String -> (a -> String) -> Maybe a -> List ( String, Value )
+maybeKeyValuePair key f maybe =
     let
         value =
-            Maybe.map Encode.string (getFilename uri)
+            Maybe.map (f >> Encode.string) maybe
                 |> Maybe.withDefault Encode.null
     in
-        [ ( "image", value ) ]
+        [ ( key, value ) ]

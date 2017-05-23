@@ -1,4 +1,4 @@
-module Updates.Dialog exposing (update)
+module Updates.Dialog exposing (update, updateBrand)
 
 import Model exposing (Model)
 import Models.Brand as Brand
@@ -29,6 +29,7 @@ import Models.Good as Good exposing (ImageURI(NoImage))
 import Models.Market as Market
 import Routing.Routes as Routes
 import Utilities as Util
+import Uuid
 
 
 update : Msg -> Model -> ( Model, Cmd Model.Msg )
@@ -62,14 +63,14 @@ update msg model =
             in
                 ( model_, Cmd.none )
 
-        ( GoodAdd name uri, _ ) ->
+        ( GoodAdd name uri maybeBrand, _ ) ->
             let
                 model_ =
                     { model | dialogView = AddGood "" NoImage Nothing [] }
 
                 command_ =
                     Util.doCommand name <|
-                        Good.createGood name uri
+                        Good.createGood name uri maybeBrand
             in
                 ( model_, command_ )
 
@@ -91,8 +92,8 @@ update msg model =
                             { id = good.id
                             , name = good.name
                             , image = good.image
-                            , brand = Nothing
-                            , markets = []
+                            , brand = good.brand
+                            , markets = good.markets
                             }
             in
                 ( model_, command_ )
@@ -100,7 +101,7 @@ update msg model =
         ( GoodEditDialog good, _ ) ->
             let
                 model_ =
-                    { model | dialogView = EditGood good good.name good.image }
+                    { model | dialogView = EditGood good good.name good.image good.brand }
             in
                 ( model_, Cmd.none )
 
@@ -153,3 +154,30 @@ update msg model =
 
         ( ObjectEdit _, _ ) ->
             ( model, Cmd.none )
+
+
+updateBrand : Model -> String -> ( Model, Cmd Model.Msg )
+updateBrand model id =
+    let
+        findBrand =
+            Brand.findBrand model.storedData.brands
+
+        maybeBrand =
+            Uuid.fromString id
+                |> Maybe.andThen findBrand
+
+        dialogView_ =
+            case model.dialogView of
+                AddGood name uri _ markets ->
+                    AddGood name uri maybeBrand markets
+
+                EditGood good name uri _ ->
+                    EditGood good name uri maybeBrand
+
+                _ ->
+                    model.dialogView
+
+        model_ =
+            { model | dialogView = dialogView_ }
+    in
+        ( model_, Cmd.none )

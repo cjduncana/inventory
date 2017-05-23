@@ -5,7 +5,7 @@ const Sequelize = require('sequelize');
 module.exports = function(db) {
   const Good = db.define('Good', {
     id: {
-      type: Sequelize.STRING,
+      type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV4,
       primaryKey: true
     },
@@ -17,12 +17,20 @@ module.exports = function(db) {
     image: {
       type: Sequelize.STRING,
       allowNull: true
+    },
+    brandId: {
+      type: Sequelize.UUID,
+      allowNull: true
     }
   }, {
     classMethods: {
       getGoods: function() {
         return this.findAll({
-          order: [['name', 'ASC']]
+          order: [['name', 'ASC']],
+          include: [{
+            model: this.sequelize.models.Brand,
+            as: 'brand'
+          }]
         });
       },
 
@@ -31,16 +39,12 @@ module.exports = function(db) {
       },
 
       createGood: function(good) {
-        return this.create({
-          name: good.name,
-          image: good.image || null
-        });
+        return this.create(good);
       },
 
       editGood: function(good) {
         return this.update(good, {
-          where: { id: good.id },
-          fields: ['name', 'image']
+          where: { id: good.id }
         });
       },
 
@@ -68,4 +72,11 @@ module.exports = function(db) {
   });
 
   return Good;
+};
+
+module.exports.associations = function({ Brand, Good }) {
+  Good.belongsTo(Brand, {
+    as: 'brand',
+    foreignKey: 'brandId'
+  });
 };

@@ -35,7 +35,7 @@ type Msg
     = NameUpdate String
     | BrandAdd String
     | BrandAddDialog
-    | GoodAdd String ImageURI
+    | GoodAdd String ImageURI (Maybe Brand)
     | GoodAddDialog
     | GoodEdit Good
     | GoodEditDialog Good
@@ -49,7 +49,7 @@ type DialogView
     = Default
     | AddBrand String
     | AddGood String ImageURI (Maybe Brand) Markets
-    | EditGood Good String ImageURI
+    | EditGood Good String ImageURI (Maybe Brand)
     | AddMarket String
     | EditView ListObject String
 
@@ -60,7 +60,7 @@ getFilename dialogView =
         AddGood _ uri _ _ ->
             Models.Good.getFilename uri
 
-        EditGood _ _ uri ->
+        EditGood _ _ uri _ ->
             Models.Good.getFilename uri
 
         _ ->
@@ -79,8 +79,8 @@ mapName f dialogView =
         AddGood name uri maybeBrand markets ->
             AddGood (f name) uri maybeBrand markets
 
-        EditGood good name uri ->
-            EditGood good (f name) uri
+        EditGood good name uri maybeBrand ->
+            EditGood good (f name) uri maybeBrand
 
         AddMarket name ->
             AddMarket <| f name

@@ -4,6 +4,7 @@ port module Models.Brand
         , Brands
         , createBrand
         , editBrand
+        , findBrand
         , getBrands
         , deleteBrand
         , destroyBrand
@@ -25,6 +26,17 @@ type alias Brand =
 
 type alias Brands =
     List Brand
+
+
+findBrand : Brands -> Uuid -> Maybe Brand
+findBrand brands uuid =
+    List.filter (sameBrand uuid) brands
+        |> List.head
+
+
+sameBrand : Uuid -> Brand -> Bool
+sameBrand uuid =
+    .id >> ((==) uuid)
 
 
 createBrand : String -> Cmd msg

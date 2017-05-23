@@ -6,6 +6,7 @@ import Model
         ( Model
         , Msg
             ( AddFileDialog
+            , BrandChange
             , BrandsReceived
             , DeleteGood
             , DeleteObject
@@ -71,3 +72,6 @@ update msg model =
 
         RemoveImage ->
             Goods.changeImage model Nothing
+
+        BrandChange id ->
+            Dialog.updateBrand model id
