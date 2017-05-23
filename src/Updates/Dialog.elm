@@ -1,5 +1,6 @@
-module Updates.Dialog exposing (update, updateBrand)
+module Updates.Dialog exposing (changeImage, update)
 
+import Material
 import Model exposing (Model)
 import Models.Brand as Brand
 import Models.Dialog as Dialog
@@ -12,29 +13,37 @@ import Models.Dialog as Dialog
             , EditView
             )
         , Msg
-            ( BrandAdd
+            ( AddFileDialog
+            , BrandAdd
             , BrandAddDialog
             , EditDialog
             , GoodAdd
             , GoodAddDialog
+            , GoodBrandChange
             , GoodEdit
             , GoodEditDialog
+            , ImageSaved
             , MarketAdd
             , MarketAddDialog
+            , Mdl
             , NameUpdate
             , ObjectEdit
+            , RemoveImage
             )
         )
-import Models.Good as Good exposing (ImageURI(NoImage))
+import Models.Good as Good exposing (ImageURI(HasImage, NoImage))
 import Models.Market as Market
 import Routing.Routes as Routes
 import Utilities as Util
 import Uuid
 
 
-update : Msg -> Model -> ( Model, Cmd Model.Msg )
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case ( msg, model.route ) of
+        ( Mdl msg_, _ ) ->
+            Material.update Mdl msg_ model
+
         ( NameUpdate name, _ ) ->
             let
                 dialogView_ =
@@ -105,6 +114,31 @@ update msg model =
             in
                 ( model_, Cmd.none )
 
+        ( GoodBrandChange id, _ ) ->
+            let
+                findBrand =
+                    Brand.findBrand model.storedData.brands
+
+                maybeBrand =
+                    Uuid.fromString id
+                        |> Maybe.andThen findBrand
+
+                dialogView_ =
+                    case model.dialogView of
+                        AddGood name uri _ markets ->
+                            AddGood name uri maybeBrand markets
+
+                        EditGood good name uri _ ->
+                            EditGood good name uri maybeBrand
+
+                        _ ->
+                            model.dialogView
+
+                model_ =
+                    { model | dialogView = dialogView_ }
+            in
+                ( model_, Cmd.none )
+
         ( MarketAdd name, _ ) ->
             let
                 model_ =
@@ -155,29 +189,43 @@ update msg model =
         ( ObjectEdit _, _ ) ->
             ( model, Cmd.none )
 
+        ( AddFileDialog, _ ) ->
+            ( model, Dialog.addFileDialog )
 
-updateBrand : Model -> String -> ( Model, Cmd Model.Msg )
-updateBrand model id =
+        ( ImageSaved filename, _ ) ->
+            changeImage model <| Just filename
+
+        ( RemoveImage, _ ) ->
+            changeImage model Nothing
+
+
+changeImage : Model -> Maybe String -> ( Model, Cmd Msg )
+changeImage model filename =
     let
-        findBrand =
-            Brand.findBrand model.storedData.brands
+        uri_ =
+            Maybe.map HasImage filename
+                |> Maybe.withDefault NoImage
 
-        maybeBrand =
-            Uuid.fromString id
-                |> Maybe.andThen findBrand
-
-        dialogView_ =
+        dialogView =
             case model.dialogView of
-                AddGood name uri _ markets ->
-                    AddGood name uri maybeBrand markets
+                AddGood name _ maybeBrand markets ->
+                    AddGood name uri_ maybeBrand markets
 
-                EditGood good name uri _ ->
-                    EditGood good name uri maybeBrand
+                EditGood good name _ maybeBrand ->
+                    EditGood good name uri_ maybeBrand
 
                 _ ->
                     model.dialogView
 
         model_ =
-            { model | dialogView = dialogView_ }
+            { model | dialogView = dialogView }
+
+        command_ =
+            if Util.isEmpty filename then
+                Dialog.getFilename model.dialogView
+                    |> Maybe.map Dialog.removeImage
+                    |> Maybe.withDefault Cmd.none
+            else
+                Cmd.none
     in
-        ( model_, Cmd.none )
+        ( model_, command_ )

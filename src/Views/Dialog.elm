@@ -8,17 +8,7 @@ import Material.Button as Button
 import Material.Dialog as Dialog
 import Material.Options as Options
 import Material.Textfield as Textfield
-import Model
-    exposing
-        ( Model
-        , Msg
-            ( AddFileDialog
-            , BrandChange
-            , DialogMsg
-            , Mdl
-            , RemoveImage
-            )
-        )
+import Model exposing (Model)
 import Models.Brand exposing (Brand, Brands)
 import Models.Dialog
     exposing
@@ -31,12 +21,16 @@ import Models.Dialog
             , EditView
             )
         , Msg
-            ( BrandAdd
+            ( AddFileDialog
+            , BrandAdd
+            , GoodBrandChange
             , GoodAdd
             , GoodEdit
             , MarketAdd
+            , Mdl
             , NameUpdate
             , ObjectEdit
+            , RemoveImage
             )
         )
 import Models.Good exposing (Good, ImageURI)
@@ -45,7 +39,7 @@ import Views.Utilities as ViewUtil
 import Uuid exposing (Uuid)
 
 
-view : Model -> Html Model.Msg
+view : Model -> Html Msg
 view model =
     let
         dialogView_ =
@@ -95,7 +89,7 @@ view model =
                             ListObject object.id name
 
 
-addEditDialogView : AddEditText -> Model -> AddEditDialogContents -> Html Model.Msg
+addEditDialogView : AddEditText -> Model -> AddEditDialogContents -> Html Msg
 addEditDialogView { viewType, buttonText } model { title, name, onSubitMsg } =
     dialogView model (Just onSubitMsg) <|
         DialogContents
@@ -104,7 +98,7 @@ addEditDialogView { viewType, buttonText } model { title, name, onSubitMsg } =
             [ button model buttonText ]
 
 
-addEditGoodDialogView : AddEditText -> Model -> AEGoodContents -> Html Model.Msg
+addEditGoodDialogView : AddEditText -> Model -> AEGoodContents -> Html Msg
 addEditGoodDialogView { viewType, buttonText } model content =
     dialogView model (Just content.onSubitMsg) <|
         DialogContents
@@ -134,22 +128,17 @@ addEditGoodDialogView { viewType, buttonText } model content =
                     ]
                     [ Html.text "Remove" ]
                 ]
-            , selectBrands model content.maybeBrand model.storedData.brands
+            , selectBrands content.maybeBrand model.storedData.brands
             ]
             [ button model buttonText ]
 
 
-dialogView : Model -> Maybe Models.Dialog.Msg -> DialogContents -> Html Model.Msg
+dialogView : Model -> Maybe Msg -> DialogContents -> Html Msg
 dialogView model onSubitMsg { title, contents, actions } =
     let
         attributes =
             Maybe.withDefault [] <|
-                Maybe.map
-                    (List.singleton
-                        << Events.onSubmit
-                        << DialogMsg
-                    )
-                    onSubitMsg
+                Maybe.map (List.singleton << Events.onSubmit) onSubitMsg
 
         actions_ =
             List.append actions
@@ -176,12 +165,12 @@ dialogView model onSubitMsg { title, contents, actions } =
             ]
 
 
-textfield : Model -> (String -> Models.Dialog.Msg) -> String -> Html Model.Msg
+textfield : Model -> (String -> Msg) -> String -> Html Msg
 textfield model onInputMsg name =
     Textfield.render Mdl
         [ 1 ]
         model.mdl
-        [ Options.onInput <| DialogMsg << onInputMsg
+        [ Options.onInput onInputMsg
         , Textfield.label "Name"
         , Textfield.floatingLabel
         , Textfield.text_
@@ -190,7 +179,7 @@ textfield model onInputMsg name =
         []
 
 
-button : Model -> String -> Html Model.Msg
+button : Model -> String -> Html Msg
 button model buttonText =
     Button.render Mdl
         [ 2 ]
@@ -204,24 +193,24 @@ button model buttonText =
         [ Html.text buttonText ]
 
 
-selectBrands : Model -> Maybe Brand -> Brands -> Html Model.Msg
-selectBrands model selectedBrand brands =
+selectBrands : Maybe Brand -> Brands -> Html Msg
+selectBrands selectedBrand brands =
     brandOptions selectedBrand brands
         |> Html.select
             [ Events.on "change" <|
-                Decode.map BrandChange <|
+                Decode.map GoodBrandChange <|
                     Decode.at [ "target", "value" ] Decode.string
             ]
 
 
-brandOptions : Maybe Brand -> Brands -> List (Html Model.Msg)
+brandOptions : Maybe Brand -> Brands -> List (Html Msg)
 brandOptions selectedBrand brands =
     List.map Just brands
         |> (::) Nothing
         |> List.map (brandOption selectedBrand)
 
 
-brandOption : Maybe Brand -> Maybe Brand -> Html Model.Msg
+brandOption : Maybe Brand -> Maybe Brand -> Html Msg
 brandOption selectedBrand maybeBrand =
     Html.option
         [ Attr.selected (selectedBrand == maybeBrand)
@@ -269,6 +258,6 @@ type alias AEGoodContents =
 
 type alias DialogContents =
     { title : String
-    , contents : List (Html Model.Msg)
-    , actions : List (Html Model.Msg)
+    , contents : List (Html Msg)
+    , actions : List (Html Msg)
     }

@@ -2,19 +2,15 @@ module Model
     exposing
         ( Model
         , Msg
-            ( AddFileDialog
-            , BrandChange
-            , BrandsReceived
+            ( BrandsReceived
             , DeleteGood
             , DeleteObject
             , DialogMsg
             , ErrorReceived
             , GoodsReceived
-            , ImageSaved
             , MarketsReceived
             , Mdl
             , NavigateTo
-            , RemoveImage
             , SnackbarMsg
             )
         , init
@@ -81,7 +77,3 @@ type Msg
     | MarketsReceived Markets
     | DeleteGood Good
     | DeleteObject (ListType ListObject)
-    | AddFileDialog
-    | ImageSaved String
-    | RemoveImage
-    | BrandChange String

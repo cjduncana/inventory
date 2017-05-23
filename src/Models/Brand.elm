@@ -36,7 +36,7 @@ findBrand brands uuid =
 
 sameBrand : Uuid -> Brand -> Bool
 sameBrand uuid =
-    .id >> ((==) uuid)
+    .id >> (==) uuid
 
 
 createBrand : String -> Cmd msg

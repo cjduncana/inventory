@@ -6,14 +6,15 @@ import Model
         ( Model
         , Msg
             ( BrandsReceived
+            , DialogMsg
             , ErrorReceived
             , GoodsReceived
-            , ImageSaved
             , MarketsReceived
             , Mdl
             )
         )
 import Models.Brand as Brand
+import Models.Dialog as Dialog
 import Models.Good as Good
 import Models.Error as Error
 import Models.Market as Market
@@ -27,5 +28,5 @@ subscriptions model =
         , Good.goodsReceived GoodsReceived
         , Market.marketsReceived MarketsReceived
         , Error.errorReceived ErrorReceived
-        , Good.imageSaved ImageSaved
+        , Dialog.imageSaved <| DialogMsg << Dialog.ImageSaved
         ]

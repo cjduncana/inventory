@@ -3,7 +3,6 @@ port module Models.Good
         ( Good
         , Goods
         , ImageURI(HasImage, NoImage)
-        , addFileDialog
         , createGood
         , deleteGood
         , destroyGood
@@ -12,8 +11,6 @@ port module Models.Good
         , getGoods
         , getImageURI
         , goodsReceived
-        , imageSaved
-        , removeImage
         , restoreGood
         )
 
@@ -102,11 +99,6 @@ restoreGood =
     restoreGoodPort << Uuid.toString
 
 
-addFileDialog : Cmd msg
-addFileDialog =
-    addFileDialogPort ()
-
-
 port goodsReceivedPort : (Value -> msg) -> Sub msg
 
 
@@ -126,15 +118,6 @@ port destroyGoodPort : String -> Cmd msg
 
 
 port restoreGoodPort : String -> Cmd msg
-
-
-port addFileDialogPort : () -> Cmd msg
-
-
-port imageSaved : (String -> msg) -> Sub msg
-
-
-port removeImage : String -> Cmd msg
 
 
 fromValues : (Goods -> msg) -> Value -> msg

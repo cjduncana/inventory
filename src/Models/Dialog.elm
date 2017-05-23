@@ -1,4 +1,4 @@
-module Models.Dialog
+port module Models.Dialog
     exposing
         ( DialogView
             ( AddBrand
@@ -9,22 +9,31 @@ module Models.Dialog
             , EditView
             )
         , Msg
-            ( BrandAdd
+            ( AddFileDialog
+            , BrandAdd
             , BrandAddDialog
             , EditDialog
             , GoodAdd
             , GoodAddDialog
+            , GoodBrandChange
             , GoodEdit
             , GoodEditDialog
+            , ImageSaved
             , MarketAdd
             , MarketAddDialog
+            , Mdl
             , NameUpdate
             , ObjectEdit
+            , RemoveImage
             )
+        , addFileDialog
         , getFilename
+        , imageSaved
         , mapName
+        , removeImage
         )
 
+import Material
 import Models.Brand exposing (Brand)
 import Models.Good exposing (Good, ImageURI)
 import Models.List exposing (ListObject)
@@ -32,17 +41,22 @@ import Models.Market exposing (Markets)
 
 
 type Msg
-    = NameUpdate String
+    = Mdl (Material.Msg Msg)
+    | NameUpdate String
     | BrandAdd String
     | BrandAddDialog
     | GoodAdd String ImageURI (Maybe Brand)
     | GoodAddDialog
     | GoodEdit Good
     | GoodEditDialog Good
+    | GoodBrandChange String
     | MarketAdd String
     | MarketAddDialog
     | ObjectEdit ListObject
     | EditDialog ListObject
+    | AddFileDialog
+    | ImageSaved String
+    | RemoveImage
 
 
 type DialogView
@@ -87,3 +101,17 @@ mapName f dialogView =
 
         EditView object name ->
             EditView object <| f name
+
+
+addFileDialog : Cmd msg
+addFileDialog =
+    addFileDialogPort ()
+
+
+port addFileDialogPort : () -> Cmd msg
+
+
+port imageSaved : (String -> msg) -> Sub msg
+
+
+port removeImage : String -> Cmd msg

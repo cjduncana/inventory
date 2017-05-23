@@ -1,11 +1,9 @@
-module Updates.Goods exposing (addFileDialog, changeImage, delete, update)
+module Updates.Goods exposing (delete, update)
 
 import Material.Snackbar as Snackbar
 import Model exposing (Model, Msg)
-import Models.Dialog exposing (DialogView(AddGood, EditGood))
-import Models.Good as Good exposing (Good, Goods, ImageURI(HasImage, NoImage))
+import Models.Good as Good exposing (Good, Goods)
 import Models.Snackbar exposing (Payload(DeletedGood))
-import Utilities as Util
 
 
 update : Goods -> Model -> ( Model, Cmd Msg )
@@ -48,40 +46,3 @@ addSnackbar model name payload command =
             Cmd.map Model.SnackbarMsg snackbarCommand
     in
         model_ ! [ command, command_ ]
-
-
-addFileDialog : Model -> ( Model, Cmd Msg )
-addFileDialog model =
-    ( model, Good.addFileDialog )
-
-
-changeImage : Model -> Maybe String -> ( Model, Cmd Msg )
-changeImage model filename =
-    let
-        uri_ =
-            Maybe.map HasImage filename
-                |> Maybe.withDefault NoImage
-
-        dialogView =
-            case model.dialogView of
-                AddGood name _ maybeBrand markets ->
-                    AddGood name uri_ maybeBrand markets
-
-                EditGood good name _ maybeBrand ->
-                    EditGood good name uri_ maybeBrand
-
-                _ ->
-                    model.dialogView
-
-        model_ =
-            { model | dialogView = dialogView }
-
-        command_ =
-            if Util.isEmpty filename then
-                Models.Dialog.getFilename model.dialogView
-                    |> Maybe.map Good.removeImage
-                    |> Maybe.withDefault Cmd.none
-            else
-                Cmd.none
-    in
-        ( model_, command_ )

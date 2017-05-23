@@ -5,20 +5,16 @@ import Model
     exposing
         ( Model
         , Msg
-            ( AddFileDialog
-            , BrandChange
-            , BrandsReceived
+            ( BrandsReceived
             , DeleteGood
             , DeleteObject
             , DialogMsg
             , ErrorReceived
             , GoodsReceived
-            , ImageSaved
             , MarketsReceived
             , Mdl
             , NavigateTo
             , SnackbarMsg
-            , RemoveImage
             )
         )
 import Routing.Navigation as Navigation
@@ -47,7 +43,11 @@ update msg model =
             Error.update error model
 
         DialogMsg msg_ ->
-            Dialog.update msg_ model
+            let
+                ( model_, command_ ) =
+                    Dialog.update msg_ model
+            in
+                ( model_, Cmd.map DialogMsg command_ )
 
         BrandsReceived brands ->
             Brands.update brands model
@@ -63,15 +63,3 @@ update msg model =
 
         DeleteObject listType ->
             List.delete listType model
-
-        AddFileDialog ->
-            Goods.addFileDialog model
-
-        ImageSaved filename ->
-            Goods.changeImage model <| Just filename
-
-        RemoveImage ->
-            Goods.changeImage model Nothing
-
-        BrandChange id ->
-            Dialog.updateBrand model id
