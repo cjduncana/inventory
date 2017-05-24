@@ -1,5 +1,6 @@
 module Updates.Dialog exposing (changeImage, update)
 
+import Dropdown
 import Material
 import Model exposing (Model)
 import Models.Brand as Brand
@@ -16,6 +17,7 @@ import Models.Dialog as Dialog
             ( AddFileDialog
             , BrandAdd
             , BrandAddDialog
+            , DropdownMsg
             , EditDialog
             , GoodAdd
             , GoodAddDialog
@@ -31,11 +33,11 @@ import Models.Dialog as Dialog
             , RemoveImage
             )
         )
+import Models.Dropdown as Dropdown
 import Models.Good as Good exposing (ImageURI(HasImage, NoImage))
 import Models.Market as Market
 import Routing.Routes as Routes
 import Utilities as Util
-import Uuid
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -75,7 +77,7 @@ update msg model =
         ( GoodAdd name uri maybeBrand, _ ) ->
             let
                 model_ =
-                    { model | dialogView = AddGood "" NoImage Nothing [] }
+                    { model | dialogView = Dialog.newAddGoodView }
 
                 command_ =
                     Util.doCommand name <|
@@ -86,14 +88,14 @@ update msg model =
         ( GoodAddDialog, _ ) ->
             let
                 model_ =
-                    { model | dialogView = AddGood "" NoImage Nothing [] }
+                    { model | dialogView = Dialog.newAddGoodView }
             in
                 ( model_, Cmd.none )
 
         ( GoodEdit good, _ ) ->
             let
                 model_ =
-                    { model | dialogView = AddGood "" NoImage Nothing [] }
+                    { model | dialogView = Dialog.newAddGoodView }
 
                 command_ =
                     Util.doCommand good.name <|
@@ -110,29 +112,14 @@ update msg model =
         ( GoodEditDialog good, _ ) ->
             let
                 model_ =
-                    { model | dialogView = EditGood good good.name good.image good.brand }
+                    { model | dialogView = Dialog.newEditGoodView good }
             in
                 ( model_, Cmd.none )
 
-        ( GoodBrandChange id, _ ) ->
+        ( GoodBrandChange maybeBrand, _ ) ->
             let
-                findBrand =
-                    Brand.findBrand model.storedData.brands
-
-                maybeBrand =
-                    Uuid.fromString id
-                        |> Maybe.andThen findBrand
-
                 dialogView_ =
-                    case model.dialogView of
-                        AddGood name uri _ markets ->
-                            AddGood name uri maybeBrand markets
-
-                        EditGood good name uri _ ->
-                            EditGood good name uri maybeBrand
-
-                        _ ->
-                            model.dialogView
+                    Dialog.setBrand maybeBrand model.dialogView
 
                 model_ =
                     { model | dialogView = dialogView_ }
@@ -198,6 +185,41 @@ update msg model =
         ( RemoveImage, _ ) ->
             changeImage model Nothing
 
+        ( DropdownMsg msg_, _ ) ->
+            case model.dialogView of
+                AddGood dropdownState name uri maybeBrand markets ->
+                    let
+                        ( dropdownState_, command_ ) =
+                            Dropdown.update Dropdown.dropdownConfig
+                                msg_
+                                dropdownState
+
+                        dialogView_ =
+                            AddGood dropdownState_ name uri maybeBrand markets
+
+                        model_ =
+                            { model | dialogView = dialogView_ }
+                    in
+                        ( model_, command_ )
+
+                EditGood dropdownState good name uri maybeBrand ->
+                    let
+                        ( dropdownState_, command_ ) =
+                            Dropdown.update Dropdown.dropdownConfig
+                                msg_
+                                dropdownState
+
+                        dialogView_ =
+                            EditGood dropdownState_ good name uri maybeBrand
+
+                        model_ =
+                            { model | dialogView = dialogView_ }
+                    in
+                        ( model_, command_ )
+
+                _ ->
+                    ( model, Cmd.none )
+
 
 changeImage : Model -> Maybe String -> ( Model, Cmd Msg )
 changeImage model filename =
@@ -207,15 +229,7 @@ changeImage model filename =
                 |> Maybe.withDefault NoImage
 
         dialogView =
-            case model.dialogView of
-                AddGood name _ maybeBrand markets ->
-                    AddGood name uri_ maybeBrand markets
-
-                EditGood good name _ maybeBrand ->
-                    EditGood good name uri_ maybeBrand
-
-                _ ->
-                    model.dialogView
+            Dialog.setImage uri_ model.dialogView
 
         model_ =
             { model | dialogView = dialogView }

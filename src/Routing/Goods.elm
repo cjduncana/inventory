@@ -1,5 +1,6 @@
 module Routing.Goods exposing (goto)
 
+import Dropdown
 import Model exposing (Model, Msg)
 import Models.Brand as Brand
 import Models.Dialog exposing (DialogView(AddGood))
@@ -16,7 +17,13 @@ goto model =
             { model
                 | route = Goods
                 , header = Header.goodsList
-                , dialogView = AddGood "" NoImage Nothing []
+                , dialogView =
+                    AddGood
+                        (Dropdown.newState "brand")
+                        ""
+                        NoImage
+                        Nothing
+                        []
             }
 
         commands =

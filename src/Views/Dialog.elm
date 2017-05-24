@@ -1,9 +1,8 @@
 module Views.Dialog exposing (view)
 
+import Dropdown
 import Html exposing (Html)
-import Html.Attributes as Attr
 import Html.Events as Events
-import Json.Decode as Decode
 import Material.Button as Button
 import Material.Dialog as Dialog
 import Material.Options as Options
@@ -23,7 +22,7 @@ import Models.Dialog
         , Msg
             ( AddFileDialog
             , BrandAdd
-            , GoodBrandChange
+            , DropdownMsg
             , GoodAdd
             , GoodEdit
             , MarketAdd
@@ -33,10 +32,10 @@ import Models.Dialog
             , RemoveImage
             )
         )
+import Models.Dropdown as Dropdown
 import Models.Good exposing (Good, ImageURI)
 import Models.List exposing (ListObject)
 import Views.Utilities as ViewUtil
-import Uuid exposing (Uuid)
 
 
 view : Model -> Html Msg
@@ -66,14 +65,14 @@ view model =
                     AddEditDialogContents "Brand" name <|
                         BrandAdd name
 
-            AddGood name uri maybeBrand _ ->
+            AddGood dialogState name uri maybeBrand _ ->
                 addGoodDialogView <|
-                    AEGoodContents "Good" name uri maybeBrand <|
+                    AEGoodContents "Good" name uri maybeBrand dialogState <|
                         GoodAdd name uri maybeBrand
 
-            EditGood good name uri maybeBrand ->
+            EditGood dialogState good name uri maybeBrand ->
                 editGoodDialogView <|
-                    AEGoodContents good.name name uri maybeBrand <|
+                    AEGoodContents good.name name uri maybeBrand dialogState <|
                         GoodEdit <|
                             Good good.id name uri maybeBrand []
 
@@ -128,7 +127,11 @@ addEditGoodDialogView { viewType, buttonText } model content =
                     ]
                     [ Html.text "Remove" ]
                 ]
-            , selectBrands content.maybeBrand model.storedData.brands
+            , Dropdown.view Dropdown.dropdownConfig
+                content.dropdownState
+                model.storedData.brands
+                content.maybeBrand
+                |> Html.map DropdownMsg
             ]
             [ button model buttonText ]
 
@@ -193,37 +196,6 @@ button model buttonText =
         [ Html.text buttonText ]
 
 
-selectBrands : Maybe Brand -> Brands -> Html Msg
-selectBrands selectedBrand brands =
-    brandOptions selectedBrand brands
-        |> Html.select
-            [ Events.on "change" <|
-                Decode.map GoodBrandChange <|
-                    Decode.at [ "target", "value" ] Decode.string
-            ]
-
-
-brandOptions : Maybe Brand -> Brands -> List (Html Msg)
-brandOptions selectedBrand brands =
-    List.map Just brands
-        |> (::) Nothing
-        |> List.map (brandOption selectedBrand)
-
-
-brandOption : Maybe Brand -> Maybe Brand -> Html Msg
-brandOption selectedBrand maybeBrand =
-    Html.option
-        [ Attr.selected (selectedBrand == maybeBrand)
-        , Maybe.map (.id >> Uuid.toString) maybeBrand
-            |> Maybe.withDefault ""
-            |> Attr.value
-        ]
-        [ Maybe.map .name maybeBrand
-            |> Maybe.withDefault "None"
-            |> Html.text
-        ]
-
-
 type alias AddEditText =
     { viewType : String
     , buttonText : String
@@ -252,6 +224,7 @@ type alias AEGoodContents =
     , name : String
     , uri : ImageURI
     , maybeBrand : Maybe Brand
+    , dropdownState : Dropdown.State
     , onSubitMsg : Models.Dialog.Msg
     }
 
