@@ -48,7 +48,7 @@ import Dropdown
 import List.Extra as List
 import Material
 import Models.Brand exposing (Brand)
-import Models.Good exposing (Good, ImageURI(NoImage))
+import Models.Good as Good exposing (Good, GoodData, ImageURI(NoImage))
 import Models.ID exposing (ID)
 import Models.Market exposing (Market, Markets)
 import Uuid
@@ -59,7 +59,7 @@ type Msg
     | NameUpdate String
     | BrandAdd String
     | BrandAddDialog
-    | GoodAdd String ImageURI (Maybe Brand) Markets
+    | GoodAdd String GoodData
     | GoodAddDialog
     | GoodEdit Good
     | GoodEditDialog Good
@@ -90,9 +90,7 @@ type alias EditableGood =
     { brandDropdown : Dropdown.State
     , marketDropdown : Dropdown.State
     , name : String
-    , image : ImageURI
-    , brand : Maybe Brand
-    , markets : Markets
+    , data : GoodData
     }
 
 
@@ -102,9 +100,7 @@ newAddGoodView =
         { brandDropdown = Dropdown.newState "brand"
         , marketDropdown = Dropdown.newState "market"
         , name = ""
-        , image = NoImage
-        , brand = Nothing
-        , markets = []
+        , data = GoodData NoImage Nothing []
         }
 
 
@@ -113,21 +109,19 @@ newEditGoodView good =
     EditGood good
         { brandDropdown = Dropdown.newState "brand"
         , marketDropdown = Dropdown.newState "market"
-        , name = good.name
-        , image = good.image
-        , brand = good.brand
-        , markets = good.markets
+        , name = Good.getName good
+        , data = Tuple.second good
         }
 
 
 getFilename : DialogView -> Maybe String
 getFilename dialogView =
     case dialogView of
-        AddGood { image } ->
-            Models.Good.getFilename image
+        AddGood { data } ->
+            Good.getFilename data.image
 
-        EditGood _ { image } ->
-            Models.Good.getFilename image
+        EditGood _ { data } ->
+            Good.getFilename data.image
 
         _ ->
             Nothing
@@ -136,23 +130,26 @@ getFilename dialogView =
 addMarket : Maybe Market -> DialogView -> DialogView
 addMarket maybeMarket dialogView =
     let
-        f markets =
+        f data =
             case maybeMarket of
                 Just market ->
-                    market
-                        :: markets
-                        |> List.uniqueBy (.uuid >> Uuid.toString)
-                        |> List.sortBy .name
+                    { data
+                        | markets =
+                            market
+                                :: data.markets
+                                |> List.uniqueBy (.uuid >> Uuid.toString)
+                                |> List.sortBy .name
+                    }
 
                 Nothing ->
-                    markets
+                    data
     in
         case dialogView of
             AddGood good ->
-                AddGood { good | markets = f good.markets }
+                AddGood { good | data = f good.data }
 
             EditGood original good ->
-                EditGood original { good | markets = f good.markets }
+                EditGood original { good | data = f good.data }
 
             _ ->
                 dialogView
@@ -160,18 +157,21 @@ addMarket maybeMarket dialogView =
 
 removeMarket : Int -> DialogView -> DialogView
 removeMarket index dialogView =
-    case dialogView of
-        AddGood good ->
-            AddGood { good | markets = List.removeAt index good.markets }
+    let
+        f data =
+            { data
+                | markets = List.removeAt index data.markets
+            }
+    in
+        case dialogView of
+            AddGood good ->
+                AddGood { good | data = f good.data }
 
-        EditGood original good ->
-            EditGood original
-                { good
-                    | markets = List.removeAt index good.markets
-                }
+            EditGood original good ->
+                EditGood original { good | data = f good.data }
 
-        _ ->
-            dialogView
+            _ ->
+                dialogView
 
 
 mapName : (String -> String) -> DialogView -> DialogView
@@ -198,28 +198,36 @@ mapName f dialogView =
 
 setBrand : Maybe Brand -> DialogView -> DialogView
 setBrand maybeBrand dialogView =
-    case dialogView of
-        AddGood good ->
-            AddGood { good | brand = maybeBrand }
+    let
+        f data =
+            { data | brand = maybeBrand }
+    in
+        case dialogView of
+            AddGood good ->
+                AddGood { good | data = f good.data }
 
-        EditGood original good ->
-            EditGood original { good | brand = maybeBrand }
+            EditGood original good ->
+                EditGood original { good | data = f good.data }
 
-        _ ->
-            dialogView
+            _ ->
+                dialogView
 
 
 setImage : ImageURI -> DialogView -> DialogView
 setImage uri dialogView =
-    case dialogView of
-        AddGood good ->
-            AddGood { good | image = uri }
+    let
+        f data =
+            { data | image = uri }
+    in
+        case dialogView of
+            AddGood good ->
+                AddGood { good | data = f good.data }
 
-        EditGood original good ->
-            EditGood original { good | image = uri }
+            EditGood original good ->
+                EditGood original { good | data = f good.data }
 
-        _ ->
-            dialogView
+            _ ->
+                dialogView
 
 
 addFileDialog : Cmd msg

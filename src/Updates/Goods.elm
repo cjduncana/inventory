@@ -23,8 +23,8 @@ update goods model =
 
 delete : Good -> Model -> ( Model, Cmd Msg )
 delete good model =
-    addSnackbar model good.name (DeletedGood good) <|
-        Good.deleteGood good.id
+    addSnackbar model (Good.getName good) (DeletedGood good) <|
+        Good.deleteGood (Good.getUuid good)
 
 
 addSnackbar : Model -> String -> Payload -> Cmd Msg -> ( Model, Cmd Msg )

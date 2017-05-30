@@ -11,7 +11,7 @@ import Material.Options as Options
 import Model exposing (Model, Msg(Mdl))
 import Models.Brand exposing (Brand)
 import Models.Dialog
-import Models.Good exposing (Good, Goods)
+import Models.Good as Good exposing (Good, Goods)
 import Models.Market exposing (Markets)
 import Views.Utilities as ViewUtil
 
@@ -42,10 +42,10 @@ card model index good =
             ]
 
         blocks_ =
-            if List.isEmpty good.markets then
+            if List.isEmpty (Good.getMarkets good) then
                 blocks
             else
-                text good.markets :: blocks
+                text (Good.getMarkets good) :: blocks
     in
         Card.view [ Elevation.e2 ] blocks_
 
@@ -54,10 +54,10 @@ title : Good -> Block Msg
 title good =
     let
         head_ =
-            Card.head [] [ Html.text good.name ]
+            Card.head [] [ Html.text (Good.getName good) ]
 
         subhead_ =
-            Maybe.map subhead good.brand
+            Maybe.map subhead (Good.getBrand good)
                 |> Maybe.withDefault (Html.div [] [])
 
         block =
@@ -87,7 +87,7 @@ media good =
         , Options.center
         ]
         [ Options.img (ViewUtil.square 330)
-            [ ViewUtil.imageSrc good.image ]
+            [ ViewUtil.imageSrc <| Good.getImage good ]
         ]
 
 

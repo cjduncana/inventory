@@ -37,7 +37,7 @@ import Models.Dialog
             )
         )
 import Models.Dropdown as Dropdown
-import Models.Good exposing (Good, ImageURI)
+import Models.Good as Good exposing (Good, ImageURI)
 import Models.ID exposing (ID)
 import Models.Market exposing (Market, Markets)
 import Views.Utilities as ViewUtil
@@ -73,19 +73,12 @@ view model =
             AddGood goodContent ->
                 addGoodDialogView <|
                     AEGoodContents "Good" goodContent <|
-                        GoodAdd goodContent.name
-                            goodContent.image
-                            goodContent.brand
-                            goodContent.markets
+                        GoodAdd goodContent.name goodContent.data
 
             EditGood good goodContent ->
-                Good good.id
-                    goodContent.name
-                    goodContent.image
-                    goodContent.brand
-                    goodContent.markets
+                ( ID (Good.getUuid good) (Good.getName good), goodContent.data )
                     |> GoodEdit
-                    |> AEGoodContents good.name goodContent
+                    |> AEGoodContents (Good.getName good) goodContent
                     |> editGoodDialogView
 
             AddMarket name ->
@@ -116,7 +109,7 @@ addEditGoodDialogView { viewType, buttonText } model { title, goodContent, onSub
             (viewType ++ " " ++ title)
             [ textfield model NameUpdate goodContent.name
             , Options.img (ViewUtil.square 200)
-                [ ViewUtil.imageSrc goodContent.image ]
+                [ ViewUtil.imageSrc goodContent.data.image ]
             , Options.div [ Options.center ]
                 [ Button.render Mdl
                     [ 2 ]
@@ -142,7 +135,7 @@ addEditGoodDialogView { viewType, buttonText } model { title, goodContent, onSub
             , Dropdown.view Dropdown.brandConfig
                 goodContent.brandDropdown
                 model.storedData.brands
-                goodContent.brand
+                goodContent.data.brand
                 |> Html.map BrandDropdownMsg
             , marketChips goodContent model.storedData.markets
             ]
@@ -213,14 +206,16 @@ marketChips : EditableGood -> Markets -> Html Msg
 marketChips goodContent allMarkets =
     let
         otherMarkets =
-            List.filterNot (flip List.member goodContent.markets) allMarkets
+            List.filterNot
+                (flip List.member goodContent.data.markets)
+                allMarkets
     in
         Html.div []
             [ Html.div [] <|
-                if List.isEmpty goodContent.markets then
+                if List.isEmpty goodContent.data.markets then
                     [ Html.text "Choose Markets below" ]
                 else
-                    List.indexedMap marketChip goodContent.markets
+                    List.indexedMap marketChip goodContent.data.markets
             , Dropdown.view Dropdown.marketConfig
                 goodContent.marketDropdown
                 otherMarkets

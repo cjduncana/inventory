@@ -77,14 +77,14 @@ update msg model =
             in
                 ( model_, Cmd.none )
 
-        ( GoodAdd name uri maybeBrand markets, _ ) ->
+        ( GoodAdd name data, _ ) ->
             let
                 model_ =
                     { model | dialogView = Dialog.newAddGoodView }
 
                 command_ =
                     Util.doCommand name <|
-                        Good.createGood name uri maybeBrand markets
+                        Good.createGood name data
             in
                 ( model_, command_ )
 
@@ -101,8 +101,7 @@ update msg model =
                     { model | dialogView = Dialog.newAddGoodView }
 
                 command_ =
-                    Util.doCommand good.name <|
-                        Good.editGood good
+                    Util.doCommand (Good.getName good) (Good.editGood good)
             in
                 ( model_, command_ )
 

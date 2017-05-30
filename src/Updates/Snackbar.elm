@@ -35,7 +35,7 @@ destroy payload model =
             ( model, Brand.destroyBrand brand.uuid )
 
         DeletedGood good ->
-            ( model, Good.destroyGood good.id )
+            ( model, Good.destroyGood <| Good.getUuid good )
 
         DeletedMarket market ->
             ( model, Market.destroyMarket market.uuid )
@@ -51,7 +51,7 @@ restore payload model =
             ( model, Brand.restoreBrand brand.uuid )
 
         DeletedGood good ->
-            ( model, Good.restoreGood good.id )
+            ( model, Good.restoreGood (Good.getUuid good) )
 
         DeletedMarket market ->
             ( model, Market.restoreMarket market.uuid )

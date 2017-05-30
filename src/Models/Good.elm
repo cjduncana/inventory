@@ -1,15 +1,21 @@
 port module Models.Good
     exposing
         ( Good
+        , GoodData
         , Goods
         , ImageURI(HasImage, NoImage)
         , createGood
         , deleteGood
         , destroyGood
         , editGood
+        , getBrand
         , getFilename
         , getGoods
+        , getImage
         , getImageURI
+        , getMarkets
+        , getName
+        , getUuid
         , goodsReceived
         , restoreGood
         )
@@ -18,19 +24,21 @@ import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline as Decode
 import Json.Encode as Encode exposing (Value)
 import Models.Brand exposing (Brand)
-import Models.ID as ID
+import Models.ID as ID exposing (ID)
 import Models.Market exposing (Markets)
 import Models.Utilities as ModelUtil
 import Uuid exposing (Uuid)
 
 
-type alias Good =
-    { id : Uuid
-    , name : String
-    , image : ImageURI
+type alias GoodData =
+    { image : ImageURI
     , brand : Maybe Brand
     , markets : Markets
     }
+
+
+type alias Good =
+    ( ID, GoodData )
 
 
 type alias Goods =
@@ -40,6 +48,31 @@ type alias Goods =
 type ImageURI
     = NoImage
     | HasImage String
+
+
+getUuid : Good -> Uuid
+getUuid =
+    Tuple.first >> .uuid
+
+
+getName : Good -> String
+getName =
+    Tuple.first >> .name
+
+
+getImage : Good -> ImageURI
+getImage =
+    Tuple.second >> .image
+
+
+getBrand : Good -> Maybe Brand
+getBrand =
+    Tuple.second >> .brand
+
+
+getMarkets : Good -> Markets
+getMarkets =
+    Tuple.second >> .markets
 
 
 getFilename : ImageURI -> Maybe String
@@ -68,9 +101,9 @@ goodsReceived =
     goodsReceivedPort << fromValues
 
 
-createGood : String -> ImageURI -> Maybe Brand -> Markets -> Cmd msg
-createGood name uri maybeBrand markets =
-    toCreateValue name uri maybeBrand markets
+createGood : String -> GoodData -> Cmd msg
+createGood name data =
+    toCreateValue name data
         |> createGoodPort
 
 
@@ -149,7 +182,9 @@ fromValue =
 
                 Just uuid ->
                     Decode.succeed <|
-                        Good uuid name (assignImage filename) maybeBrand markets
+                        ( ID uuid name
+                        , GoodData (assignImage filename) maybeBrand markets
+                        )
     in
         Decode.decode toDecoder
             |> Decode.required "id" Decode.string
@@ -160,15 +195,15 @@ fromValue =
             |> Decode.resolve
 
 
-toCreateValue : String -> ImageURI -> Maybe Brand -> Markets -> Value
-toCreateValue name uri maybeBrand markets =
+toCreateValue : String -> GoodData -> Value
+toCreateValue name data =
     Encode.object <|
         [ ( "name", Encode.string name ) ]
-            ++ imageKeyValuePair uri
-            ++ brandIdKeyValuePair maybeBrand
+            ++ imageKeyValuePair data.image
+            ++ brandIdKeyValuePair data.brand
             ++ [ ( "markets"
                  , Encode.list <|
-                    List.map ID.toValue markets
+                    List.map ID.toValue data.markets
                  )
                ]
 
@@ -176,14 +211,15 @@ toCreateValue name uri maybeBrand markets =
 toValue : Good -> Value
 toValue good =
     Encode.object <|
-        [ ( "id", Encode.string <| Uuid.toString good.id )
-        , ( "name", Encode.string good.name )
+        [ ( "id", Encode.string <| Uuid.toString <| getUuid good )
+        , ( "name", Encode.string <| getName good )
         ]
-            ++ imageKeyValuePair good.image
-            ++ brandIdKeyValuePair good.brand
+            ++ imageKeyValuePair (getImage good)
+            ++ brandIdKeyValuePair (getBrand good)
             ++ [ ( "markets"
                  , Encode.list <|
-                    List.map ID.toValue good.markets
+                    List.map ID.toValue <|
+                        getMarkets good
                  )
                ]
 
