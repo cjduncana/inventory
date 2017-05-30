@@ -3,12 +3,13 @@ module Views.Dialog exposing (view)
 import Dropdown
 import Html exposing (Html)
 import Html.Events as Events
+import List.Extra as List
 import Material.Button as Button
+import Material.Chip as Chip
 import Material.Dialog as Dialog
 import Material.Options as Options
 import Material.Textfield as Textfield
 import Model exposing (Model)
-import Models.Brand exposing (Brand, Brands)
 import Models.Dialog
     exposing
         ( DialogView
@@ -19,13 +20,16 @@ import Models.Dialog
             , EditGood
             , EditView
             )
+        , EditableGood
         , Msg
             ( AddFileDialog
             , BrandAdd
-            , DropdownMsg
+            , BrandDropdownMsg
             , GoodAdd
             , GoodEdit
+            , GoodMarketRemove
             , MarketAdd
+            , MarketDropdownMsg
             , Mdl
             , NameUpdate
             , ObjectEdit
@@ -35,6 +39,7 @@ import Models.Dialog
 import Models.Dropdown as Dropdown
 import Models.Good exposing (Good, ImageURI)
 import Models.List exposing (ListObject)
+import Models.Market exposing (Market, Markets)
 import Views.Utilities as ViewUtil
 
 
@@ -65,16 +70,23 @@ view model =
                     AddEditDialogContents "Brand" name <|
                         BrandAdd name
 
-            AddGood dialogState name uri maybeBrand _ ->
+            AddGood goodContent ->
                 addGoodDialogView <|
-                    AEGoodContents "Good" name uri maybeBrand dialogState <|
-                        GoodAdd name uri maybeBrand
+                    AEGoodContents "Good" goodContent <|
+                        GoodAdd goodContent.name
+                            goodContent.image
+                            goodContent.brand
+                            goodContent.markets
 
-            EditGood dialogState good name uri maybeBrand ->
-                editGoodDialogView <|
-                    AEGoodContents good.name name uri maybeBrand dialogState <|
-                        GoodEdit <|
-                            Good good.id name uri maybeBrand []
+            EditGood good goodContent ->
+                Good good.id
+                    goodContent.name
+                    goodContent.image
+                    goodContent.brand
+                    goodContent.markets
+                    |> GoodEdit
+                    |> AEGoodContents good.name goodContent
+                    |> editGoodDialogView
 
             AddMarket name ->
                 addDialogView <|
@@ -98,13 +110,13 @@ addEditDialogView { viewType, buttonText } model { title, name, onSubitMsg } =
 
 
 addEditGoodDialogView : AddEditText -> Model -> AEGoodContents -> Html Msg
-addEditGoodDialogView { viewType, buttonText } model content =
-    dialogView model (Just content.onSubitMsg) <|
+addEditGoodDialogView { viewType, buttonText } model { title, goodContent, onSubitMsg } =
+    dialogView model (Just onSubitMsg) <|
         DialogContents
-            (viewType ++ " " ++ content.title)
-            [ textfield model NameUpdate content.name
+            (viewType ++ " " ++ title)
+            [ textfield model NameUpdate goodContent.name
             , Options.img (ViewUtil.square 200)
-                [ ViewUtil.imageSrc content.uri ]
+                [ ViewUtil.imageSrc goodContent.image ]
             , Options.div [ Options.center ]
                 [ Button.render Mdl
                     [ 2 ]
@@ -127,11 +139,12 @@ addEditGoodDialogView { viewType, buttonText } model content =
                     ]
                     [ Html.text "Remove" ]
                 ]
-            , Dropdown.view Dropdown.dropdownConfig
-                content.dropdownState
+            , Dropdown.view Dropdown.brandConfig
+                goodContent.brandDropdown
                 model.storedData.brands
-                content.maybeBrand
-                |> Html.map DropdownMsg
+                goodContent.brand
+                |> Html.map BrandDropdownMsg
+            , marketChips goodContent model.storedData.markets
             ]
             [ button model buttonText ]
 
@@ -196,6 +209,36 @@ button model buttonText =
         [ Html.text buttonText ]
 
 
+marketChips : EditableGood -> Markets -> Html Msg
+marketChips goodContent allMarkets =
+    let
+        otherMarkets =
+            List.filterNot (flip List.member goodContent.markets) allMarkets
+    in
+        Html.div []
+            [ Html.div [] <|
+                if List.isEmpty goodContent.markets then
+                    [ Html.text "Choose Markets below" ]
+                else
+                    List.indexedMap marketChip goodContent.markets
+            , Dropdown.view Dropdown.marketConfig
+                goodContent.marketDropdown
+                otherMarkets
+                Nothing
+                |> Html.map MarketDropdownMsg
+            ]
+
+
+marketChip : Int -> Market -> Html Msg
+marketChip index market =
+    Chip.button
+        [ Chip.deleteClick <| GoodMarketRemove index
+        , Options.css "margin" "5px"
+        ]
+        [ Chip.content [] [ Html.text market.name ]
+        ]
+
+
 type alias AddEditText =
     { viewType : String
     , buttonText : String
@@ -221,10 +264,7 @@ type alias AddEditDialogContents =
 
 type alias AEGoodContents =
     { title : String
-    , name : String
-    , uri : ImageURI
-    , maybeBrand : Maybe Brand
-    , dropdownState : Dropdown.State
+    , goodContent : EditableGood
     , onSubitMsg : Models.Dialog.Msg
     }
 

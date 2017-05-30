@@ -68,9 +68,9 @@ goodsReceived =
     goodsReceivedPort << fromValues
 
 
-createGood : String -> ImageURI -> Maybe Brand -> Cmd msg
-createGood name uri maybeBrand =
-    toCreateValue name uri maybeBrand
+createGood : String -> ImageURI -> Maybe Brand -> Markets -> Cmd msg
+createGood name uri maybeBrand markets =
+    toCreateValue name uri maybeBrand markets
         |> createGoodPort
 
 
@@ -133,35 +133,44 @@ fromValue =
         decodeMaybeBrand =
             Decode.nullable Models.List.fromValue
 
+        decodeMarkets =
+            Decode.list Models.List.fromValue
+
         assignImage filename =
             if String.isEmpty filename then
                 NoImage
             else
                 HasImage filename
 
-        toDecoder id name filename maybeBrand =
+        toDecoder id name filename maybeBrand markets =
             case Uuid.fromString id of
                 Nothing ->
                     Decode.fail "Not a valid Uuid."
 
                 Just uuid ->
                     Decode.succeed <|
-                        Good uuid name (assignImage filename) maybeBrand []
+                        Good uuid name (assignImage filename) maybeBrand markets
     in
         Decode.decode toDecoder
             |> Decode.required "id" Decode.string
             |> Decode.required "name" Decode.string
             |> Decode.optional "image" Decode.string ""
             |> Decode.optional "brand" decodeMaybeBrand Nothing
+            |> Decode.required "markets" decodeMarkets
             |> Decode.resolve
 
 
-toCreateValue : String -> ImageURI -> Maybe Brand -> Value
-toCreateValue name uri maybeBrand =
+toCreateValue : String -> ImageURI -> Maybe Brand -> Markets -> Value
+toCreateValue name uri maybeBrand markets =
     Encode.object <|
         [ ( "name", Encode.string name ) ]
             ++ imageKeyValuePair uri
             ++ brandIdKeyValuePair maybeBrand
+            ++ [ ( "markets"
+                 , Encode.list <|
+                    List.map Models.List.toValue markets
+                 )
+               ]
 
 
 toValue : Good -> Value
@@ -172,6 +181,11 @@ toValue good =
         ]
             ++ imageKeyValuePair good.image
             ++ brandIdKeyValuePair good.brand
+            ++ [ ( "markets"
+                 , Encode.list <|
+                    List.map Models.List.toValue good.markets
+                 )
+               ]
 
 
 brandIdKeyValuePair : Maybe Brand -> List ( String, Value )

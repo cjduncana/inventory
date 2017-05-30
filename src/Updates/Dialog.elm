@@ -17,16 +17,19 @@ import Models.Dialog as Dialog
             ( AddFileDialog
             , BrandAdd
             , BrandAddDialog
-            , DropdownMsg
+            , BrandDropdownMsg
             , EditDialog
             , GoodAdd
             , GoodAddDialog
             , GoodBrandChange
             , GoodEdit
             , GoodEditDialog
+            , GoodMarketAdd
+            , GoodMarketRemove
             , ImageSaved
             , MarketAdd
             , MarketAddDialog
+            , MarketDropdownMsg
             , Mdl
             , NameUpdate
             , ObjectEdit
@@ -74,14 +77,14 @@ update msg model =
             in
                 ( model_, Cmd.none )
 
-        ( GoodAdd name uri maybeBrand, _ ) ->
+        ( GoodAdd name uri maybeBrand markets, _ ) ->
             let
                 model_ =
                     { model | dialogView = Dialog.newAddGoodView }
 
                 command_ =
                     Util.doCommand name <|
-                        Good.createGood name uri maybeBrand
+                        Good.createGood name uri maybeBrand markets
             in
                 ( model_, command_ )
 
@@ -99,13 +102,7 @@ update msg model =
 
                 command_ =
                     Util.doCommand good.name <|
-                        Good.editGood
-                            { id = good.id
-                            , name = good.name
-                            , image = good.image
-                            , brand = good.brand
-                            , markets = good.markets
-                            }
+                        Good.editGood good
             in
                 ( model_, command_ )
 
@@ -120,6 +117,26 @@ update msg model =
             let
                 dialogView_ =
                     Dialog.setBrand maybeBrand model.dialogView
+
+                model_ =
+                    { model | dialogView = dialogView_ }
+            in
+                ( model_, Cmd.none )
+
+        ( GoodMarketAdd maybeMarket, _ ) ->
+            let
+                dialogView_ =
+                    Dialog.addMarket maybeMarket model.dialogView
+
+                model_ =
+                    { model | dialogView = dialogView_ }
+            in
+                ( model_, Cmd.none )
+
+        ( GoodMarketRemove index, _ ) ->
+            let
+                dialogView_ =
+                    Dialog.removeMarket index model.dialogView
 
                 model_ =
                     { model | dialogView = dialogView_ }
@@ -185,32 +202,79 @@ update msg model =
         ( RemoveImage, _ ) ->
             changeImage model Nothing
 
-        ( DropdownMsg msg_, _ ) ->
+        ( BrandDropdownMsg msg_, _ ) ->
             case model.dialogView of
-                AddGood dropdownState name uri maybeBrand markets ->
+                AddGood goodContent ->
                     let
-                        ( dropdownState_, command_ ) =
-                            Dropdown.update Dropdown.dropdownConfig
+                        ( brandDropdown_, command_ ) =
+                            Dropdown.update Dropdown.brandConfig
                                 msg_
-                                dropdownState
+                                goodContent.brandDropdown
 
                         dialogView_ =
-                            AddGood dropdownState_ name uri maybeBrand markets
+                            AddGood
+                                { goodContent
+                                    | brandDropdown = brandDropdown_
+                                }
 
                         model_ =
                             { model | dialogView = dialogView_ }
                     in
                         ( model_, command_ )
 
-                EditGood dropdownState good name uri maybeBrand ->
+                EditGood good goodContent ->
                     let
-                        ( dropdownState_, command_ ) =
-                            Dropdown.update Dropdown.dropdownConfig
+                        ( brandDropdown_, command_ ) =
+                            Dropdown.update Dropdown.brandConfig
                                 msg_
-                                dropdownState
+                                goodContent.brandDropdown
 
                         dialogView_ =
-                            EditGood dropdownState_ good name uri maybeBrand
+                            EditGood good
+                                { goodContent
+                                    | brandDropdown = brandDropdown_
+                                }
+
+                        model_ =
+                            { model | dialogView = dialogView_ }
+                    in
+                        ( model_, command_ )
+
+                _ ->
+                    ( model, Cmd.none )
+
+        ( MarketDropdownMsg msg_, _ ) ->
+            case model.dialogView of
+                AddGood goodContent ->
+                    let
+                        ( marketDropdown_, command_ ) =
+                            Dropdown.update Dropdown.marketConfig
+                                msg_
+                                goodContent.marketDropdown
+
+                        dialogView_ =
+                            AddGood
+                                { goodContent
+                                    | marketDropdown = marketDropdown_
+                                }
+
+                        model_ =
+                            { model | dialogView = dialogView_ }
+                    in
+                        ( model_, command_ )
+
+                EditGood good goodContent ->
+                    let
+                        ( marketDropdown_, command_ ) =
+                            Dropdown.update Dropdown.marketConfig
+                                msg_
+                                goodContent.marketDropdown
+
+                        dialogView_ =
+                            EditGood good
+                                { goodContent
+                                    | marketDropdown = marketDropdown_
+                                }
 
                         model_ =
                             { model | dialogView = dialogView_ }

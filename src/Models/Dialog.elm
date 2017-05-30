@@ -8,26 +8,31 @@ port module Models.Dialog
             , EditGood
             , EditView
             )
+        , EditableGood
         , Msg
             ( AddFileDialog
             , BrandAdd
             , BrandAddDialog
-            , DropdownMsg
+            , BrandDropdownMsg
             , EditDialog
             , GoodAdd
             , GoodAddDialog
             , GoodBrandChange
             , GoodEdit
             , GoodEditDialog
+            , GoodMarketAdd
+            , GoodMarketRemove
             , ImageSaved
             , MarketAdd
             , MarketAddDialog
+            , MarketDropdownMsg
             , Mdl
             , NameUpdate
             , ObjectEdit
             , RemoveImage
             )
         , addFileDialog
+        , addMarket
         , getFilename
         , imageSaved
         , mapName
@@ -36,14 +41,17 @@ port module Models.Dialog
         , setBrand
         , setImage
         , removeImage
+        , removeMarket
         )
 
 import Dropdown
+import List.Extra as List
 import Material
 import Models.Brand exposing (Brand)
 import Models.Good exposing (Good, ImageURI(NoImage))
 import Models.List exposing (ListObject)
-import Models.Market exposing (Markets)
+import Models.Market exposing (Market, Markets)
+import Uuid
 
 
 type Msg
@@ -51,7 +59,7 @@ type Msg
     | NameUpdate String
     | BrandAdd String
     | BrandAddDialog
-    | GoodAdd String ImageURI (Maybe Brand)
+    | GoodAdd String ImageURI (Maybe Brand) Markets
     | GoodAddDialog
     | GoodEdit Good
     | GoodEditDialog Good
@@ -62,40 +70,108 @@ type Msg
     | AddFileDialog
     | ImageSaved String
     | RemoveImage
-    | DropdownMsg (Dropdown.Msg Brand)
+    | BrandDropdownMsg (Dropdown.Msg Brand)
     | GoodBrandChange (Maybe Brand)
+    | MarketDropdownMsg (Dropdown.Msg Market)
+    | GoodMarketAdd (Maybe Market)
+    | GoodMarketRemove Int
 
 
 type DialogView
     = Default
     | AddBrand String
-    | AddGood Dropdown.State String ImageURI (Maybe Brand) Markets
-    | EditGood Dropdown.State Good String ImageURI (Maybe Brand)
+    | AddGood EditableGood
+    | EditGood Good EditableGood
     | AddMarket String
     | EditView ListObject String
 
 
+type alias EditableGood =
+    { brandDropdown : Dropdown.State
+    , marketDropdown : Dropdown.State
+    , name : String
+    , image : ImageURI
+    , brand : Maybe Brand
+    , markets : Markets
+    }
+
+
 newAddGoodView : DialogView
 newAddGoodView =
-    AddGood (Dropdown.newState "brand") "" NoImage Nothing []
+    AddGood
+        { brandDropdown = Dropdown.newState "brand"
+        , marketDropdown = Dropdown.newState "market"
+        , name = ""
+        , image = NoImage
+        , brand = Nothing
+        , markets = []
+        }
 
 
 newEditGoodView : Good -> DialogView
 newEditGoodView good =
-    EditGood (Dropdown.newState "brand") good good.name good.image good.brand
+    EditGood good
+        { brandDropdown = Dropdown.newState "brand"
+        , marketDropdown = Dropdown.newState "market"
+        , name = good.name
+        , image = good.image
+        , brand = good.brand
+        , markets = good.markets
+        }
 
 
 getFilename : DialogView -> Maybe String
 getFilename dialogView =
     case dialogView of
-        AddGood _ _ uri _ _ ->
-            Models.Good.getFilename uri
+        AddGood { image } ->
+            Models.Good.getFilename image
 
-        EditGood _ _ _ uri _ ->
-            Models.Good.getFilename uri
+        EditGood _ { image } ->
+            Models.Good.getFilename image
 
         _ ->
             Nothing
+
+
+addMarket : Maybe Market -> DialogView -> DialogView
+addMarket maybeMarket dialogView =
+    let
+        f markets =
+            case maybeMarket of
+                Just market ->
+                    market
+                        :: markets
+                        |> List.uniqueBy (.id >> Uuid.toString)
+                        |> List.sortBy .name
+
+                Nothing ->
+                    markets
+    in
+        case dialogView of
+            AddGood good ->
+                AddGood { good | markets = f good.markets }
+
+            EditGood original good ->
+                EditGood original { good | markets = f good.markets }
+
+            _ ->
+                dialogView
+
+
+removeMarket : Int -> DialogView -> DialogView
+removeMarket index dialogView =
+    case dialogView of
+        AddGood good ->
+            AddGood { good | markets = List.removeAt index good.markets }
+
+        EditGood original good ->
+            EditGood original
+                { good
+                    | markets = List.removeAt index good.markets
+                }
+
+        _ ->
+            dialogView
 
 
 mapName : (String -> String) -> DialogView -> DialogView
@@ -107,11 +183,11 @@ mapName f dialogView =
         AddBrand name ->
             AddBrand <| f name
 
-        AddGood dropdownState name uri maybeBrand markets ->
-            AddGood dropdownState (f name) uri maybeBrand markets
+        AddGood good ->
+            AddGood { good | name = f good.name }
 
-        EditGood dropdownState good name uri maybeBrand ->
-            EditGood dropdownState good (f name) uri maybeBrand
+        EditGood original good ->
+            EditGood original { good | name = f good.name }
 
         AddMarket name ->
             AddMarket <| f name
@@ -123,11 +199,11 @@ mapName f dialogView =
 setBrand : Maybe Brand -> DialogView -> DialogView
 setBrand maybeBrand dialogView =
     case dialogView of
-        AddGood dropdownState name uri _ markets ->
-            AddGood dropdownState name uri maybeBrand markets
+        AddGood good ->
+            AddGood { good | brand = maybeBrand }
 
-        EditGood dropdownState good name uri _ ->
-            EditGood dropdownState good name uri maybeBrand
+        EditGood original good ->
+            EditGood original { good | brand = maybeBrand }
 
         _ ->
             dialogView
@@ -136,11 +212,11 @@ setBrand maybeBrand dialogView =
 setImage : ImageURI -> DialogView -> DialogView
 setImage uri dialogView =
     case dialogView of
-        AddGood dropdownState name _ maybeBrand markets ->
-            AddGood dropdownState name uri maybeBrand markets
+        AddGood good ->
+            AddGood { good | image = uri }
 
-        EditGood dropdownState good name _ maybeBrand ->
-            EditGood dropdownState good name uri maybeBrand
+        EditGood original good ->
+            EditGood original { good | image = uri }
 
         _ ->
             dialogView

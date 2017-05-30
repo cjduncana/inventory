@@ -1,12 +1,30 @@
-module Models.Dropdown exposing (dropdownConfig)
+module Models.Dropdown exposing (brandConfig, marketConfig)
 
 import Dropdown
 import Models.Brand exposing (Brand)
-import Models.Dialog exposing (Msg(GoodBrandChange))
+import Models.Dialog exposing (Msg(GoodBrandChange, GoodMarketAdd))
+import Models.Market exposing (Market)
 
 
-dropdownConfig : Dropdown.Config Msg Brand
-dropdownConfig =
+brandConfig : Dropdown.Config Msg Brand
+brandConfig =
     Dropdown.newConfig GoodBrandChange .name
         |> Dropdown.withPrompt "Add Brand"
-        |> Dropdown.withTriggerStyles [ ( "width", "150px" ) ]
+        |> styles
+
+
+marketConfig : Dropdown.Config Msg Market
+marketConfig =
+    Dropdown.newConfig GoodMarketAdd .name
+        |> Dropdown.withPrompt "Select Market"
+        |> styles
+
+
+styles : Dropdown.Config Msg item -> Dropdown.Config Msg item
+styles =
+    Dropdown.withTriggerStyles [ ( "width", "150px" ) ]
+        >> Dropdown.withItemStyles
+            [ ( "border-left", "1px solid black" )
+            , ( "border-right", "1px solid black" )
+            , ( "border-bottom", "1px solid black" )
+            ]

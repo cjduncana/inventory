@@ -1,5 +1,6 @@
 'use strict';
 
+const Promise = require('bluebird');
 const Sequelize = require('sequelize');
 
 module.exports = function(db) {
@@ -26,10 +27,19 @@ module.exports = function(db) {
     classMethods: {
       getGoods: function() {
         return this.findAll({
-          order: [['name', 'ASC']],
+          order: [
+            ['name', 'ASC'],
+            [{
+              model: this.sequelize.models.Market,
+              as: 'markets'
+            }, 'name', 'ASC']
+          ],
           include: [{
             model: this.sequelize.models.Brand,
             as: 'brand'
+          }, {
+            model: this.sequelize.models.Market,
+            as: 'markets'
           }]
         });
       },
@@ -39,12 +49,19 @@ module.exports = function(db) {
       },
 
       createGood: function(good) {
-        return this.create(good);
+        return this.create(good)
+        .then((g) => g.setMarkets(good.markets.map(({ id }) => id)));
       },
 
       editGood: function(good) {
-        return this.update(good, {
-          where: { id: good.id }
+        return this.findById(good.id)
+        .then((g) => {
+          g.name = good.name;
+          g.image = good.image;
+          g.brandId = good.brandId;
+
+          return g.save()
+          .then(() => g.setMarkets(good.markets.map(({ id }) => id)));
         });
       },
 
@@ -74,9 +91,15 @@ module.exports = function(db) {
   return Good;
 };
 
-module.exports.associations = function({ Brand, Good }) {
+module.exports.associations = function({ Brand, Good, Market }) {
   Good.belongsTo(Brand, {
     as: 'brand',
     foreignKey: 'brandId'
+  });
+
+  Good.belongsToMany(Market, {
+    as: 'markets',
+    through: 'goods_markets',
+    foreignKey: 'goodId'
   });
 };

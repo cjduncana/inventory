@@ -57,3 +57,11 @@ module.exports = function(db) {
 
   return Market;
 };
+
+module.exports.associations = function({ Good, Market }) {
+  Market.belongsToMany(Good, {
+    as: 'goods',
+    through: 'goods_markets',
+    foreignKey: 'marketId'
+  });
+};
