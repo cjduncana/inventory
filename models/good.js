@@ -1,6 +1,5 @@
 'use strict';
 
-const Promise = require('bluebird');
 const Sequelize = require('sequelize');
 
 module.exports = function(db) {
@@ -24,6 +23,14 @@ module.exports = function(db) {
       allowNull: true
     }
   }, {
+    instanceMethods: {
+      removeImage: function() {
+        this.image = null;
+        return this.save()
+        .then(() => this.reload());
+      }
+    },
+
     classMethods: {
       getGoods: function() {
         return this.findAll({

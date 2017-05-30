@@ -89,6 +89,16 @@ module.exports = (ports, models) => {
 
   function getGoods() {
     models.Good.getGoods()
+    .map((good) => {
+      return fs.exists(path.resolve('images', good.image))
+      .then((exists) => {
+        if (exists) {
+          return good;
+        }
+
+        return good.removeImage();
+      });
+    })
     .then(ports.goodsReceivedPort.send)
     .catch(catchError);
   }
