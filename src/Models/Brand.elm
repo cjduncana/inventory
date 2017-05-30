@@ -13,15 +13,13 @@ port module Models.Brand
         )
 
 import Json.Encode exposing (Value)
-import Models.List as List
+import Models.ID as ID exposing (ID)
 import Models.Utilities as ModelUtil
 import Uuid exposing (Uuid)
 
 
 type alias Brand =
-    { id : Uuid
-    , name : String
-    }
+    ID
 
 
 type alias Brands =
@@ -36,7 +34,7 @@ findBrand brands uuid =
 
 sameBrand : Uuid -> Brand -> Bool
 sameBrand uuid =
-    .id >> (==) uuid
+    .uuid >> (==) uuid
 
 
 createBrand : String -> Cmd msg
@@ -46,7 +44,7 @@ createBrand =
 
 editBrand : Brand -> Cmd msg
 editBrand =
-    editBrandPort << List.toValue
+    editBrandPort << ID.toValue
 
 
 getBrands : Brands -> Cmd msg
@@ -71,7 +69,7 @@ restoreBrand =
 
 brandsReceived : (Brands -> msg) -> Sub msg
 brandsReceived =
-    brandsReceivedPort << List.fromValues
+    brandsReceivedPort << ID.fromValues
 
 
 port createBrandPort : String -> Cmd msg

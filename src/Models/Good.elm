@@ -18,7 +18,7 @@ import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline as Decode
 import Json.Encode as Encode exposing (Value)
 import Models.Brand exposing (Brand)
-import Models.List
+import Models.ID as ID
 import Models.Market exposing (Markets)
 import Models.Utilities as ModelUtil
 import Uuid exposing (Uuid)
@@ -131,10 +131,10 @@ fromValue : Decoder Good
 fromValue =
     let
         decodeMaybeBrand =
-            Decode.nullable Models.List.fromValue
+            Decode.nullable ID.fromValue
 
         decodeMarkets =
-            Decode.list Models.List.fromValue
+            Decode.list ID.fromValue
 
         assignImage filename =
             if String.isEmpty filename then
@@ -168,7 +168,7 @@ toCreateValue name uri maybeBrand markets =
             ++ brandIdKeyValuePair maybeBrand
             ++ [ ( "markets"
                  , Encode.list <|
-                    List.map Models.List.toValue markets
+                    List.map ID.toValue markets
                  )
                ]
 
@@ -183,7 +183,7 @@ toValue good =
             ++ brandIdKeyValuePair good.brand
             ++ [ ( "markets"
                  , Encode.list <|
-                    List.map Models.List.toValue good.markets
+                    List.map ID.toValue good.markets
                  )
                ]
 
@@ -192,7 +192,7 @@ brandIdKeyValuePair : Maybe Brand -> List ( String, Value )
 brandIdKeyValuePair =
     maybeKeyValuePair "brandId" <|
         Uuid.toString
-            << .id
+            << .uuid
 
 
 imageKeyValuePair : ImageURI -> List ( String, Value )

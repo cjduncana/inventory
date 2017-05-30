@@ -9,12 +9,13 @@ import Material.Grid as Grid exposing (Cell)
 import Material.Icon as Icon
 import Material.Options as Options
 import Model exposing (Model, Msg(Mdl))
-import Models.List exposing (ListObject, ListObjects, ListType)
+import Models.ID exposing (ID)
+import Models.List exposing (ListType)
 import Models.Dialog
 import Views.Utilities as ViewUtil
 
 
-view : Model -> ListType ListObjects -> Html Msg
+view : Model -> ListType (List ID) -> Html Msg
 view model listType =
     let
         f title objects =
@@ -27,7 +28,7 @@ view model listType =
         Models.List.apply f listType
 
 
-cell : Model -> ListType ListObjects -> Int -> ListObject -> Cell Msg
+cell : Model -> ListType (List ID) -> Int -> ID -> Cell Msg
 cell model listType index object =
     let
         object_ =
@@ -36,7 +37,7 @@ cell model listType index object =
         Grid.cell [] [ item model object_ index ]
 
 
-item : Model -> ListType ListObject -> Int -> Html Msg
+item : Model -> ListType ID -> Int -> Html Msg
 item model listType index =
     let
         object =

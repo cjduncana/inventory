@@ -12,15 +12,13 @@ port module Models.Market
         )
 
 import Json.Encode exposing (Value)
-import Models.List as List
+import Models.ID as ID exposing (ID)
 import Models.Utilities as ModelUtil
 import Uuid exposing (Uuid)
 
 
 type alias Market =
-    { id : Uuid
-    , name : String
-    }
+    ID
 
 
 type alias Markets =
@@ -34,7 +32,7 @@ createMarket =
 
 editMarket : Market -> Cmd msg
 editMarket =
-    editMarketPort << List.toValue
+    editMarketPort << ID.toValue
 
 
 getMarkets : Markets -> Cmd msg
@@ -59,7 +57,7 @@ restoreMarket =
 
 marketsReceived : (Markets -> msg) -> Sub msg
 marketsReceived =
-    marketsReceivedPort << List.fromValues
+    marketsReceivedPort << ID.fromValues
 
 
 port createMarketPort : String -> Cmd msg

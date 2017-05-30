@@ -3,12 +3,13 @@ module Updates.List exposing (delete)
 import Material.Snackbar as Snackbar
 import Model exposing (Model, Msg)
 import Models.Brand as Brand
-import Models.List exposing (ListObject, ListType(Brand, Market))
+import Models.ID exposing (ID)
+import Models.List exposing (ListType(Brand, Market))
 import Models.Market as Market
 import Models.Snackbar exposing (Payload(DeletedBrand, DeletedMarket))
 
 
-delete : ListType ListObject -> Model -> ( Model, Cmd Msg )
+delete : ListType ID -> Model -> ( Model, Cmd Msg )
 delete listType model =
     let
         add =
@@ -17,11 +18,11 @@ delete listType model =
         case listType of
             Brand brand ->
                 add brand.name (DeletedBrand brand) <|
-                    Brand.deleteBrand brand.id
+                    Brand.deleteBrand brand.uuid
 
             Market market ->
                 add market.name (DeletedMarket market) <|
-                    Market.deleteMarket market.id
+                    Market.deleteMarket market.uuid
 
 
 addSnackbar : Model -> String -> Payload -> Cmd Msg -> ( Model, Cmd Msg )

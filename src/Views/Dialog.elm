@@ -38,7 +38,7 @@ import Models.Dialog
         )
 import Models.Dropdown as Dropdown
 import Models.Good exposing (Good, ImageURI)
-import Models.List exposing (ListObject)
+import Models.ID exposing (ID)
 import Models.Market exposing (Market, Markets)
 import Views.Utilities as ViewUtil
 
@@ -97,7 +97,7 @@ view model =
                 editDialogView <|
                     AddEditDialogContents object.name name <|
                         ObjectEdit <|
-                            ListObject object.id name
+                            ID object.uuid name
 
 
 addEditDialogView : AddEditText -> Model -> AddEditDialogContents -> Html Msg

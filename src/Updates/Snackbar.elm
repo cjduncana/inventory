@@ -32,13 +32,13 @@ destroy : Payload -> Model -> ( Model, Cmd Model.Msg )
 destroy payload model =
     case payload of
         DeletedBrand brand ->
-            ( model, Brand.destroyBrand brand.id )
+            ( model, Brand.destroyBrand brand.uuid )
 
         DeletedGood good ->
             ( model, Good.destroyGood good.id )
 
         DeletedMarket market ->
-            ( model, Market.destroyMarket market.id )
+            ( model, Market.destroyMarket market.uuid )
 
         _ ->
             ( model, Cmd.none )
@@ -48,13 +48,13 @@ restore : Payload -> Model -> ( Model, Cmd Model.Msg )
 restore payload model =
     case payload of
         DeletedBrand brand ->
-            ( model, Brand.restoreBrand brand.id )
+            ( model, Brand.restoreBrand brand.uuid )
 
         DeletedGood good ->
             ( model, Good.restoreGood good.id )
 
         DeletedMarket market ->
-            ( model, Market.restoreMarket market.id )
+            ( model, Market.restoreMarket market.uuid )
 
         _ ->
             ( model, Cmd.none )

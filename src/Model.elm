@@ -22,7 +22,8 @@ import Models.Dialog as Dialog exposing (DialogView(Default))
 import Models.Error exposing (Error)
 import Models.Good exposing (Good, Goods)
 import Models.Header as Header exposing (Header)
-import Models.List exposing (ListObject, ListType)
+import Models.ID exposing (ID)
+import Models.List exposing (ListType)
 import Models.Snackbar as Snackbar
 import Models.Market exposing (Markets)
 import Routing.Routes exposing (Route(Home))
@@ -76,4 +77,4 @@ type Msg
     | GoodsReceived Goods
     | MarketsReceived Markets
     | DeleteGood Good
-    | DeleteObject (ListType ListObject)
+    | DeleteObject (ListType ID)

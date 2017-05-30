@@ -49,7 +49,7 @@ import List.Extra as List
 import Material
 import Models.Brand exposing (Brand)
 import Models.Good exposing (Good, ImageURI(NoImage))
-import Models.List exposing (ListObject)
+import Models.ID exposing (ID)
 import Models.Market exposing (Market, Markets)
 import Uuid
 
@@ -65,8 +65,8 @@ type Msg
     | GoodEditDialog Good
     | MarketAdd String
     | MarketAddDialog
-    | ObjectEdit ListObject
-    | EditDialog ListObject
+    | ObjectEdit ID
+    | EditDialog ID
     | AddFileDialog
     | ImageSaved String
     | RemoveImage
@@ -83,7 +83,7 @@ type DialogView
     | AddGood EditableGood
     | EditGood Good EditableGood
     | AddMarket String
-    | EditView ListObject String
+    | EditView ID String
 
 
 type alias EditableGood =
@@ -141,7 +141,7 @@ addMarket maybeMarket dialogView =
                 Just market ->
                     market
                         :: markets
-                        |> List.uniqueBy (.id >> Uuid.toString)
+                        |> List.uniqueBy (.uuid >> Uuid.toString)
                         |> List.sortBy .name
 
                 Nothing ->
