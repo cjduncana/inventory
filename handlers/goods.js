@@ -90,6 +90,10 @@ module.exports = (ports, models) => {
   function getGoods() {
     models.Good.getGoods()
     .map((good) => {
+      if (!good.image) {
+        return good;
+      }
+
       return fs.exists(path.resolve('images', good.image))
       .then((exists) => {
         if (exists) {
