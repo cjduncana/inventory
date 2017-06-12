@@ -67,10 +67,8 @@ update msg model =
                     { model | dialogView = AddBrand "" }
 
                 command_ =
-                    Just name
-                        |> Maybe.filter String.isEmpty
-                        |> Maybe.map Brand.createBrand
-                        |> Maybe.withDefault Cmd.none
+                    Brand.createBrand
+                        |> commandIfHasName name
             in
                 ( model_, command_ )
 
@@ -87,10 +85,8 @@ update msg model =
                     { model | dialogView = Dialog.newAddGoodView }
 
                 command_ =
-                    Just name
-                        |> Maybe.filter String.isEmpty
-                        |> Maybe.map (flip Good.createGood data)
-                        |> Maybe.withDefault Cmd.none
+                    flip Good.createGood data
+                        |> commandIfHasName name
             in
                 ( model_, command_ )
 
@@ -107,10 +103,8 @@ update msg model =
                     { model | dialogView = Dialog.newAddGoodView }
 
                 command_ =
-                    Just (Good.getName good)
-                        |> Maybe.filter String.isEmpty
-                        |> Maybe.map (always (Good.editGood good))
-                        |> Maybe.withDefault Cmd.none
+                    always (Good.editGood good)
+                        |> commandIfHasName (Good.getName good)
             in
                 ( model_, command_ )
 
@@ -157,10 +151,8 @@ update msg model =
                     { model | dialogView = AddMarket "" }
 
                 command_ =
-                    Just name
-                        |> Maybe.filter String.isEmpty
-                        |> Maybe.map Market.createMarket
-                        |> Maybe.withDefault Cmd.none
+                    Market.createMarket
+                        |> commandIfHasName name
             in
                 ( model_, command_ )
 
@@ -184,10 +176,8 @@ update msg model =
                     { model | dialogView = AddBrand "" }
 
                 command_ =
-                    Just object.name
-                        |> Maybe.filter String.isEmpty
-                        |> Maybe.map (always (Brand.editBrand object))
-                        |> Maybe.withDefault Cmd.none
+                    always (Brand.editBrand object)
+                        |> commandIfHasName object.name
             in
                 ( model_, command_ )
 
@@ -197,10 +187,8 @@ update msg model =
                     { model | dialogView = AddMarket "" }
 
                 command_ =
-                    Just object.name
-                        |> Maybe.filter String.isEmpty
-                        |> Maybe.map (always (Market.editMarket object))
-                        |> Maybe.withDefault Cmd.none
+                    always (Market.editMarket object)
+                        |> commandIfHasName object.name
             in
                 ( model_, command_ )
 
@@ -303,6 +291,14 @@ update msg model =
 
         ( NewReportPage, _ ) ->
             ( model, Cmd.none )
+
+
+commandIfHasName : String -> (String -> Cmd msg) -> Cmd msg
+commandIfHasName name function =
+    Just name
+        |> Maybe.filter String.isEmpty
+        |> Maybe.map function
+        |> Maybe.withDefault Cmd.none
 
 
 changeImage : Model -> Maybe String -> ( Model, Cmd Msg )
