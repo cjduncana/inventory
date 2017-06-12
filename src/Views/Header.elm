@@ -27,7 +27,7 @@ view model =
         [ Layout.title [] [ Html.text model.header.title ]
         , case model.header.fab of
             Absent ->
-                ViewUtil.emptyDiv
+                ViewUtil.empty
 
             Add ->
                 fab model

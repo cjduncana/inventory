@@ -1,4 +1,4 @@
-module Views.Utilities exposing (emptyDiv, imageSrc, noWrap, onBlur, square)
+module Views.Utilities exposing (empty, imageSrc, noWrap, onBlur, square)
 
 import Html exposing (Attribute, Html)
 import Html.Attributes as Attr
@@ -8,9 +8,9 @@ import Material.Options as Options
 import Models.Good as Good exposing (ImageURI)
 
 
-emptyDiv : Html msg
-emptyDiv =
-    Html.div [] []
+empty : Html msg
+empty =
+    Html.text ""
 
 
 imageSrc : ImageURI -> Attribute msg
