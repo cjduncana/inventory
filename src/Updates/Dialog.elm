@@ -2,6 +2,7 @@ module Updates.Dialog exposing (changeImage, update)
 
 import Dropdown
 import Material
+import Maybe.Extra as Maybe
 import Model exposing (Model)
 import Models.Brand as Brand
 import Models.Dialog as Dialog
@@ -42,7 +43,6 @@ import Models.Good as Good exposing (ImageURI(HasImage, NoImage))
 import Models.Market as Market
 import Routing.Routes as Routes
 import Routing.Reports as Reports
-import Utilities as Util
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -67,8 +67,10 @@ update msg model =
                     { model | dialogView = AddBrand "" }
 
                 command_ =
-                    Util.doCommand name <|
-                        Brand.createBrand name
+                    Just name
+                        |> Maybe.filter String.isEmpty
+                        |> Maybe.map Brand.createBrand
+                        |> Maybe.withDefault Cmd.none
             in
                 ( model_, command_ )
 
@@ -85,8 +87,10 @@ update msg model =
                     { model | dialogView = Dialog.newAddGoodView }
 
                 command_ =
-                    Util.doCommand name <|
-                        Good.createGood name data
+                    Just name
+                        |> Maybe.filter String.isEmpty
+                        |> Maybe.map (flip Good.createGood data)
+                        |> Maybe.withDefault Cmd.none
             in
                 ( model_, command_ )
 
@@ -103,7 +107,10 @@ update msg model =
                     { model | dialogView = Dialog.newAddGoodView }
 
                 command_ =
-                    Util.doCommand (Good.getName good) (Good.editGood good)
+                    Just (Good.getName good)
+                        |> Maybe.filter String.isEmpty
+                        |> Maybe.map (always (Good.editGood good))
+                        |> Maybe.withDefault Cmd.none
             in
                 ( model_, command_ )
 
@@ -150,8 +157,10 @@ update msg model =
                     { model | dialogView = AddMarket "" }
 
                 command_ =
-                    Util.doCommand name <|
-                        Market.createMarket name
+                    Just name
+                        |> Maybe.filter String.isEmpty
+                        |> Maybe.map Market.createMarket
+                        |> Maybe.withDefault Cmd.none
             in
                 ( model_, command_ )
 
@@ -175,8 +184,10 @@ update msg model =
                     { model | dialogView = AddBrand "" }
 
                 command_ =
-                    Util.doCommand object.name <|
-                        Brand.editBrand object
+                    Just object.name
+                        |> Maybe.filter String.isEmpty
+                        |> Maybe.map (always (Brand.editBrand object))
+                        |> Maybe.withDefault Cmd.none
             in
                 ( model_, command_ )
 
@@ -186,8 +197,10 @@ update msg model =
                     { model | dialogView = AddMarket "" }
 
                 command_ =
-                    Util.doCommand object.name <|
-                        Market.editMarket object
+                    Just object.name
+                        |> Maybe.filter String.isEmpty
+                        |> Maybe.map (always (Market.editMarket object))
+                        |> Maybe.withDefault Cmd.none
             in
                 ( model_, command_ )
 
@@ -306,11 +319,8 @@ changeImage model filename =
             { model | dialogView = dialogView }
 
         command_ =
-            if Util.isEmpty filename then
-                Dialog.getFilename model.dialogView
-                    |> Maybe.map Dialog.removeImage
-                    |> Maybe.withDefault Cmd.none
-            else
-                Cmd.none
+            Maybe.next filename (Dialog.getFilename model.dialogView)
+                |> Maybe.map Dialog.removeImage
+                |> Maybe.withDefault Cmd.none
     in
         ( model_, command_ )
