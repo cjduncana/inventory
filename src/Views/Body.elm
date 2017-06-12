@@ -2,13 +2,15 @@ module Views.Body exposing (view)
 
 import Html exposing (Html)
 import Material.Snackbar as Snackbar
-import Model exposing (Model, Msg(DialogMsg))
+import Model exposing (Model, Msg(AddEditReport, DialogMsg))
 import Models.List as List
 import Models.Snackbar
 import Routing.Routes as Routes
 import Views.Cards as CardsView
 import Views.Dialog as DialogView
 import Views.List as ListView
+import Views.Report as ReportView
+import Views.Report.Add as AddReportView
 
 
 view : Model -> List (Html Msg)
@@ -34,6 +36,13 @@ bodyView model =
 
         Routes.Markets ->
             ListView.view model <| List.Market model.storedData.markets
+
+        Routes.Reports ->
+            ReportView.view model model.storedData.reports
+
+        Routes.NewReport data ->
+            AddReportView.view model data
+                |> Html.map AddEditReport
 
 
 snackbar : Models.Snackbar.Model -> Html Msg

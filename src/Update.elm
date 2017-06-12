@@ -1,22 +1,7 @@
 module Update exposing (update)
 
 import Material
-import Model
-    exposing
-        ( Model
-        , Msg
-            ( BrandsReceived
-            , DeleteGood
-            , DeleteObject
-            , DialogMsg
-            , ErrorReceived
-            , GoodsReceived
-            , MarketsReceived
-            , Mdl
-            , NavigateTo
-            , SnackbarMsg
-            )
-        )
+import Model exposing (Model, Msg)
 import Routing.Navigation as Navigation
 import Updates.Brands as Brands
 import Updates.Dialog as Dialog
@@ -24,42 +9,53 @@ import Updates.Error as Error
 import Updates.Goods as Goods
 import Updates.List as List
 import Updates.Markets as Markets
+import Updates.Reports as Reports
 import Updates.Snackbar as Snackbar
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Mdl msg_ ->
-            Material.update Mdl msg_ model
+        Model.Mdl msg_ ->
+            Material.update Model.Mdl msg_ model
 
-        SnackbarMsg msg_ ->
+        Model.SnackbarMsg msg_ ->
             Snackbar.update msg_ model
 
-        NavigateTo route ->
+        Model.NavigateTo route ->
             Navigation.gotoRoute route model
 
-        ErrorReceived error ->
+        Model.ErrorReceived error ->
             Error.update error model
 
-        DialogMsg msg_ ->
+        Model.DialogMsg msg_ ->
             let
                 ( model_, command_ ) =
                     Dialog.update msg_ model
             in
-                ( model_, Cmd.map DialogMsg command_ )
+                ( model_, Cmd.map Model.DialogMsg command_ )
 
-        BrandsReceived brands ->
+        Model.BrandsReceived brands ->
             Brands.update brands model
 
-        GoodsReceived goods ->
+        Model.GoodsReceived goods ->
             Goods.update goods model
 
-        MarketsReceived markets ->
+        Model.MarketsReceived markets ->
             Markets.update markets model
 
-        DeleteGood good ->
+        Model.ReportsReceived reports ->
+            Reports.updateReports reports model
+
+        Model.DeleteGood good ->
             Goods.delete good model
 
-        DeleteObject listType ->
+        Model.DeleteObject listType ->
             List.delete listType model
+
+        Model.AddEditReport msg_ ->
+            let
+                ( model_, command_ ) =
+                    Reports.update msg_ model
+            in
+                ( model_, Cmd.map Model.AddEditReport command_ )

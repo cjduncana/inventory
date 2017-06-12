@@ -32,6 +32,7 @@ import Models.Dialog as Dialog
             , MarketDropdownMsg
             , Mdl
             , NameUpdate
+            , NewReportPage
             , ObjectEdit
             , RemoveImage
             )
@@ -40,6 +41,7 @@ import Models.Dropdown as Dropdown
 import Models.Good as Good exposing (ImageURI(HasImage, NoImage))
 import Models.Market as Market
 import Routing.Routes as Routes
+import Routing.Reports as Reports
 import Utilities as Util
 
 
@@ -282,6 +284,12 @@ update msg model =
 
                 _ ->
                     ( model, Cmd.none )
+
+        ( NewReportPage, Routes.Reports ) ->
+            Reports.gotoNew model
+
+        ( NewReportPage, _ ) ->
+            ( model, Cmd.none )
 
 
 changeImage : Model -> Maybe String -> ( Model, Cmd Msg )

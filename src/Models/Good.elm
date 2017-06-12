@@ -113,8 +113,8 @@ editGood =
 
 
 getGoods : Goods -> Cmd msg
-getGoods storedGoods =
-    ModelUtil.commandIfEmpty (getGoodsPort ()) storedGoods
+getGoods =
+    ModelUtil.commandIfEmpty getGoodsPort
 
 
 deleteGood : Uuid -> Cmd msg

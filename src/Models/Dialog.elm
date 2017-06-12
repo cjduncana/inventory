@@ -28,6 +28,7 @@ port module Models.Dialog
             , MarketDropdownMsg
             , Mdl
             , NameUpdate
+            , NewReportPage
             , ObjectEdit
             , RemoveImage
             )
@@ -75,6 +76,7 @@ type Msg
     | MarketDropdownMsg (Dropdown.Msg Market)
     | GoodMarketAdd (Maybe Market)
     | GoodMarketRemove Int
+    | NewReportPage
 
 
 type DialogView

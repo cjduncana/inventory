@@ -36,8 +36,8 @@ editMarket =
 
 
 getMarkets : Markets -> Cmd msg
-getMarkets storedMarkets =
-    ModelUtil.commandIfEmpty (getMarketsPort ()) storedMarkets
+getMarkets =
+    ModelUtil.commandIfEmpty getMarketsPort
 
 
 deleteMarket : Uuid -> Cmd msg

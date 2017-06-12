@@ -6,6 +6,8 @@ module Models.Header
         , brandsList
         , goodsList
         , marketsList
+        , newReport
+        , reportsList
         )
 
 
@@ -33,6 +35,16 @@ goodsList =
 marketsList : Header
 marketsList =
     list "Markets"
+
+
+reportsList : Header
+reportsList =
+    list "Reports"
+
+
+newReport : Header
+newReport =
+    Header "New Report" Absent
 
 
 list : String -> Header

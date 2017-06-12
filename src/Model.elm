@@ -2,7 +2,8 @@ module Model
     exposing
         ( Model
         , Msg
-            ( BrandsReceived
+            ( AddEditReport
+            , BrandsReceived
             , DeleteGood
             , DeleteObject
             , DialogMsg
@@ -11,6 +12,7 @@ module Model
             , MarketsReceived
             , Mdl
             , NavigateTo
+            , ReportsReceived
             , SnackbarMsg
             )
         , init
@@ -26,6 +28,8 @@ import Models.ID exposing (ID)
 import Models.List exposing (ListType)
 import Models.Snackbar as Snackbar
 import Models.Market exposing (Markets)
+import Models.Record as Record
+import Models.Report exposing (Reports)
 import Routing.Routes exposing (Route(Home))
 
 
@@ -59,12 +63,13 @@ type alias StoredData =
     { brands : Brands
     , goods : Goods
     , markets : Markets
+    , reports : Reports
     }
 
 
 initStoredData : StoredData
 initStoredData =
-    StoredData [] [] []
+    StoredData [] [] [] []
 
 
 type Msg
@@ -76,5 +81,7 @@ type Msg
     | BrandsReceived Brands
     | GoodsReceived Goods
     | MarketsReceived Markets
+    | ReportsReceived Reports
     | DeleteGood Good
     | DeleteObject (ListType ID)
+    | AddEditReport Record.Msg

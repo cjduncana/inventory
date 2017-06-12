@@ -48,8 +48,8 @@ editBrand =
 
 
 getBrands : Brands -> Cmd msg
-getBrands storedBrands =
-    ModelUtil.commandIfEmpty (getBrandsPort ()) storedBrands
+getBrands =
+    ModelUtil.commandIfEmpty getBrandsPort
 
 
 deleteBrand : Uuid -> Cmd msg

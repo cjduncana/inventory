@@ -4,7 +4,7 @@ import Html exposing (Html)
 import Material.Layout as Layout
 import Material.Options as Options
 import Model exposing (Msg(Mdl, NavigateTo))
-import Routing.Routes exposing (Route(Brands, Goods, Home, Markets))
+import Routing.Routes exposing (Route(Brands, Goods, Markets, Reports))
 
 
 view : List (Html Msg)
@@ -33,7 +33,7 @@ type alias LinkItem =
 linkItems : List LinkItem
 linkItems =
     [ { text = "Reports"
-      , route = Home
+      , route = Reports
       }
     , { text = "Goods"
       , route = Goods

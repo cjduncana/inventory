@@ -9,7 +9,15 @@ import Material.Layout as Layout
 import Model exposing (Model, Msg(Mdl))
 import Models.Dialog
 import Models.Header exposing (Fab(Absent, Add))
-import Routing.Routes exposing (Route(Brands, Goods, Markets))
+import Routing.Routes as Route
+    exposing
+        ( Route
+            ( Brands
+            , Goods
+            , Markets
+            , Reports
+            )
+        )
 import Views.Utilities as ViewUtil
 
 
@@ -36,6 +44,7 @@ fab model =
         , Button.colored
         , Button.ripple
         , Dialog.openOn "click"
+            |> Options.when (Route.hasDialog model.route)
         , Options.css "position" "absolute"
         , Options.css "right" "24px"
         , Options.css "top" "28px"
@@ -51,6 +60,10 @@ fab model =
             Markets ->
                 Options.onClick <|
                     Model.DialogMsg Models.Dialog.MarketAddDialog
+
+            Reports ->
+                Options.onClick <|
+                    Model.DialogMsg Models.Dialog.NewReportPage
 
             _ ->
                 Options.nop
