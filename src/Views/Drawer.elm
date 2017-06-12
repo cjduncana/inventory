@@ -4,12 +4,16 @@ import Html exposing (Html)
 import Material.Layout as Layout
 import Material.Options as Options
 import Model exposing (Msg(Mdl, NavigateTo))
-import Routing.Routes exposing (Route(Brands, Goods, Markets, Reports))
+import Routing.Routes as Routes exposing (Route)
 
 
 view : List (Html Msg)
 view =
-    [ Layout.title [] [ Html.text "Inventory" ]
+    [ Layout.title
+        [ Options.onClick <| NavigateTo Routes.Home
+        , Options.onMouseUp <| Layout.toggleDrawer Mdl
+        ]
+        [ Html.text "Inventory" ]
     , Layout.navigation
         [ Options.onClick <| Layout.toggleDrawer Mdl ]
       <|
@@ -33,15 +37,15 @@ type alias LinkItem =
 linkItems : List LinkItem
 linkItems =
     [ { text = "Reports"
-      , route = Reports
+      , route = Routes.Reports
       }
     , { text = "Goods"
-      , route = Goods
+      , route = Routes.Goods
       }
     , { text = "Brands"
-      , route = Brands
+      , route = Routes.Brands
       }
     , { text = "Markets"
-      , route = Markets
+      , route = Routes.Markets
       }
     ]
