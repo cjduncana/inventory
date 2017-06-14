@@ -3,6 +3,7 @@ module Models.ID exposing (ID, fromValue, fromValues, toValue)
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline as Decode
 import Json.Encode as Encode exposing (Value)
+import Translation.Main as T
 import Uuid exposing (Uuid)
 
 
@@ -18,7 +19,7 @@ fromValue =
         toDecoder possibleUuid name =
             case Uuid.fromString possibleUuid of
                 Nothing ->
-                    Decode.fail "Not a valid UUID"
+                    Decode.fail T.invalidUuid
 
                 Just uuid ->
                     Decode.succeed <|

@@ -5,6 +5,7 @@ import Material.Snackbar as Snackbar
 import Model exposing (Model, Msg(AddEditReport, DialogMsg))
 import Models.Snackbar
 import Routing.Routes as Routes
+import Translation.Main as T
 import Views.Brand as BrandView
 import Views.Cards as CardsView
 import Views.Dialog as DialogView
@@ -26,7 +27,7 @@ bodyView : Model -> Html Msg
 bodyView model =
     case model.route of
         Routes.Home ->
-            Html.div [] [ Html.text "This is the home page." ]
+            Html.div [] [ Html.text T.homepage ]
 
         Routes.Brands ->
             BrandView.view model model.storedData.brands

@@ -13,6 +13,7 @@ import Models.Brand exposing (Brand)
 import Models.Dialog
 import Models.Good as Good exposing (Good, Goods)
 import Models.Market exposing (Markets)
+import Translation.Main as T
 import Views.Utilities as ViewUtil
 
 
@@ -26,7 +27,7 @@ view model =
             , Options.css "grid-gap" "15px"
             , Options.css "justify-content" "space-evenly"
             ]
-        |> ViewUtil.showList "No Goods yet"
+        |> ViewUtil.showList T.noGoods
 
 
 card : Model -> Int -> Good -> Html Msg

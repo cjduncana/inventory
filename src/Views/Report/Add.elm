@@ -17,6 +17,7 @@ import Models.Dropdown as Dropdown
 import Models.Good as Good exposing (Goods)
 import Models.Record as Record exposing (FormMsg, PotentialRecord, Msg)
 import Result.Extra as Result
+import Translation.Report as T
 import Views.Utilities as ViewUtils
 
 
@@ -47,11 +48,11 @@ view model tuples =
 headers : Html Msg
 headers =
     Table.tr []
-        [ Table.th [] [ Html.text "Dental Good Name" ]
-        , Table.th [] [ Html.text "Brand" ]
-        , Table.th [] [ Html.text "Markets" ]
-        , Table.th [] [ Html.text "Quantity Stored" ]
-        , Table.th [] [ Html.text "Quantity Used" ]
+        [ Table.th [] [ Html.text T.goodHeader ]
+        , Table.th [] [ Html.text T.brandHeader ]
+        , Table.th [] [ Html.text T.marketsHeader ]
+        , Table.th [] [ Html.text T.quantityStoredHeader ]
+        , Table.th [] [ Html.text T.quantityUsedHeader ]
         , Table.th [] [ Html.text "" ]
         ]
 
@@ -67,7 +68,7 @@ saveSection model records =
             , Table.td [] [ Html.text "" ]
             , Table.td [] [ Html.text "" ]
             , Table.td [] [ Html.text "" ]
-            , Table.td [] [ Html.text "Save" ]
+            , Table.td [] [ Html.text T.saveButton ]
             , Table.td []
                 [ Button.render Record.Mdl
                     [ 2, 0 ]

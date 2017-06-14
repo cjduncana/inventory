@@ -27,6 +27,7 @@ import Models.Brand exposing (Brand)
 import Models.ID as ID exposing (ID)
 import Models.Market exposing (Markets)
 import Models.Utilities as ModelUtil
+import Translation.Main as T
 import Uuid exposing (Uuid)
 
 
@@ -178,7 +179,7 @@ fromValue =
         toDecoder id name filename maybeBrand markets =
             case Uuid.fromString id of
                 Nothing ->
-                    Decode.fail "Not a valid Uuid."
+                    Decode.fail T.invalidUuid
 
                 Just uuid ->
                     Decode.succeed <|

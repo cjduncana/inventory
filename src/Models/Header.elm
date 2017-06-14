@@ -10,6 +10,8 @@ module Models.Header
         , reportsList
         )
 
+import Translation.Main as T
+
 
 type alias Header =
     { title : String
@@ -19,32 +21,32 @@ type alias Header =
 
 init : Header
 init =
-    Header "Inventory" Absent
+    Header T.inventory Absent
 
 
 brandsList : Header
 brandsList =
-    list "Brands"
+    list T.brands
 
 
 goodsList : Header
 goodsList =
-    list "Goods"
+    list T.goods
 
 
 marketsList : Header
 marketsList =
-    list "Markets"
+    list T.markets
 
 
 reportsList : Header
 reportsList =
-    list "Reports"
+    list T.reports
 
 
 newReport : Header
 newReport =
-    Header "New Report" Absent
+    Header T.newReport Absent
 
 
 list : String -> Header

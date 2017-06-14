@@ -7,6 +7,7 @@ import Material.Elevation as Elevation
 import Material.Options as Options
 import Model exposing (Model, Msg)
 import Models.Report exposing (Report, Reports)
+import Translation.Main as T
 import Views.Utilities as ViewUtil
 
 
@@ -20,7 +21,7 @@ view model =
             , Options.css "grid-gap" "15px"
             , Options.css "justify-content" "space-evenly"
             ]
-        |> ViewUtil.showList "No Reports yet"
+        |> ViewUtil.showList T.noReports
 
 
 card : Model -> Int -> Report -> Html Msg

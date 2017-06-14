@@ -11,6 +11,7 @@ import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline as Decode
 import Json.Encode exposing (Value)
 import Models.Utilities as ModelUtil
+import Translation.Main as T
 import Uuid exposing (Uuid)
 
 
@@ -64,7 +65,7 @@ fromValue =
                         Report uuid reportedTime updatedTime recordCount
 
                 ( _, _, _ ) ->
-                    Decode.fail "Failed while decoding."
+                    Decode.fail T.decodeFail
     in
         Decode.decode toDecoder
             |> Decode.required "id" Decode.string

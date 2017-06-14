@@ -3,13 +3,13 @@ module Updates.Utilities exposing (addSnackbar, updateStoredData)
 import Material.Snackbar as Snackbar
 import Model exposing (Model, Msg, StoredData)
 import Models.Snackbar exposing (Payload)
+import Translation.Main as T
 
 
 addSnackbar : Model -> String -> Payload -> Cmd Msg -> ( Model, Cmd Msg )
 addSnackbar model name payload command =
-    name
-        ++ " has just been deleted."
-        |> flip (Snackbar.snackbar payload) "UNDO"
+    T.deletedName name
+        |> flip (Snackbar.snackbar payload) T.undoButton
         |> flip Snackbar.add model.snackbar
         |> Tuple.mapFirst (\snackbar -> { model | snackbar = snackbar })
         |> Tuple.mapSecond

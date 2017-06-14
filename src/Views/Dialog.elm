@@ -40,6 +40,7 @@ import Models.Dropdown as Dropdown
 import Models.Good as Good exposing (Good, ImageURI)
 import Models.ID exposing (ID)
 import Models.Market exposing (Market, Markets)
+import Translation.Main as T
 import Views.Utilities as ViewUtil
 
 
@@ -67,12 +68,12 @@ view model =
 
             AddBrand name ->
                 addDialogView <|
-                    AddEditDialogContents "Brand" name <|
+                    AddEditDialogContents T.brand name <|
                         BrandAdd name
 
             AddGood goodContent ->
                 addGoodDialogView <|
-                    AEGoodContents "Good" goodContent <|
+                    AEGoodContents T.good goodContent <|
                         GoodAdd goodContent.name goodContent.data
 
             EditGood good goodContent ->
@@ -83,7 +84,7 @@ view model =
 
             AddMarket name ->
                 addDialogView <|
-                    AddEditDialogContents "Market" name <|
+                    AddEditDialogContents T.market name <|
                         MarketAdd name
 
             EditView object name ->
@@ -120,7 +121,7 @@ addEditGoodDialogView { viewType, buttonText } model { title, goodContent, onSub
                     , Options.css "margin" "10px 5px"
                     , Options.onClick AddFileDialog
                     ]
-                    [ Html.text "Upload" ]
+                    [ Html.text T.uploadButton ]
                 , Button.render Mdl
                     [ 3 ]
                     model.mdl
@@ -130,7 +131,7 @@ addEditGoodDialogView { viewType, buttonText } model { title, goodContent, onSub
                     , Options.css "margin" "10px 5px"
                     , Options.onClick RemoveImage
                     ]
-                    [ Html.text "Remove" ]
+                    [ Html.text T.removeButton ]
                 ]
             , Dropdown.view Dropdown.brandConfig
                 goodContent.brandDropdown
@@ -157,7 +158,7 @@ dialogView model onSubitMsg { title, contents, actions } =
                     [ Button.type_ "button"
                     , Dialog.closeOn "click"
                     ]
-                    [ Html.text "Close" ]
+                    [ Html.text T.closeButton ]
                 ]
     in
         Html.form attributes
@@ -180,7 +181,7 @@ textfield model onInputMsg name =
         [ 1 ]
         model.mdl
         [ Options.onInput onInputMsg
-        , Textfield.label "Name"
+        , Textfield.label T.nameLabel
         , Textfield.floatingLabel
         , Textfield.text_
         , Textfield.value name
@@ -213,7 +214,7 @@ marketChips goodContent allMarkets =
         Html.div []
             [ Html.div [] <|
                 if List.isEmpty goodContent.data.markets then
-                    [ Html.text "Choose Markets below" ]
+                    [ Html.text T.chooseMarkets ]
                 else
                     List.indexedMap marketChip goodContent.data.markets
             , Dropdown.view Dropdown.marketConfig
@@ -242,12 +243,12 @@ type alias AddEditText =
 
 addText : AddEditText
 addText =
-    AddEditText "Add" "Save"
+    AddEditText T.add T.save
 
 
 editText : AddEditText
 editText =
-    AddEditText "Edit" "Edit"
+    AddEditText T.edit T.edit
 
 
 type alias AddEditDialogContents =

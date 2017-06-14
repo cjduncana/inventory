@@ -5,6 +5,7 @@ import Material.Layout as Layout
 import Material.Options as Options
 import Model exposing (Msg(Mdl, NavigateTo))
 import Routing.Routes as Routes exposing (Route)
+import Translation.Main as T
 
 
 view : List (Html Msg)
@@ -13,7 +14,7 @@ view =
         [ Options.onClick <| NavigateTo Routes.Home
         , Options.onMouseUp <| Layout.toggleDrawer Mdl
         ]
-        [ Html.text "Inventory" ]
+        [ Html.text T.inventory ]
     , Layout.navigation
         [ Options.onClick <| Layout.toggleDrawer Mdl ]
       <|
@@ -36,16 +37,16 @@ type alias LinkItem =
 
 linkItems : List LinkItem
 linkItems =
-    [ { text = "Reports"
+    [ { text = T.reports
       , route = Routes.Reports
       }
-    , { text = "Goods"
+    , { text = T.goods
       , route = Routes.Goods
       }
-    , { text = "Brands"
+    , { text = T.brands
       , route = Routes.Brands
       }
-    , { text = "Markets"
+    , { text = T.markets
       , route = Routes.Markets
       }
     ]

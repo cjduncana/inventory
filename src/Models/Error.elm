@@ -6,6 +6,7 @@ port module Models.Error
 
 import Json.Decode as Decode exposing (Decoder, Value)
 import Json.Decode.Pipeline as Decode
+import Translation.Main as T
 
 
 type Error
@@ -24,7 +25,7 @@ port errorReceivedPort : (Value -> msg) -> Sub msg
 fromValue : (Error -> msg) -> Value -> msg
 fromValue f value =
     Decode.decodeValue errorDecoder value
-        |> Result.withDefault (UnknownError "Error decoding the Error")
+        |> Result.withDefault (UnknownError T.decodeFail)
         |> f
 
 
