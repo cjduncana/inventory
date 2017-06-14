@@ -11,20 +11,18 @@ import Routing.Routes exposing (Route(NewReport, Reports))
 
 goto : Model -> ( Model, Cmd msg )
 goto model =
-    let
-        model_ =
+    Report.getReports model.storedData.reports
+        |> (,)
             { model
                 | route = Reports
                 , header = Header.reportsList
             }
-    in
-        ( model_, Report.getReports model.storedData.reports )
 
 
 gotoNew : Model -> ( Model, Cmd msg )
 gotoNew model =
-    let
-        model_ =
+    Good.getGoods model.storedData.goods
+        |> (,)
             { model
                 | route =
                     Record.initPotentialRecord
@@ -32,5 +30,3 @@ gotoNew model =
                         |> NewReport
                 , header = Header.newReport
             }
-    in
-        ( model_, Good.getGoods model.storedData.goods )

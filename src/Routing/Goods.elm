@@ -11,18 +11,14 @@ import Routing.Routes exposing (Route(Goods))
 
 goto : Model -> ( Model, Cmd Msg )
 goto model =
-    let
-        model_ =
+    Cmd.batch
+        [ Brand.getBrands model.storedData.brands
+        , Good.getGoods model.storedData.goods
+        , Market.getMarkets model.storedData.markets
+        ]
+        |> (,)
             { model
                 | route = Goods
                 , header = Header.goodsList
                 , dialogView = Models.Dialog.newAddGoodView
             }
-
-        commands =
-            [ Brand.getBrands model.storedData.brands
-            , Good.getGoods model.storedData.goods
-            , Market.getMarkets model.storedData.markets
-            ]
-    in
-        model_ ! commands

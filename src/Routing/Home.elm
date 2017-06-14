@@ -8,12 +8,10 @@ import Routing.Routes exposing (Route(Home))
 
 goto : Model -> ( Model, Cmd Msg )
 goto model =
-    let
-        model_ =
+    Cmd.none
+        |> (,)
             { model
                 | route = Home
                 , header = Header.init
                 , dialogView = Default
             }
-    in
-        ( model_, Cmd.none )

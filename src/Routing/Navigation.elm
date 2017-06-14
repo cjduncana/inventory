@@ -6,36 +6,26 @@ import Routing.Brands as Brands
 import Routing.Goods as Goods
 import Routing.Markets as Markets
 import Routing.Reports as Reports
-import Routing.Routes
-    exposing
-        ( Route
-            ( Brands
-            , Goods
-            , Home
-            , Markets
-            , NewReport
-            , Reports
-            )
-        )
+import Routing.Routes as Routes exposing (Route)
 
 
 gotoRoute : Route -> Model -> ( Model, Cmd Msg )
 gotoRoute route model =
     case route of
-        Home ->
+        Routes.Home ->
             Home.goto model
 
-        Brands ->
+        Routes.Brands ->
             Brands.goto model
 
-        Goods ->
+        Routes.Goods ->
             Goods.goto model
 
-        Markets ->
+        Routes.Markets ->
             Markets.goto model
 
-        Reports ->
+        Routes.Reports ->
             Reports.goto model
 
-        NewReport _ ->
+        Routes.NewReport _ ->
             Reports.gotoNew model

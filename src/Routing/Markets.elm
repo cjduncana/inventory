@@ -9,12 +9,10 @@ import Routing.Routes exposing (Route(Markets))
 
 goto : Model -> ( Model, Cmd Msg )
 goto model =
-    let
-        model_ =
+    Market.getMarkets model.storedData.markets
+        |> (,)
             { model
                 | route = Markets
                 , header = Header.marketsList
                 , dialogView = AddMarket ""
             }
-    in
-        ( model_, Market.getMarkets model.storedData.markets )
