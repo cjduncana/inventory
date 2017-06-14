@@ -3,12 +3,12 @@ module Views.Body exposing (view)
 import Html exposing (Html)
 import Material.Snackbar as Snackbar
 import Model exposing (Model, Msg(AddEditReport, DialogMsg))
-import Models.List as List
 import Models.Snackbar
 import Routing.Routes as Routes
+import Views.Brand as BrandView
 import Views.Cards as CardsView
 import Views.Dialog as DialogView
-import Views.List as ListView
+import Views.Market as MarketView
 import Views.Report as ReportView
 import Views.Report.Add as AddReportView
 
@@ -29,13 +29,13 @@ bodyView model =
             Html.div [] [ Html.text "This is the home page." ]
 
         Routes.Brands ->
-            ListView.view model <| List.Brand model.storedData.brands
+            BrandView.view model model.storedData.brands
 
         Routes.Goods ->
             CardsView.view model model.storedData.goods
 
         Routes.Markets ->
-            ListView.view model <| List.Market model.storedData.markets
+            MarketView.view model model.storedData.markets
 
         Routes.Reports ->
             ReportView.view model model.storedData.reports

@@ -4,21 +4,14 @@ import Material.Snackbar as Snackbar
 import Model exposing (Model, Msg)
 import Models.Good as Good exposing (Good, Goods)
 import Models.Snackbar exposing (Payload(DeletedGood))
+import Updates.Utilities as UpdateUtils
 
 
 update : Goods -> Model -> ( Model, Cmd Msg )
 update goods model =
-    let
-        storedData =
-            model.storedData
-
-        storedData_ =
-            { storedData | goods = goods }
-
-        model_ =
-            { model | storedData = storedData_ }
-    in
-        ( model_, Cmd.none )
+    model.storedData
+        |> (\data -> { data | goods = goods })
+        |> UpdateUtils.updateStoredData model
 
 
 delete : Good -> Model -> ( Model, Cmd Msg )

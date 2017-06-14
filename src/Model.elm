@@ -4,8 +4,9 @@ module Model
         , Msg
             ( AddEditReport
             , BrandsReceived
+            , DeleteBrand
             , DeleteGood
-            , DeleteObject
+            , DeleteMarket
             , DialogMsg
             , ErrorReceived
             , GoodsReceived
@@ -15,19 +16,18 @@ module Model
             , ReportsReceived
             , SnackbarMsg
             )
+        , StoredData
         , init
         )
 
 import Material
-import Models.Brand exposing (Brands)
+import Models.Brand exposing (Brand, Brands)
 import Models.Dialog as Dialog exposing (DialogView(Default))
 import Models.Error exposing (Error)
 import Models.Good exposing (Good, Goods)
 import Models.Header as Header exposing (Header)
-import Models.ID exposing (ID)
-import Models.List exposing (ListType)
 import Models.Snackbar as Snackbar
-import Models.Market exposing (Markets)
+import Models.Market exposing (Market, Markets)
 import Models.Record as Record
 import Models.Report exposing (Reports)
 import Routing.Routes exposing (Route(Home))
@@ -82,6 +82,7 @@ type Msg
     | GoodsReceived Goods
     | MarketsReceived Markets
     | ReportsReceived Reports
+    | DeleteBrand Brand
     | DeleteGood Good
-    | DeleteObject (ListType ID)
+    | DeleteMarket Market
     | AddEditReport Record.Msg

@@ -10,6 +10,7 @@ import Models.Record as Record exposing (FormMsg, Msg, PotentialRecords)
 import Models.Report exposing (Reports)
 import Routing.Reports as Reports
 import Routing.Routes as Routes
+import Updates.Utilities as UpdateUtils
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -104,17 +105,9 @@ formUpdate formMsg records =
 
 updateReports : Reports -> Model -> ( Model, Cmd msg )
 updateReports reports model =
-    let
-        storedData =
-            model.storedData
-
-        storedData_ =
-            { storedData | reports = reports }
-
-        model_ =
-            { model | storedData = storedData_ }
-    in
-        ( model_, Cmd.none )
+    model.storedData
+        |> (\data -> { data | reports = reports })
+        |> UpdateUtils.updateStoredData model
 
 
 parseQuantity : String -> Result String Int

@@ -7,7 +7,6 @@ import Updates.Brands as Brands
 import Updates.Dialog as Dialog
 import Updates.Error as Error
 import Updates.Goods as Goods
-import Updates.List as List
 import Updates.Markets as Markets
 import Updates.Reports as Reports
 import Updates.Snackbar as Snackbar
@@ -29,11 +28,8 @@ update msg model =
             Error.update error model
 
         Model.DialogMsg msg_ ->
-            let
-                ( model_, command_ ) =
-                    Dialog.update msg_ model
-            in
-                ( model_, Cmd.map Model.DialogMsg command_ )
+            Dialog.update msg_ model
+                |> Tuple.mapSecond (Cmd.map Model.DialogMsg)
 
         Model.BrandsReceived brands ->
             Brands.update brands model
@@ -47,15 +43,15 @@ update msg model =
         Model.ReportsReceived reports ->
             Reports.updateReports reports model
 
+        Model.DeleteBrand brand ->
+            Brands.delete brand model
+
         Model.DeleteGood good ->
             Goods.delete good model
 
-        Model.DeleteObject listType ->
-            List.delete listType model
+        Model.DeleteMarket market ->
+            Markets.delete market model
 
         Model.AddEditReport msg_ ->
-            let
-                ( model_, command_ ) =
-                    Reports.update msg_ model
-            in
-                ( model_, Cmd.map Model.AddEditReport command_ )
+            Reports.update msg_ model
+                |> Tuple.mapSecond (Cmd.map Model.AddEditReport)

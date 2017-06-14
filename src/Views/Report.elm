@@ -7,22 +7,20 @@ import Material.Elevation as Elevation
 import Material.Options as Options
 import Model exposing (Model, Msg)
 import Models.Report exposing (Report, Reports)
+import Views.Utilities as ViewUtil
 
 
 view : Model -> Reports -> Html Msg
-view model reports =
-    if List.isEmpty reports then
-        Html.text "No Reports yet"
-    else
-        Options.div
+view model =
+    List.indexedMap (card model)
+        >> Options.div
             [ Options.css "margin" "15px"
             , Options.css "display" "grid"
             , Options.css "grid-template-columns" "repeat(auto-fill, 330px)"
             , Options.css "grid-gap" "15px"
             , Options.css "justify-content" "space-evenly"
             ]
-        <|
-            List.indexedMap (card model) reports
+        |> ViewUtil.showList "No Reports yet"
 
 
 card : Model -> Int -> Report -> Html Msg
