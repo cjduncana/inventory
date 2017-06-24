@@ -8,6 +8,7 @@ port module Models.Report
 
 import Date exposing (Date)
 import Json.Decode as Decode exposing (Decoder)
+import Json.Decode.Extra as Decode
 import Json.Decode.Pipeline as Decode
 import Json.Encode exposing (Value)
 import Models.Utilities as ModelUtil
@@ -54,22 +55,17 @@ fromValue : Decoder Report
 fromValue =
     let
         toDecoder id reportedOn updatedOn recordCount =
-            case
-                ( Uuid.fromString id
-                , Date.fromString reportedOn
-                , Date.fromString updatedOn
-                )
-            of
-                ( Just uuid, Ok reportedTime, Ok updatedTime ) ->
+            case Uuid.fromString id of
+                Just uuid ->
                     Decode.succeed <|
-                        Report uuid reportedTime updatedTime recordCount
+                        Report uuid reportedOn updatedOn recordCount
 
-                ( _, _, _ ) ->
+                Nothing ->
                     Decode.fail T.decodeFail
     in
         Decode.decode toDecoder
             |> Decode.required "id" Decode.string
-            |> Decode.required "createdAt" Decode.string
-            |> Decode.required "updatedAt" Decode.string
+            |> Decode.required "createdAt" Decode.date
+            |> Decode.required "updatedAt" Decode.date
             |> Decode.required "recordCount" Decode.int
             |> Decode.resolve
