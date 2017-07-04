@@ -1,5 +1,6 @@
 'use strict';
 
+const Promise = require('bluebird');
 const Sequelize = require('sequelize');
 
 module.exports = function(db) {
@@ -53,6 +54,18 @@ module.exports = function(db) {
 
       findGood: function(id) {
         return this.findById(id, { paranoid: false });
+      },
+
+      findGoods: function(ids) {
+        return Promise.map(ids, (id) => this.findById(id, {
+          include: [{
+            model: this.sequelize.models.Brand,
+            as: 'brand'
+          }, {
+            model: this.sequelize.models.Market,
+            as: 'markets'
+          }]
+        }));
       },
 
       createGood: function(good) {

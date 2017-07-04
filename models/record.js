@@ -1,6 +1,5 @@
 'use strict';
 
-const Promise = require('bluebird');
 const Sequelize = require('sequelize');
 
 module.exports = function(db) {
@@ -11,10 +10,6 @@ module.exports = function(db) {
       primaryKey: true
     },
     reportId: {
-      type: Sequelize.UUID,
-      allowNull: false
-    },
-    goodId: {
       type: Sequelize.UUID,
       allowNull: false
     },
@@ -29,12 +24,10 @@ module.exports = function(db) {
   }, {
 
     classMethods: {
-      createRecords: function(records, report) {
-        return Promise.map(records, (record) => {
-          record.reportId = report.id;
+      createRecord: function(record, report) {
+        record.reportId = report.id;
 
-          return this.create(record);
-        });
+        return this.create(record);
       }
     },
 
@@ -43,11 +36,4 @@ module.exports = function(db) {
   });
 
   return Record;
-};
-
-module.exports.associations = function({ Good, Record }) {
-  Record.belongsTo(Good, {
-    as: 'good',
-    foreignKey: 'goodId'
-  });
 };
