@@ -60,8 +60,8 @@ type alias PotentialRecords =
 
 
 addNewRecord : PotentialRecords -> PotentialRecords
-addNewRecord records =
-    Array.push initPotentialRecord records
+addNewRecord =
+    Array.push initPotentialRecord
 
 
 checkRecord : PotentialRecord -> Bool
@@ -87,43 +87,43 @@ sanitizeRecord record =
 
 
 sanitizeRecords : Array PotentialRecord -> Maybe (List RecordData)
-sanitizeRecords records =
-    let
-        checkRecords rs =
-            (Array.length rs
-                - 1
-                |> flip Array.get rs
-                |> Maybe.map isRecordDirty
-                |> Maybe.withDefault True
-            )
-                || Array.length rs
-                == 1
-    in
-        Just records
-            |> Maybe.filter (not << checkRecords)
-            |> Maybe.map
-                (Array.sliceUntil -1
-                    >> Array.map sanitizeRecord
-                    >> Array.toList
-                    >> Maybe.combine
+sanitizeRecords =
+    Just
+        >> Maybe.filter
+            ((\rs ->
+                (Array.length rs
+                    - 1
+                    |> flip Array.get rs
+                    |> Maybe.map isRecordDirty
+                    |> Maybe.withDefault True
                 )
-            |> Maybe.join
+                    || Array.length rs
+                    == 1
+             )
+                >> not
+            )
+        >> Maybe.map
+            (Array.sliceUntil -1
+                >> Array.map sanitizeRecord
+                >> Array.toList
+                >> Maybe.combine
+            )
+        >> Maybe.join
 
 
 addRecordIfComplete : PotentialRecords -> PotentialRecords
 addRecordIfComplete records =
-    let
-        possiblyAddNewRecord check =
-            if check then
-                addNewRecord records
-            else
-                records
-    in
-        Array.length records
-            - 1
-            |> flip Array.get records
-            |> Maybe.map (Tuple.second >> checkRecord >> possiblyAddNewRecord)
-            |> Maybe.withDefault (addNewRecord records)
+    Array.length records
+        - 1
+        |> flip Array.get records
+        |> Maybe.map
+            (Tuple.second
+                >> Just
+                >> Maybe.filter checkRecord
+                >> Maybe.map (always <| addNewRecord records)
+                >> Maybe.withDefault records
+            )
+        |> Maybe.withDefault (addNewRecord records)
 
 
 initPotentialRecord : ( State, PotentialRecord )
@@ -170,9 +170,9 @@ port createReportPort : Value -> Cmd msg
 
 
 toCreateValue : List RecordData -> Value
-toCreateValue ds =
-    let
-        toValue data =
+toCreateValue =
+    List.map
+        (\data ->
             [ ( "goodId"
               , Good.getUuid data.good |> Uuid.encode
               )
@@ -184,6 +184,5 @@ toCreateValue ds =
               )
             ]
                 |> Encode.object
-    in
-        List.map toValue ds
-            |> Encode.list
+        )
+        >> Encode.list

@@ -133,8 +133,8 @@ addMarket : Maybe Market -> DialogView -> DialogView
 addMarket maybeMarket dialogView =
     let
         f data =
-            case maybeMarket of
-                Just market ->
+            Maybe.map
+                (\market ->
                     { data
                         | markets =
                             market
@@ -142,9 +142,9 @@ addMarket maybeMarket dialogView =
                                 |> List.uniqueBy (.uuid >> Uuid.toString)
                                 |> List.sortBy .name
                     }
-
-                Nothing ->
-                    data
+                )
+                maybeMarket
+                |> Maybe.withDefault data
     in
         case dialogView of
             AddGood good ->
