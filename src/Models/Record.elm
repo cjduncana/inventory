@@ -174,7 +174,7 @@ toCreateValue ds =
     let
         toValue data =
             [ ( "goodId"
-              , Encode.string (Good.getUuid data.good |> Uuid.toString)
+              , Good.getUuid data.good |> Uuid.encode
               )
             , ( "quantityStored"
               , Encode.int data.quantityStored

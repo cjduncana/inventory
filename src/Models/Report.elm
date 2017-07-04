@@ -12,7 +12,6 @@ import Json.Decode.Extra as Decode
 import Json.Decode.Pipeline as Decode
 import Json.Encode exposing (Value)
 import Models.Utilities as ModelUtil
-import Translation.Main as T
 import Uuid exposing (Uuid)
 
 
@@ -53,19 +52,8 @@ fromValues f value =
 
 fromValue : Decoder Report
 fromValue =
-    let
-        toDecoder id reportedOn updatedOn recordCount =
-            case Uuid.fromString id of
-                Just uuid ->
-                    Decode.succeed <|
-                        Report uuid reportedOn updatedOn recordCount
-
-                Nothing ->
-                    Decode.fail T.decodeFail
-    in
-        Decode.decode toDecoder
-            |> Decode.required "id" Decode.string
-            |> Decode.required "createdAt" Decode.date
-            |> Decode.required "updatedAt" Decode.date
-            |> Decode.required "recordCount" Decode.int
-            |> Decode.resolve
+    Decode.decode Report
+        |> Decode.required "id" Uuid.decoder
+        |> Decode.required "createdAt" Decode.date
+        |> Decode.required "updatedAt" Decode.date
+        |> Decode.required "recordCount" Decode.int

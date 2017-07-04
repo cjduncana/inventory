@@ -23,11 +23,11 @@ port module Models.Good
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline as Decode
 import Json.Encode as Encode exposing (Value)
+import Maybe.Extra as Maybe
 import Models.Brand exposing (Brand)
 import Models.ID as ID exposing (ID)
 import Models.Market exposing (Markets)
 import Models.Utilities as ModelUtil
-import Translation.Main as T
 import Uuid exposing (Uuid)
 
 
@@ -170,27 +170,26 @@ fromValue =
         decodeMarkets =
             Decode.list ID.fromValue
 
-        assignImage filename =
-            if String.isEmpty filename then
-                NoImage
-            else
-                HasImage filename
+        imageUriDecoder =
+            Decode.string
+                |> Decode.andThen
+                    (Just
+                        >> Maybe.filter (not << String.isEmpty)
+                        >> Maybe.map HasImage
+                        >> Maybe.withDefault NoImage
+                        >> Decode.succeed
+                    )
 
-        toDecoder id name filename maybeBrand markets =
-            case Uuid.fromString id of
-                Nothing ->
-                    Decode.fail T.invalidUuid
-
-                Just uuid ->
-                    Decode.succeed <|
-                        ( ID uuid name
-                        , GoodData (assignImage filename) maybeBrand markets
-                        )
+        toDecoder uuid name imageUri maybeBrand markets =
+            ( ID uuid name
+            , GoodData imageUri maybeBrand markets
+            )
+                |> Decode.succeed
     in
         Decode.decode toDecoder
-            |> Decode.required "id" Decode.string
+            |> Decode.required "id" Uuid.decoder
             |> Decode.required "name" Decode.string
-            |> Decode.optional "image" Decode.string ""
+            |> Decode.optional "image" imageUriDecoder NoImage
             |> Decode.optional "brand" decodeMaybeBrand Nothing
             |> Decode.required "markets" decodeMarkets
             |> Decode.resolve
@@ -212,7 +211,7 @@ toCreateValue name data =
 toValue : Good -> Value
 toValue good =
     Encode.object <|
-        [ ( "id", Encode.string <| Uuid.toString <| getUuid good )
+        [ ( "id", Uuid.encode <| getUuid good )
         , ( "name", Encode.string <| getName good )
         ]
             ++ imageKeyValuePair (getImage good)
