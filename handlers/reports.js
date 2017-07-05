@@ -4,6 +4,8 @@ const _ = require('lodash');
 const Promise = require('bluebird');
 
 module.exports = (ports, models) => {
+  ports.getReportPort.subscribe(getReport);
+
   ports.getReportsPort.subscribe(getReports);
 
   ports.createReportPort.subscribe(createReport);
@@ -32,6 +34,12 @@ module.exports = (ports, models) => {
       });
     }))
     .then(() => getReports())
+    .catch(catchError);
+  }
+
+  function getReport(id) {
+    models.Report.getReport(id)
+    .then(ports.reportReceivedPort.send)
     .catch(catchError);
   }
 

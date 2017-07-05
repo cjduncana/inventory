@@ -38,3 +38,15 @@ module.exports = function(db) {
 
   return ReportGood;
 };
+
+module.exports.associations = function({ ReportBrand, ReportGood, ReportMarket }) {
+  ReportGood.hasOne(ReportBrand, {
+    as: 'brand',
+    foreignKey: 'goodId'
+  });
+
+  ReportGood.hasMany(ReportMarket, {
+    as: 'markets',
+    foreignKey: 'goodId'
+  });
+};

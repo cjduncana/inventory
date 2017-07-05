@@ -40,6 +40,9 @@ update msg model =
         Model.MarketsReceived markets ->
             Markets.update markets model
 
+        Model.ReportReceived records ->
+            Reports.updateReport records model
+
         Model.ReportsReceived reports ->
             Reports.updateReports reports model
 

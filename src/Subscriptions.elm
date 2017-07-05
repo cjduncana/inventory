@@ -7,6 +7,7 @@ import Models.Dialog as Dialog
 import Models.Good as Good
 import Models.Error as Error
 import Models.Market as Market
+import Models.Record as Record
 import Models.Report as Report
 
 
@@ -17,6 +18,7 @@ subscriptions model =
         , Brand.brandsReceived Model.BrandsReceived
         , Good.goodsReceived Model.GoodsReceived
         , Market.marketsReceived Model.MarketsReceived
+        , Record.reportReceived Model.ReportReceived
         , Report.reportsReceived Model.ReportsReceived
         , Error.errorReceived Model.ErrorReceived
         , Dialog.imageSaved <| Model.DialogMsg << Dialog.ImageSaved

@@ -29,3 +29,6 @@ gotoRoute route model =
 
         Routes.NewReport _ ->
             Reports.gotoNew model
+
+        Routes.ViewReport _ ->
+            ( model, Cmd.none )

@@ -13,6 +13,7 @@ module Model
             , MarketsReceived
             , Mdl
             , NavigateTo
+            , ReportReceived
             , ReportsReceived
             , SnackbarMsg
             )
@@ -28,7 +29,7 @@ import Models.Good exposing (Good, Goods)
 import Models.Header as Header exposing (Header)
 import Models.Snackbar as Snackbar
 import Models.Market exposing (Market, Markets)
-import Models.Record as Record
+import Models.Record as Record exposing (Records)
 import Models.Report exposing (Reports)
 import Routing.Routes exposing (Route(Home))
 
@@ -81,6 +82,7 @@ type Msg
     | BrandsReceived Brands
     | GoodsReceived Goods
     | MarketsReceived Markets
+    | ReportReceived Records
     | ReportsReceived Reports
     | DeleteBrand Brand
     | DeleteGood Good

@@ -2,6 +2,7 @@ port module Models.Report
     exposing
         ( Report
         , Reports
+        , getReport
         , getReports
         , reportsReceived
         )
@@ -32,12 +33,20 @@ reportsReceived =
     reportsReceivedPort << fromValues
 
 
+getReport : Uuid -> Cmd msg
+getReport =
+    Uuid.encode >> getReportPort
+
+
 getReports : Reports -> Cmd msg
 getReports =
     ModelUtil.commandIfEmpty getReportsPort
 
 
 port reportsReceivedPort : (Value -> msg) -> Sub msg
+
+
+port getReportPort : Value -> Cmd msg
 
 
 port getReportsPort : () -> Cmd msg

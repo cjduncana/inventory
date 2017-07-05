@@ -12,6 +12,7 @@ import Views.Dialog as DialogView
 import Views.Market as MarketView
 import Views.Report as ReportView
 import Views.Report.Add as AddReportView
+import Views.Report.View as ViewReportView
 
 
 view : Model -> List (Html Msg)
@@ -44,6 +45,9 @@ bodyView model =
         Routes.NewReport data ->
             AddReportView.view model data
                 |> Html.map AddEditReport
+
+        Routes.ViewReport maybeRecords ->
+            ViewReportView.view model maybeRecords
 
 
 snackbar : Models.Snackbar.Model -> Html Msg

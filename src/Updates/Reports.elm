@@ -1,4 +1,4 @@
-module Updates.Reports exposing (update, updateReports)
+module Updates.Reports exposing (update, updateReport, updateReports)
 
 import Array
 import Array.Extra as Array
@@ -6,7 +6,13 @@ import Dropdown
 import Material
 import Model exposing (Model)
 import Models.Dropdown as Dropdown
-import Models.Record as Record exposing (FormMsg, Msg, PotentialRecords)
+import Models.Record as Record
+    exposing
+        ( FormMsg
+        , Msg
+        , PotentialRecords
+        , Records
+        )
 import Models.Report exposing (Reports)
 import Routing.Reports as Reports
 import Routing.Routes as Routes
@@ -39,6 +45,9 @@ update msg model =
                     Reports.goto model
             in
                 model_ ! [ Record.createReport records, command ]
+
+        ( Record.ViewReport uuid, _ ) ->
+            Reports.gotoReport uuid model
 
         ( Record.Mdl msg_, _ ) ->
             Material.update Record.Mdl msg_ model
@@ -101,6 +110,22 @@ formUpdate formMsg records =
                     Array.update index updateRecord records
             in
                 ( records_, Cmd.none )
+
+
+updateReport : Records -> Model -> ( Model, Cmd msg )
+updateReport records model =
+    ( model.route, Cmd.none )
+        |> Tuple.mapFirst
+            (\route ->
+                case route of
+                    Routes.ViewReport _ ->
+                        { model
+                            | route = Routes.ViewReport (Just records)
+                        }
+
+                    _ ->
+                        model
+            )
 
 
 updateReports : Reports -> Model -> ( Model, Cmd msg )

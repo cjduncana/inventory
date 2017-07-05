@@ -7,14 +7,17 @@ port module Models.Record
             , QuantityStoredUpdate
             , QuantityUsed
             )
-        , Msg(FormUpdate, Mdl, SaveForm)
+        , Msg(FormUpdate, Mdl, SaveForm, ViewReport)
         , PotentialRecord
         , PotentialRecords
+        , Record
+        , Records
         , addRecordIfComplete
         , addNewRecord
         , checkRecord
         , createReport
         , initPotentialRecord
+        , reportReceived
         , sanitizeRecords
         , setGood
         , setQuantityStored
@@ -24,6 +27,8 @@ port module Models.Record
 import Array exposing (Array)
 import Array.Extra as Array
 import Dropdown exposing (State)
+import Json.Decode as Decode exposing (Decoder)
+import Json.Decode.Pipeline as Decode
 import Json.Encode as Encode exposing (Value)
 import Material
 import Maybe.Extra as Maybe
@@ -39,13 +44,16 @@ type alias RecordData =
     }
 
 
+type alias Record =
+    { id : Uuid
+    , good : Good
+    , quantityStored : Int
+    , quantityUsed : Int
+    }
 
--- type alias Record =
---     { id : Uuid
---     , good : Good
---     , quantityStored : Int
---     , quantityUsed : Int
---     }
+
+type alias Records =
+    List Record
 
 
 type alias PotentialRecord =
@@ -149,6 +157,7 @@ setQuantityUsed quantity record =
 type Msg
     = FormUpdate FormMsg
     | SaveForm (List RecordData)
+    | ViewReport Uuid
     | Mdl (Material.Msg Msg)
 
 
@@ -166,7 +175,15 @@ createReport data =
         |> createReportPort
 
 
+reportReceived : (Records -> msg) -> Sub msg
+reportReceived =
+    reportReceivedPort << fromValues
+
+
 port createReportPort : Value -> Cmd msg
+
+
+port reportReceivedPort : (Value -> msg) -> Sub msg
 
 
 toCreateValue : List RecordData -> Value
@@ -186,3 +203,19 @@ toCreateValue =
                 |> Encode.object
         )
         >> Encode.list
+
+
+fromValue : Decoder Record
+fromValue =
+    Decode.decode Record
+        |> Decode.required "id" Uuid.decoder
+        |> Decode.required "good" Good.fromValue
+        |> Decode.required "quantityStored" Decode.int
+        |> Decode.required "quantityUsed" Decode.int
+
+
+fromValues : (Records -> msg) -> Value -> msg
+fromValues f value =
+    Decode.decodeValue (Decode.list fromValue) value
+        |> Result.withDefault []
+        |> f

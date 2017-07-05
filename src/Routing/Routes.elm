@@ -1,10 +1,10 @@
 module Routing.Routes
     exposing
-        ( Route(Brands, Goods, Home, Markets, NewReport, Reports)
+        ( Route(Brands, Goods, Home, Markets, NewReport, Reports, ViewReport)
         , hasDialog
         )
 
-import Models.Record exposing (PotentialRecords)
+import Models.Record exposing (PotentialRecords, Records)
 
 
 type Route
@@ -14,16 +14,29 @@ type Route
     | Markets
     | Reports
     | NewReport PotentialRecords
+    | ViewReport (Maybe Records)
 
 
 hasDialog : Route -> Bool
 hasDialog route =
     case route of
+        Home ->
+            False
+
+        Brands ->
+            True
+
+        Goods ->
+            True
+
+        Markets ->
+            True
+
         Reports ->
             False
 
         NewReport _ ->
             False
 
-        _ ->
-            True
+        ViewReport _ ->
+            False

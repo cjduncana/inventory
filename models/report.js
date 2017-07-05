@@ -18,6 +18,44 @@ module.exports = function(db) {
   }, {
 
     classMethods: {
+      getReport: function(id) {
+        return this.findById(id, {
+          include: [{
+            model: this.sequelize.models.Record,
+            as: 'records',
+            include: [{
+              model: this.sequelize.models.ReportGood,
+              as: 'good',
+              include: [{
+                model: this.sequelize.models.ReportBrand,
+                as: 'brand'
+              }, {
+                model: this.sequelize.models.ReportMarket,
+                as: 'markets'
+              }]
+            }]
+          }]
+        })
+        .then((report) => report.records.map((record) => ({
+          id: record.id,
+          quantityStored: record.quantityStored,
+          quantityUsed: record.quantityUsed,
+          good: {
+            id: record.good.id,
+            name: record.good.name,
+            image: record.good.image,
+            brand: record.good.brand && {
+              id: record.good.brand.id,
+              name: record.good.brand.name
+            } || null,
+            markets: record.good.markets.map((market) => ({
+              id: market.id,
+              name: market.name
+            }))
+          }
+        })));
+      },
+
       getReports: function() {
         return this.findAll({
           order: [['createdAt', 'ASC']],

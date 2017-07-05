@@ -37,3 +37,10 @@ module.exports = function(db) {
 
   return Record;
 };
+
+module.exports.associations = function({ Record, ReportGood }) {
+  Record.hasOne(ReportGood, {
+    as: 'good',
+    foreignKey: 'recordId'
+  });
+};

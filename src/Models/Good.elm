@@ -8,6 +8,7 @@ port module Models.Good
         , deleteGood
         , destroyGood
         , editGood
+        , fromValue
         , getBrand
         , getFilename
         , getGoods

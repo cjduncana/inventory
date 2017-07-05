@@ -2,10 +2,13 @@ module Views.Report exposing (view)
 
 import Date.Format as Date
 import Html exposing (Html)
+import Material.Button as Button
 import Material.Card as Card exposing (Block)
 import Material.Elevation as Elevation
+import Material.Icon as Icon
 import Material.Options as Options
-import Model exposing (Model, Msg)
+import Model exposing (Model, Msg(Mdl))
+import Models.Record as Record
 import Models.Report exposing (Report, Reports)
 import Translation.Main as T
 import Views.Utilities as ViewUtil
@@ -25,38 +28,35 @@ view model =
 
 
 card : Model -> Int -> Report -> Html Msg
-card _ _ report =
-    let
-        blocks =
-            [ title report
-
-            -- , media report
-            -- , actions model index report
-            ]
-
-        -- blocks_ =
-        --     if List.isEmpty (Good.getMarkets report) then
-        --         blocks
-        --     else
-        --         text (Good.getMarkets report) :: blocks
-    in
-        Card.view [ Elevation.e2 ] blocks
+card model index report =
+    Card.view [ Elevation.e2 ]
+        [ title report
+        , actions model index report
+        ]
 
 
 title : Report -> Block Msg
 title report =
-    let
-        head_ =
-            Card.head []
-                [ report.reportedOn
-                    |> Date.format "%B %d, %Y"
-                    |> Html.text
-                ]
+    Card.title []
+        [ Card.head []
+            [ report.reportedOn
+                |> Date.format "%B %d, %Y"
+                |> Html.text
+            ]
+        ]
 
-        -- subhead_ =
-        --     Maybe.map subhead (Report.getBrand report)
-        --         |> Maybe.withDefault (Html.div [] [])
-        block =
-            [ head_ ]
-    in
-        Card.title [] block
+
+actions : Model -> Int -> Report -> Block Msg
+actions model index report =
+    Card.actions []
+        [ Button.render Mdl
+            [ 0, index ]
+            model.mdl
+            [ Button.icon
+            , Button.ripple
+            , Record.ViewReport report.id
+                |> Model.AddEditReport
+                |> Options.onClick
+            ]
+            [ Icon.i "visibility" ]
+        ]
