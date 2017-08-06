@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/creativo-pty/inventory.git"
+    "url": "git+https://github.com/cjduncana/inventory.git"
   },
   "keywords": [
     "inventory",
@@ -24,9 +24,9 @@
   "author": "Christopher Duncan <cj.duncan.a@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/creativo-pty/inventory/issues"
+    "url": "https://github.com/cjduncana/inventory/issues"
   },
-  "homepage": "https://github.com/creativo-pty/inventory#readme",
+  "homepage": "https://github.com/cjduncana/inventory#readme",
   "dependencies": {
     "bluebird": "^3.5.0",
     "electron-compile": "^6.4.1",
@@ -66,7 +66,7 @@
       "electronInstallerDebian": {},
       "electronInstallerRedhat": {},
       "github_repository": {
-        "owner": "creativo-pty",
+        "owner": "cjduncana",
         "name": "inventory.git"
       },
       "windowsStoreConfig": {

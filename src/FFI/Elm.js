@@ -3,12 +3,15 @@
 const Elm = require('./elm.js');
 const Handlers = require('../lib/handlers');
 
-// Get a reference to the DIV where we will show our UI
-const container = document.getElementById('container');
-
 // Start the elm app in the container
 // and keep a reference for communicating with the app
-const app = Elm.Main.embed(container);
+exports.startElm = function() {
+  return Elm.Main.fullscreen();
+};
 
 // Load the handlers into the ports
-Handlers(app.ports);
+exports.createHandlers = function(app) {
+  return function() {
+    Handlers(app.ports);
+  };
+};

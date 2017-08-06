@@ -1,7 +1,7 @@
 {
     "version": "0.1.0",
     "summary": "Keep an inventory",
-    "repository": "https://github.com/creativo-pty/inventory.git",
+    "repository": "https://github.com/cjduncana/inventory.git",
     "license": "MIT",
     "source-directories": [
         "src"

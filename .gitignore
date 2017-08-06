@@ -10,9 +10,19 @@ npm-debug.log
 
 TODO
 out/
-elm.js
+src/elm.js
 mydb.sqlite3
 
 images/
 src/Translation
 src/translations
+
+# Purescript
+/bower_components/
+/node_modules/
+/.pulp-cache/
+**/output/
+/generated-docs/
+/.psc*
+/.purs*
+/.psa*
