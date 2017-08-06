@@ -1,10 +1,6 @@
-module FFI.Elm (App, createHandlers, startElm) where
+module FFI.Elm (startElm) where
 
 import Control.Monad.Eff (Eff)
-import Prelude (Unit)
-
-foreign import data App :: Type
+import FFI.Types (App)
 
 foreign import startElm :: forall eff. Eff eff App
-
-foreign import createHandlers :: forall eff. App -> Eff eff Unit
